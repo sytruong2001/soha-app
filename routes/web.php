@@ -14,5 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('user.ID');
+});
+Route::get('/payment', function () {
+    return view('user.Payment');
 });
