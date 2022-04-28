@@ -26,7 +26,7 @@
                     </a>
                 </div>
             </div>
-            <p class="description text-center">Or Be Classical</p>
+            <p class="description text-center">Đăng nhập bằng cách khác</p>
             <!-- Email Address -->
             <div>
                 <x-label for="email" :value="__('Email')" />
