@@ -1,3 +1,4 @@
+
 <?php
 
 return [
@@ -107,5 +108,16 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    /**
+     * Login by google
+     * 
+     */
+    'socialite' => [
+        'drivers' => [
+            'google',
+        ],
+    ],
+
 
 ];
