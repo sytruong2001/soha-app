@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use App\Models\InfoUser;
+use Carbon\Carbon;
+
 
 class RegisteredUserController extends Controller
 {
@@ -43,6 +46,13 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        $user->assignRole('user');
+
+        $info_user = InfoUser::create([
+            'user_number' => Carbon::now()->format('su'),
+            'user_id' => $user->id,
         ]);
 
         event(new Registered($user));

@@ -2,7 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
+<<<<<<< HEAD
 use App\Http\Controllers\User\UserController;
+=======
+use Carbon\Carbon;
+
+>>>>>>> db1c22e7dbf0bac988a57a6be48dc2f810800f79
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,10 +35,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     })->name('dashboard');
 });
 
-Route::controller(GoogleController::class)->group(function () {
-    Route::get('/login/google', 'login');
-    Route::get('/login/google/callback', 'callback');
-});
+
 
 // Route::middleware(['auth', 'role:user'])->prefix('user')->group(function() {
 
