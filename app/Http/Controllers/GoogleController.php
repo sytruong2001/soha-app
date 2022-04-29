@@ -42,7 +42,7 @@ class GoogleController extends Controller
                 ]);
                 $new_user->assignRole('user');
                 $info_user = InfoUser::create([
-                    'user_number' => Carbon::now()->format('su'),
+                    'user_number' => 'SHA'.Carbon::now()->format('su'),
                     'user_id' => $new_user->id,
                 ]);
 
