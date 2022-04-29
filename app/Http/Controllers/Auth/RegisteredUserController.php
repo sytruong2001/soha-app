@@ -51,7 +51,7 @@ class RegisteredUserController extends Controller
         $user->assignRole('user');
 
         $info_user = InfoUser::create([
-            'user_number' => Carbon::now()->format('su'),
+            'user_number' => 'SHA' . Carbon::now()->format('su'),
             'user_id' => $user->id,
         ]);
 

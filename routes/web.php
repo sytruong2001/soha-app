@@ -2,12 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
-<<<<<<< HEAD
 use App\Http\Controllers\User\UserController;
-=======
 use Carbon\Carbon;
 
->>>>>>> db1c22e7dbf0bac988a57a6be48dc2f810800f79
 /*
 |--------------------------------------------------------------------------
 | Web Routes
