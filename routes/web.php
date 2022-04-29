@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +26,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function() {
     })->name('dashboard');
 });
 
-Route::controller(GoogleController::class)->group(function () {
-    Route::get('/login/google', 'login');
-    Route::get('/login/google/callback', 'callback');
-});
+
 
 // Route::middleware(['auth', 'role:user'])->prefix('user')->group(function() {
     

@@ -8,7 +8,8 @@ use Auth;
 use Str;
 use Laravel\Socialite\Facades\Socialite;
 use App\Providers\RouteServiceProvider;
-
+use App\Models\InfoUser;
+use Carbon\Carbon;
 
 class GoogleController extends Controller
 {
@@ -40,8 +41,13 @@ class GoogleController extends Controller
                     'remember_token' => Str::random(10),
                 ]);
                 $new_user->assignRole('user');
+                $info_user = InfoUser::create([
+                    'user_number' => Carbon::now()->format('su'),
+                    'user_id' => $new_user->id,
+                ]);
 
                 Auth::login($new_user);
+
                 if (auth()->user()->hasRole('admin')) {
                     return redirect()->intended(RouteServiceProvider::HOME);
                 }
