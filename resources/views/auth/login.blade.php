@@ -18,15 +18,15 @@
             <div class="header header-primary text-center">
                 <h4 class="card-title">Đăng nhập</h4>
                 <div class="social-line">
-                    <a href="#pablo" class="btn btn-just-icon" style="background-color: #337AB7">
+                    <a href="#" class="btn btn-just-icon" style="background-color: #337AB7">
                         <i class="fa fa-facebook"></i>
                     </a>
-                    <a href="#pablo" class="btn btn-just-icon btn-danger">
+                    <a href="{{ url('login/google') }}" class="btn btn-just-icon btn-danger">
                         <i class="fa fa-google-plus"></i>
                     </a>
                 </div>
             </div>
-            <p class="description text-center">Đăng nhập bằng cách khác</p>
+            <p class="description text-center">Hoặc đăng nhập bằng cách khác</p>
             <!-- Email Address -->
             <div>
                 <x-label for="email" :value="__('Email')" />

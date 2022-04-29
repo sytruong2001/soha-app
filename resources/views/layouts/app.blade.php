@@ -18,14 +18,6 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 	    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
 
-        <!--     Fonts and icons     -->
-        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
-
-        <!-- CSS Files -->
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
-        <link href="css/material-kit.css?v=1.2.1" rel="stylesheet"/>
-
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>

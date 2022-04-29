@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GoogleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function() {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
+});
+
+Route::controller(GoogleController::class)->group(function () {
+    Route::get('/login/google', 'login');
+    Route::get('/login/google/callback', 'callback');
 });
 
 // Route::middleware(['auth', 'role:user'])->prefix('user')->group(function() {
