@@ -33,7 +33,7 @@
                                                     <div class="col-md-7" style="background: black">
                                                         <h4>ID của bạn là: </h4>
                                                         <h4>ID của bạn là: </h4>
-                                                        <h4>ID của bạn là: a</h4>
+                                                        <h4>ID của bạn là: </h4>
                                                     </div>
                                                 </div>
 
