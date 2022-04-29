@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
-
+use App\Http\Controllers\User\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,14 +15,14 @@ use App\Http\Controllers\GoogleController;
 */
 
 Route::get('/', function () {
-    return view('user.ID');
+    return view('welcome');
 });
 
-Route::get('/payment', function () {
-    return view('user.Payment');
+Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
+    Route::get('/get-info', [UserController::class, 'getInfoUser'])->name('user.getInfoUser');
+    Route::get('/payment', [UserController::class, 'payment'])->name('user.payment');
 });
-
-
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
