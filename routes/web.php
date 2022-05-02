@@ -23,7 +23,11 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
     Route::get('/get-info', [UserController::class, 'getInfoUser'])->name('user.getInfoUser');
+    Route::post('/update_info', [UserController::class, 'updateInfoUser'])->name('user.updateInfoUser');
     Route::get('/payment', [UserController::class, 'payment'])->name('user.payment');
+    Route::get('/get-info-payment', [UserController::class, 'getInfoPayment'])->name('user.getInfoPayment');
+    Route::post('/update-payment', [UserController::class, 'UpdatePayment'])->name('user.updatePayment');
+    Route::post('/update-kc', [UserController::class, 'UpdateKC'])->name('user.updateKC');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {

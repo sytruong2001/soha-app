@@ -9,5 +9,44 @@
     background: lightgreen;
     border-radius: 0 15px 15px 0;
 }
-.btn-update{
+.btn-update button{
+    width: 100px;
+    height: 30px;
+    background-color: #00bf58;
+    color:  white;
+    border: none;
+    border-radius: 5px 5px 5px 5px ;
+    box-shadow: #00bf58 1px 1px 3px 1px;
+}
+.pw-confirm{
+    width: 100% !important;
+    height: 40px;
+    border-radius: 5px 5px 5px 5px;
+}
+  /* Landscape */
+  @media only screen
+  and (min-device-width: 390px)
+  and (max-device-width: 896px)
+  and (orientation: landscape) {
+    .col-s-1 {
+        text-align: left !important;
+    }
+
+
+  }
+  /* Portrait */
+  @media only screen
+  and (min-device-width: 390px)
+  and (max-device-width: 896px)
+  and (orientation: portrait) {
+    .col-s-1 {
+        text-align: left !important;
+    }
+}
+
+@media only screen
+and (max-device-width: 390px) {
+  .col-s-1 {
+      text-align: left !important;
+  }
 }
