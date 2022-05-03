@@ -35,5 +35,9 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect'      => env('GOOGLE_REDIRECT'),
     ],
-
+    'facebook' => [
+        'client_id' => env('FACEBOOK_APP_ID'), //client face của bạn
+        'client_secret' => env('FACEBOOK_APP_SECRET'), //client app service face của bạn
+        'redirect' => env('FACEBOOK_REDIRECT'), //callback trả về
+    ],
 ];

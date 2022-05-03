@@ -6,6 +6,10 @@
     background: black;
     border-radius: 5px 5px 5px 5px;
     width: 150px;
+    height: 40px !important;
+    line-height: 40px;
+    text-align: center;
+    margin-left: 100px;
 }
 #nap-coin:hover{
     color: orangered;
@@ -15,6 +19,10 @@
     background: black;
     border-radius: 5px 5px 5px 5px;
     width: 150px;
+    height: 40px !important;
+    line-height: 40px;
+    text-align: center;
+    margin-left: 100px;
 }
 #mua-kc:hover{
     color: orangered;
@@ -157,11 +165,11 @@
     color: orangered;
 }
 .w3-modal-content #numbCoinCurrent-submit{
-    margin-left: 46px;
+    margin-left: 47px;
     color: rgb(47, 18, 231);
 }
 .w3-modal-content #numbCoinLast-submit{
-    margin-left: 97px;
+    margin-left: 100px;
     color: rgb(47, 18, 231);
 }
 .w3-modal-content #info-atm-submit input{

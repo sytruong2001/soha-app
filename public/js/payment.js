@@ -13,6 +13,7 @@ function load_data() {
         type: "get",
         dataType: "json",
         success: function (data) {
+            console.log(data);
             var html = ``;
             html += `
             <div class="row collections">
@@ -35,16 +36,26 @@ function load_data() {
                                         <b>${data.info_user.user_number}</b>
                                     </h5>
                                     <h4><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAuNzUiIGN5PSIxMC43NSIgcj0iMTAuNzUiIGZpbGw9IiMwMjU3NDEiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS4yNDgxIDE3Ljk3NDlDMTAuNTU4MyAxNy45NzQ5IDkuOTAzNTQgMTcuNjc1IDkuNDUzNyAxNy4xNTAyQzkuMDgzODMgMTYuNzIwMyA4Ljg3ODkxIDE2LjE3NTUgOC44Nzg5MSAxNS42MTA3VjE0LjI1NjJIMTAuMzMzNFYxNS42MTA3QzEwLjMzMzQgMTUuODI1NiAxMC40MTM0IDE2LjA0MDYgMTAuNTUzMyAxNi4yMDU1QzEwLjcyODIgMTYuNDA1NCAxMC45NzgyIDE2LjUyMDQgMTEuMjQzMSAxNi41MjA0QzExLjQ5MyAxNi41MjA0IDExLjcyMjkgMTYuNDIwNCAxMS44OTc4IDE2LjI0MDVMMTYuMTg2MyAxMS43OTcxQzE2LjUwMTIgMTEuNDcyMiAxNi41MDEyIDEwLjk2MjQgMTYuMTg2MyAxMC42Mzc1QzE2LjAzMTMgMTAuNDcyNiAxNS44MTE0IDEwLjM4MjYgMTUuNTgxNSAxMC4zODI2SDkuMzIzNzVWOC45MzMxMUgxNS41ODY1QzE2LjIwNjMgOC45MzMxMSAxNi44MDYxIDkuMTg4MDEgMTcuMjM1OSA5LjYzNzg1QzE4LjA5MDYgMTAuNTI3NSAxOC4wOTA2IDExLjkyMiAxNy4yMzA5IDEyLjgxMTdMMTIuOTQyNSAxNy4yNTUxQzEyLjQ5NzYgMTcuNzE1IDExLjg5MjggMTcuOTc0OSAxMS4yNDgxIDE3Ljk3NDlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTYuMjk0ODEgMTMuMDQxOEM1LjY3NTAzIDEzLjA0MTggNS4wNzAyNCAxMi43ODY5IDQuNjQwNCAxMi4zMzdDMy43ODU3IDExLjQ0NzMgMy43ODU3IDEwLjA1MjggNC42NDU0IDkuMTYzMTVMOC45MzM4NiA0LjcxOTc0QzkuMzg4NyA0LjI1NDkxIDkuOTg4NDggNCAxMC42MzgzIDRDMTEuMzI4IDQgMTEuOTgyOCA0LjI5OTg5IDEyLjQzMjYgNC44MjQ3MUMxMi43OTc1IDUuMjQ5NTUgMTMuMDAyNCA1Ljc5OTM2IDEzLjAwMjQgNi4zNjQxNVY3LjcxODY3SDExLjU0NzlWNi4zNjQxNUMxMS41NDc5IDYuMTQ0MjMgMTEuNDY4IDUuOTM0MzEgMTEuMzI4IDUuNzY5MzdDMTEuMTUzMSA1LjU2OTQ0IDEwLjkwMzIgNS40NTQ0OCAxMC42MzgzIDUuNDU0NDhDMTAuMzg4MyA1LjQ1NDQ4IDEwLjE1ODQgNS41NTQ0NCA5Ljk4MzQ5IDUuNzM0MzhMNS42OTUwMiAxMC4xNzc4QzUuMzgwMTMgMTAuNTAyNyA1LjM4MDEzIDExLjAxMjUgNS42OTUwMiAxMS4zMzI0QzUuODQ5OTYgMTEuNDk3MyA2LjA2OTg5IDExLjU4NzMgNi4yOTk4IDExLjU4NzNIMTIuNTk3NlYxMy4wNDE4SDYuMjk0ODFWMTMuMDQxOFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo="
-                                            class="img-full"> Số coin: ${data.info_user.coin}</h4>
-                                </div>
+                                            class="img-full"> Số coin: ${data.info_user.coin}</h4>`;
+            if (data.info_kc != null) {
+                html += `<h4><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAuNzUiIGN5PSIxMC43NSIgcj0iMTAuNzUiIGZpbGw9IiMwMjU3NDEiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS4yNDgxIDE3Ljk3NDlDMTAuNTU4MyAxNy45NzQ5IDkuOTAzNTQgMTcuNjc1IDkuNDUzNyAxNy4xNTAyQzkuMDgzODMgMTYuNzIwMyA4Ljg3ODkxIDE2LjE3NTUgOC44Nzg5MSAxNS42MTA3VjE0LjI1NjJIMTAuMzMzNFYxNS42MTA3QzEwLjMzMzQgMTUuODI1NiAxMC40MTM0IDE2LjA0MDYgMTAuNTUzMyAxNi4yMDU1QzEwLjcyODIgMTYuNDA1NCAxMC45NzgyIDE2LjUyMDQgMTEuMjQzMSAxNi41MjA0QzExLjQ5MyAxNi41MjA0IDExLjcyMjkgMTYuNDIwNCAxMS44OTc4IDE2LjI0MDVMMTYuMTg2MyAxMS43OTcxQzE2LjUwMTIgMTEuNDcyMiAxNi41MDEyIDEwLjk2MjQgMTYuMTg2MyAxMC42Mzc1QzE2LjAzMTMgMTAuNDcyNiAxNS44MTE0IDEwLjM4MjYgMTUuNTgxNSAxMC4zODI2SDkuMzIzNzVWOC45MzMxMUgxNS41ODY1QzE2LjIwNjMgOC45MzMxMSAxNi44MDYxIDkuMTg4MDEgMTcuMjM1OSA5LjYzNzg1QzE4LjA5MDYgMTAuNTI3NSAxOC4wOTA2IDExLjkyMiAxNy4yMzA5IDEyLjgxMTdMMTIuOTQyNSAxNy4yNTUxQzEyLjQ5NzYgMTcuNzE1IDExLjg5MjggMTcuOTc0OSAxMS4yNDgxIDE3Ljk3NDlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTYuMjk0ODEgMTMuMDQxOEM1LjY3NTAzIDEzLjA0MTggNS4wNzAyNCAxMi43ODY5IDQuNjQwNCAxMi4zMzdDMy43ODU3IDExLjQ0NzMgMy43ODU3IDEwLjA1MjggNC42NDU0IDkuMTYzMTVMOC45MzM4NiA0LjcxOTc0QzkuMzg4NyA0LjI1NDkxIDkuOTg4NDggNCAxMC42MzgzIDRDMTEuMzI4IDQgMTEuOTgyOCA0LjI5OTg5IDEyLjQzMjYgNC44MjQ3MUMxMi43OTc1IDUuMjQ5NTUgMTMuMDAyNCA1Ljc5OTM2IDEzLjAwMjQgNi4zNjQxNVY3LjcxODY3SDExLjU0NzlWNi4zNjQxNUMxMS41NDc5IDYuMTQ0MjMgMTEuNDY4IDUuOTM0MzEgMTEuMzI4IDUuNzY5MzdDMTEuMTUzMSA1LjU2OTQ0IDEwLjkwMzIgNS40NTQ0OCAxMC42MzgzIDUuNDU0NDhDMTAuMzg4MyA1LjQ1NDQ4IDEwLjE1ODQgNS41NTQ0NCA5Ljk4MzQ5IDUuNzM0MzhMNS42OTUwMiAxMC4xNzc4QzUuMzgwMTMgMTAuNTAyNyA1LjM4MDEzIDExLjAxMjUgNS42OTUwMiAxMS4zMzI0QzUuODQ5OTYgMTEuNDk3MyA2LjA2OTg5IDExLjU4NzMgNi4yOTk4IDExLjU4NzNIMTIuNTk3NlYxMy4wNDE4SDYuMjk0ODFWMTMuMDQxOFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo="
+                            class="img-full"> Số kim cương: ${data.info_kc.kc_numb}
+                        </h4>`;
+            } else {
+                html += `<h4><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAuNzUiIGN5PSIxMC43NSIgcj0iMTAuNzUiIGZpbGw9IiMwMjU3NDEiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS4yNDgxIDE3Ljk3NDlDMTAuNTU4MyAxNy45NzQ5IDkuOTAzNTQgMTcuNjc1IDkuNDUzNyAxNy4xNTAyQzkuMDgzODMgMTYuNzIwMyA4Ljg3ODkxIDE2LjE3NTUgOC44Nzg5MSAxNS42MTA3VjE0LjI1NjJIMTAuMzMzNFYxNS42MTA3QzEwLjMzMzQgMTUuODI1NiAxMC40MTM0IDE2LjA0MDYgMTAuNTUzMyAxNi4yMDU1QzEwLjcyODIgMTYuNDA1NCAxMC45NzgyIDE2LjUyMDQgMTEuMjQzMSAxNi41MjA0QzExLjQ5MyAxNi41MjA0IDExLjcyMjkgMTYuNDIwNCAxMS44OTc4IDE2LjI0MDVMMTYuMTg2MyAxMS43OTcxQzE2LjUwMTIgMTEuNDcyMiAxNi41MDEyIDEwLjk2MjQgMTYuMTg2MyAxMC42Mzc1QzE2LjAzMTMgMTAuNDcyNiAxNS44MTE0IDEwLjM4MjYgMTUuNTgxNSAxMC4zODI2SDkuMzIzNzVWOC45MzMxMUgxNS41ODY1QzE2LjIwNjMgOC45MzMxMSAxNi44MDYxIDkuMTg4MDEgMTcuMjM1OSA5LjYzNzg1QzE4LjA5MDYgMTAuNTI3NSAxOC4wOTA2IDExLjkyMiAxNy4yMzA5IDEyLjgxMTdMMTIuOTQyNSAxNy4yNTUxQzEyLjQ5NzYgMTcuNzE1IDExLjg5MjggMTcuOTc0OSAxMS4yNDgxIDE3Ljk3NDlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTYuMjk0ODEgMTMuMDQxOEM1LjY3NTAzIDEzLjA0MTggNS4wNzAyNCAxMi43ODY5IDQuNjQwNCAxMi4zMzdDMy43ODU3IDExLjQ0NzMgMy43ODU3IDEwLjA1MjggNC42NDU0IDkuMTYzMTVMOC45MzM4NiA0LjcxOTc0QzkuMzg4NyA0LjI1NDkxIDkuOTg4NDggNCAxMC42MzgzIDRDMTEuMzI4IDQgMTEuOTgyOCA0LjI5OTg5IDEyLjQzMjYgNC44MjQ3MUMxMi43OTc1IDUuMjQ5NTUgMTMuMDAyNCA1Ljc5OTM2IDEzLjAwMjQgNi4zNjQxNVY3LjcxODY3SDExLjU0NzlWNi4zNjQxNUMxMS41NDc5IDYuMTQ0MjMgMTEuNDY4IDUuOTM0MzEgMTEuMzI4IDUuNzY5MzdDMTEuMTUzMSA1LjU2OTQ0IDEwLjkwMzIgNS40NTQ0OCAxMC42MzgzIDUuNDU0NDhDMTAuMzg4MyA1LjQ1NDQ4IDEwLjE1ODQgNS41NTQ0NCA5Ljk4MzQ5IDUuNzM0MzhMNS42OTUwMiAxMC4xNzc4QzUuMzgwMTMgMTAuNTAyNyA1LjM4MDEzIDExLjAxMjUgNS42OTUwMiAxMS4zMzI0QzUuODQ5OTYgMTEuNDk3MyA2LjA2OTg5IDExLjU4NzMgNi4yOTk4IDExLjU4NzNIMTIuNTk3NlYxMy4wNDE4SDYuMjk0ODFWMTMuMDQxOFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo="
+                            class="img-full"> Số kim cương: 0
+                        </h4>`;
+            }
+
+            html += `</div>
                             </div>
                         </div>
                         <div class="col-md-3" style="text-align: right">
                             <h4 class="title">
-                                <button id="nap-coin" onClick="nap_coin()">Nạp coin</button>
+                                <div id="nap-coin" onClick="nap_coin()">Nạp coin</div>
                             </h4>
                             <h4 class="title">
-                                <button id="mua-kc" onClick="mua_kc()">Mua KC</button>
+                                <div id="mua-kc" onClick="mua_kc()">Mua KC</div>
                             </h4>
                         </div>
                     </div>
@@ -276,7 +287,7 @@ function mua_kc() {
                                 class="w3-button w3-display-topright">&times;</span>
                             <p id="title-submit">XÁC NHẬN MUA KIM CƯƠNG</p>
                             <h3>Số kim cương bạn mua:<span id="numbKC-submit"><b> ${value} KC</b></span></h3>
-                            <h3>Tổng số coin phải chả:<span id="numbCoin-submit">
+                            <h3>Tổng số coin phải trả:<span id="numbCoin-submit">
                                 <b> ${value / 5} coin</b></span></h3>
                             <h3>Số coin bạn hiện có:<span id="numbCoinCurrent-submit"><b> ${
                                 data.info_user.coin
@@ -381,6 +392,7 @@ function save1(KC) {
         success: function (data) {
             if (data.code === 200) {
                 alert(data.success);
+                debugger;
             }
         },
     });

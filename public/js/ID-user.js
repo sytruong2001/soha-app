@@ -16,7 +16,7 @@ function load_data() {
             var html = `
             <li><b>ID:</b> ${data.info_user.user_number}</li><br>
             <li><b>Email đăng nhập:</b> ${data.email}</li><br>
-            <li><b>Số <span style="color:Orange">Coin</span> hiện tại của bạn:</b> ${data.info_user.coin}</li><br>
+            <li><b>Số <span style="color:Orange">Coin</span> hiện tại của bạn:</b> ${data.info_user.coin} coin</li><br>
             <li class="nav-user">
                 <button id="info-login" onClick="info_login(${data.id})">
                     <a>
@@ -349,7 +349,6 @@ function confirm(id) {
                             <button>Cập nhật</button>
                         </div>
                     </div>
-
             </form>
             </div>
         </div>
@@ -357,6 +356,9 @@ function confirm(id) {
     </div>
     `;
     $("#title-option").append(html);
+    $("button").on("click", function () {
+        url = "confirm-password";
+    });
 }
 
 function update_info(id) {

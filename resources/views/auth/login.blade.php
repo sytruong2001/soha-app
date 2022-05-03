@@ -18,7 +18,7 @@
             <div class="header header-primary text-center">
                 <h4 class="card-title">Đăng nhập</h4>
                 <div class="social-line">
-                    <a href="#" class="btn btn-just-icon" style="background-color: #337AB7">
+                    <a href="{{ url('login-facebook') }}" class="btn btn-just-icon" style="background-color: #337AB7">
                         <i class="fa fa-facebook"></i>
                     </a>
                     <a href="{{ url('login/google') }}" class="btn btn-just-icon btn-danger">
