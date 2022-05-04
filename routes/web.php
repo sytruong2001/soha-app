@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GoogleController;
-use Carbon\Carbon;
+use App\Http\Controllers\Admin\IndexController;
+use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Auth\RegisteredAdminController;
+use App\Http\Controllers\Admin\ChartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +23,12 @@ Route::get('/', function () {
 
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function() {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/', [IndexController::class, 'index'])->name('index');
+    Route::get('/new-register-user', [ChartController::class, 'showNRU']);
+    Route::get('/daily-active-user', [ChartController::class, 'showDAU']);
+    Route::get('/revenue', [ChartController::class, 'showREV']);
+    Route::resource('/account', AccountController::class);
+    Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 });
 
 

@@ -32,8 +32,8 @@ class AdminSeeder extends Seeder
             'updated_at' => now(),
             'email_verified_at' => now(),
         ]);
-        $supAdmin->assignRole('sup admin', 'admin', 'user');
-        $supAdmin2->assignRole('sup admin', 'admin', 'user');
+        $supAdmin->assignRole('sup admin', 'admin');
+        $supAdmin2->assignRole('sup admin', 'admin');
 
         $admin = User::create([
             'name' => 'Admin',
@@ -43,16 +43,7 @@ class AdminSeeder extends Seeder
             'updated_at' => now(),
             'email_verified_at' => now(),
         ]);
-        $admin->assignRole('admin', 'user');
+        $admin->assignRole('admin');
 
-        $user = User::create([
-            'name' => 'User',
-            'email' => 'user@gmail.com',
-            'password' => bcrypt('12345678'),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'email_verified_at' => now(),
-        ]);
-        $user->assignRole('user');
     }
 }

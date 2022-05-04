@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -10,6 +10,8 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Providers\RouteServiceProvider;
 use App\Models\InfoUser;
 use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+
 
 class GoogleController extends Controller
 {
