@@ -143,22 +143,20 @@
     });
 </script>
 <script>
-    // $('#exampleModalCenter').on('shown.bs.modal', function() {
-    //     $('#exampleModalCenter').trigger('focus')
-    // })
-
     $(document).on('click','.edit',function(){
         const base_api = location.origin
         var url = base_api + location.pathname;
         var user_id= $(this).val();
+        console.log(url + '/' + user_id);
+
         $.get(url + '/' + user_id, function (data) {
             console.log(data);
             $('#email_info').val(data.data.email);
             $('#name_info').val(data.data.name);
-            if(data.data.date == null){
+            if(data.data.date_of_birth == null){
                 $('#date_info').val("Chưa có thông tin ngày sinh");
             }else{
-                $('#date_info').val(data.data.date);
+                $('#date_info').val(data.data.date_of_birth);
             }
             if(data.data.region == null){
                 $('#region_info').val("Chưa có thông tin quốc gia");
