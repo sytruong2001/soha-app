@@ -287,7 +287,7 @@ function mua_kc() {
                                 class="w3-button w3-display-topright">&times;</span>
                             <p id="title-submit">XÁC NHẬN MUA KIM CƯƠNG</p>
                             <h3>Số kim cương bạn mua:<span id="numbKC-submit"><b> ${value} KC</b></span></h3>
-                            <h3>Tổng số coin phải trả:<span id="numbCoin-submit">
+                            <h3>Tổng số coin phải trả: <span id="numbCoin-submit">
                                 <b> ${value / 5} coin</b></span></h3>
                             <h3>Số coin bạn hiện có:<span id="numbCoinCurrent-submit"><b> ${
                                 data.info_user.coin

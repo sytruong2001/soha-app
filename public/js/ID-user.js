@@ -317,47 +317,101 @@ function confirm(id) {
     result1.classList.remove("active");
     result2.classList.remove("active");
     $("#title-option").empty();
-    var html = `
-    <div class="col-md-12 col-md-offset-1">
-        <div class="row collections">
-            <div class="col-md-6" style="text-align: left">
-            <h4 class="title">
-                <a href="">
-                    <i class="icon material-icons">account_circle</i> Cập nhật mật khẩu
-                </a>
-            </h4>
-            </div>
-
-        </div>
-
-        <div class="row collections">
-            <div class="col-md-12">
-                <h5>This is a secure area of the application. Please confirm your password before continuing.</h5>
-                <form>
-                    <div class="row collections">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-7">
-                            <input id="password" class="pw-confirm"
-                                            type="password"
-                                            name="password"
-                                            required autocomplete="current-password" />
-                        </div>
-                        <div class="col-md-6"></div>
+    $.ajax({
+        url: "/user/reset-password",
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            var html = `
+            <div class="col-md-12 col-md-offset-1">
+                <div class="row collections">
+                    <div class="col-md-6" style="text-align: left">
+                    <h4 class="title">
+                        <a href="">
+                            <i class="icon material-icons">account_circle</i> Cập nhật mật khẩu
+                        </a>
+                    </h4>
                     </div>
-                    <div class="row collections">
-                        <div class="col-md-7 btn-update" style="text-align: right">
-                            <button>Cập nhật</button>
-                        </div>
-                    </div>
-            </form>
-            </div>
-        </div>
 
-    </div>
-    `;
-    $("#title-option").append(html);
-    $("button").on("click", function () {
-        url = "confirm-password";
+                </div>
+
+                <div class="row collections">
+                    <div class="col-md-12">
+                        <h5>This is a secure area of the application. Please confirm your password before continuing.</h5>
+                            <div class="row collections">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-7">
+                                    Email:
+                                    <input id="email" class="pw-confirm"
+                                    type="email"
+                                    name="email"
+                                    readonly
+                                    value="${data}"/>
+                                    Mật khẩu cũ:
+                                    <input id="re_password" class="pw-confirm"
+                                    type="password"
+                                    name="re_password"
+                                    required/>
+                                    <div style="color: red" id="error-password"></div>
+                                    Mật khẩu mới:
+                                    <input id="password" class="pw-confirm"
+                                    type="password"
+                                    name="password"
+                                    required/>
+                                    Nhập lại mật khẩu mới:
+                                    <input id="password_confirmation" class="pw-confirm"
+                                    type="password"
+                                    name="password_confirmation"
+                                    required/>
+                                    <div style="color: red" id="error-confirm"></div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row collections">
+                                <div class="col-md-7 btn-update" style="text-align: right">
+                                    <button id="updatePass">Cập nhật</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+            `;
+            $("#title-option").append(html);
+            $("button#updatePass").on("click", function () {
+                var email = $("#email").val();
+                var repassword = $("#re_password").val();
+                var password = $("#password").val();
+                var password_confirmation = $("#password_confirmation").val();
+                $.ajax({
+                    url: "/user/reset-password",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        email: email,
+                        repassword: repassword,
+                        password: password,
+                        password_confirmation: password_confirmation,
+                    },
+                    success: function (data) {
+                        if (data.code == 400) {
+                            $("#error-password").empty();
+                            $("#error-confirm").append(data.error);
+                        } else if (data.code == 401) {
+                            $("#error-confirm").empty();
+                            $("#error-password").append(data.error);
+                        } else if (data.code == 200) {
+                            $("#error-confirm").empty();
+                            $("#error-password").empty();
+                            $("#password_confirmation").val("");
+                            $("#re_password").val("");
+                            $("#password").val("");
+                            alert(data.message);
+                        }
+                    },
+                });
+            });
+        },
     });
 }
 
@@ -450,6 +504,12 @@ function update() {
         debugger;
     }
 }
-function update_account(id) {
-    console.log(id);
+function history(id) {
+    var result = document.getElementById("history");
+    var result1 = document.getElementById("pw-confirm");
+    var result2 = document.getElementById("info-login");
+    result.classList.add("active");
+    result1.classList.remove("active");
+    result2.classList.remove("active");
+    $("#title-option").empty();
 }

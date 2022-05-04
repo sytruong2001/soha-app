@@ -126,4 +126,9 @@ class UserController extends Controller
         $json['code'] = 200;
         echo json_encode($json);
     }
+    public function updatePassWord(Request $request)
+    {
+        $email = $request->get('email');
+        echo json_encode($email);
+    }
 }
