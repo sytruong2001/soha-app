@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-
+use App\Models\KC;
 
 class User extends Authenticatable
 {
@@ -53,5 +53,17 @@ class User extends Authenticatable
     public function info_admin()
     {
         return $this->hasOne(InfoAdmin::class);
+    }
+    public function info_kc()
+    {
+        return $this->hasOne(KC::class);
+    }
+    public function loginLog()
+    {
+        return $this->hasMany(loginLog::class);
+    }
+    public function logKC()
+    {
+        return $this->hasMany(logKC::class);
     }
 }

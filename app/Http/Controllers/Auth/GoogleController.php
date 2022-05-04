@@ -15,23 +15,22 @@ use App\Http\Controllers\Controller;
 
 class GoogleController extends Controller
 {
-     public function login()
+    public function login()
     {
         return Socialite::driver('google')->redirect();
     }
 
     public function callback()
     {
-        try{
+        try {
             $google_user = Socialite::driver('google')->user();
             $user = User::where('email', $google_user->email)->first();
-            
-            if ($user){
+
+            if ($user) {
                 Auth::login($user);
                 if (auth()->user()->hasRole('admin')) {
                     return redirect()->intended(RouteServiceProvider::HOME);
-                }
-                else{
+                } else {
                     return redirect()->intended(RouteServiceProvider::WELCOME);
                 }
             } else {
@@ -52,12 +51,11 @@ class GoogleController extends Controller
 
                 if (auth()->user()->hasRole('admin')) {
                     return redirect()->intended(RouteServiceProvider::HOME);
-                }
-                else{
+                } else {
                     return redirect()->intended(RouteServiceProvider::WELCOME);
                 }
             }
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             abort(404);
         }
     }
