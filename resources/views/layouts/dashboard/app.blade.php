@@ -59,7 +59,7 @@
 
     <!--  Forms Validations Plugin -->
     <script src="js/dashboard/jquery.validate.min.js"></script>
-
+    <script src="js/dashboard/nouislider.min.js"></script>
     <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
     <script src="js/dashboard/moment.min.js"></script>
 
@@ -104,6 +104,6 @@
     <script src="js/dashboard/jquery.nestable.js"></script>
 
     <script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
-
+    
     @stack('js')
 </html>
