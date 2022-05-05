@@ -42,6 +42,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function() {
     Route::get('/daily-active-user', [ChartController::class, 'showDAU']);
     Route::get('/revenue', [ChartController::class, 'showREV']);
     Route::get('/revenue/update', [ChartController::class, 'update']);
+    Route::get('/revenue/show', [ChartController::class, 'show']);
     Route::resource('/account', AccountController::class);
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 

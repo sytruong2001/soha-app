@@ -21,6 +21,7 @@
     <!--     Fonts and icons     -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="css/dashboard/pe-icon-7-stroke.css">
     <link href="css/dashboard/nestable.css">
     <link href="css/app.css">
@@ -64,10 +65,10 @@
     <script src="js/dashboard/moment.min.js"></script>
 
     <!--  Date Time Picker Plugin is included in this js file -->
-    <script src="js/dashboard/bootstrap-datetimepicker.min.js"></script>
 
-    <!--  Select Picker Plugin -->
-    <script src="js/dashboard/bootstrap-selectpicker.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <!--  Checkbox, Radio, Switch and Tags Input Plugins -->
     <script src="js/dashboard/bootstrap-switch-tags.min.js"></script>
