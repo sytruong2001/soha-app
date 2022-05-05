@@ -66,7 +66,8 @@
 
 <!--  Date Time Picker Plugin is included in this js file -->
 <script src="js/dashboard/bootstrap-datetimepicker.min.js"></script>
-
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!--  Select Picker Plugin -->
 <script src="js/dashboard/bootstrap-selectpicker.js"></script>
 
