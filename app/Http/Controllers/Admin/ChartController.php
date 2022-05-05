@@ -14,8 +14,8 @@ class ChartController extends Controller
 {
     public function showNRU(Request $request)
     {
-        $start_date = '';
-        $end_date = '';
+        $start_date = Carbon::today()->subDays(4);
+        $end_date = Carbon::today();
         if ($request->get('end_date') && $request->get('start_date')) {
             $start_date = $request->get('start_date');
             $end_date = $request->get('end_date');
@@ -37,6 +37,10 @@ class ChartController extends Controller
         } else {
             $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
                 ->whereYear('created_at', date('Y'))
+                ->where([
+                    ['created_at', '>=', $start_date],
+                    ['created_at', '<=', $end_date],
+                ])
                 ->groupBy(DB::raw("Date(created_at)"))
                 ->pluck('new_user', 'day_name');
         }
