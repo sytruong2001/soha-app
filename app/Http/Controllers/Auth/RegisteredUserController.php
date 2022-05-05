@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Models\InfoUser;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\DB;
 
 class RegisteredUserController extends Controller
 {
@@ -51,18 +51,21 @@ class RegisteredUserController extends Controller
         $user->assignRole('user');
 
         $info_user = InfoUser::create([
-            'user_number' => 'SHA'.Carbon::now()->format('su'),
+            'user_number' => 'SHA' . Carbon::now()->format('su'),
             'user_id' => $user->id,
         ]);
-
+        $time =  Carbon::now('Asia/Ho_Chi_Minh');
+        $loginLog = DB::table("login_log")->insert([
+            'user_id' => $user->id,
+            'login_time' => $time,
+        ]);
         event(new Registered($user));
 
         Auth::login($user);
 
         if (auth()->user()->hasRole('admin')) {
             return redirect()->intended(RouteServiceProvider::HOME);
-        }
-        else{
+        } else {
             return redirect()->intended(RouteServiceProvider::WELCOME);
         }
     }

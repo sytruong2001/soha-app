@@ -62,8 +62,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(loginLog::class);
     }
-    public function logKC()
+    public function logKc()
     {
         return $this->hasMany(logKC::class);
+    }
+    public function logCoin()
+    {
+        return $this->hasMany(logCoin::class);
     }
 }

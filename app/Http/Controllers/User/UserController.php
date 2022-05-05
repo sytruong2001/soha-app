@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\InfoUser;
 use App\Models\KC;
+use App\Models\logCoin;
+use App\Models\logKC;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,12 +62,18 @@ class UserController extends Controller
     public function getInfoPayment(Request $request)
     {
         $id = Auth::user()->id;
-        $payment = User::query()->with('info_user', 'info_kc')->where('users.id', $id)->first();
-        echo json_encode($payment);
+        $payment = User::query()->with('info_user', 'info_kc', 'logKc', 'logCoin')->where('users.id', $id)->first();
+        $logKc = logKC::query()->where('user_id', $id)->orderBy('user_id', 'desc')->paginate(3);
+        $logCoin = logCoin::query()->where('user_id', $id)->paginate(3);
+        $json['payment'] = $payment;
+        $json['logKc'] = $logKc;
+        $json['logCoin'] = $logCoin;
+        echo json_encode($json);
     }
 
     public function UpdatePayment(Request $request)
     {
+        $time =  Carbon::now('Asia/Ho_Chi_Minh');
         $id = Auth::user()->id;
         $coin = $request->get('coin');
         $checkData = DB::table("info_user")
@@ -77,6 +85,11 @@ class UserController extends Controller
             ->update([
                 "coin" => $passCoin + $coin,
             ]);
+        $createNapCoinLog = DB::table('nap_coin_log')->insert([ // thêm dữ liệu vào bảng log mua kc
+            'user_id' => $id,
+            'coin_numb' => $coin,
+            'nap_coin_time' => $time,
+        ]);
         $json['success'] = "Nạp coin thành công!";
         $json['code'] = 200;
         echo json_encode($json);
@@ -126,9 +139,17 @@ class UserController extends Controller
         $json['code'] = 200;
         echo json_encode($json);
     }
-    public function updatePassWord(Request $request)
-    {
-        $email = $request->get('email');
-        echo json_encode($email);
-    }
+
+    // public function historyCoin(Request $request)
+    // {
+    //     $current_page = $request->get('page') ? $request->get('page') : 1;
+    //     $limit = 5;
+    //     $paginate = DB::table('nap_coin_log')
+    //         ->paginate($limit);
+    //     $coin = DB::table('nap_coin_log')
+    //         ->limit($limit)->offset(($current_page - 1) * $limit)->get();
+    //     $json['coin'] = $coin;
+    //     $json['paginate'] = $paginate;
+    //     echo json_encode($json);
+    // }
 }

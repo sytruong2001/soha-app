@@ -13,13 +13,11 @@
 
                     </div>
 
-                    <div class="tab-content">
-                        <div class="row">
-                            <div class="col-md-12 col-md-offset-1" id="payment-account">
-
-                            </div>
+                    <div class="row">
+                        <div class="col-md-12 col-md-offset-1" id="payment-account">
 
                         </div>
+
                     </div>
                     <div id="id01" class="w3-modal">
 

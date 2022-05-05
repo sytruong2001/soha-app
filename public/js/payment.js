@@ -12,7 +12,8 @@ function load_data() {
         url: "/user/get-info-payment",
         type: "get",
         dataType: "json",
-        success: function (data) {
+        success: function (res) {
+            var data = res.payment;
             console.log(data);
             var html = ``;
             html += `
@@ -133,7 +134,7 @@ function nap_coin() {
                         <img src="data:image/png;base64,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" class="img-full" width="50px">
                     </div>
                 </div>
-                <input type="checkbox"> Tôi đồng ý sử dụng thẻ ATM để thanh toán
+                <input type="checkbox" id="checkbox-atm"> Tôi đồng ý sử dụng thẻ ATM để thanh toán
             </div>
             <div class="col-md-12">
                 <input type="submit" value="XÁC NHẬN" id="submit" onClick="nap()">
@@ -146,6 +147,10 @@ function nap_coin() {
     $("#payment-content-ct").append(html);
     // điền giá trị coin lựa chọn vào ô tổng kết
     $("button").on("click", function () {
+        var checkbox = document.querySelector("#checkbox-atm:checked");
+        if (checkbox !== null) {
+            console.log(1);
+        }
         var value = $(this).val();
         $("#input-payment").val(value);
         document.getElementById("sum-coin").innerHTML = value;
@@ -263,8 +268,8 @@ function mua_kc() {
             url: "/user/get-info-payment",
             type: "get",
             dataType: "json",
-            success: function (data) {
-                console.log(value / 5);
+            success: function (res) {
+                var data = res.payment;
                 if (value / 5 > data.info_user.coin) {
                     $("#id01").empty();
                     var html = `

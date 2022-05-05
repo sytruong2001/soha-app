@@ -31,10 +31,14 @@ class FacebookController extends Controller
         if ($account) {
             //login in vao trang quan tri
             $account_name = User::where('id', $account->user)->first();
-            $loginLog = DB::table("login_log")->insert([
-                'user_id' => $account->user,
-                'login_time' => $time,
-            ]);
+            $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            $check = DB::table('login_log')->where('user_id', $account->user)->whereDate('login_time', $day)->first();
+            if ($check == null) {
+                $loginLog = DB::table("login_log")->insert([
+                    'user_id' => $account->user,
+                    'login_time' => $time,
+                ]);
+            }
             Auth::login($account_name);
             if (auth()->user()->hasRole('admin')) {
                 return redirect()->intended(RouteServiceProvider::HOME);
@@ -50,10 +54,14 @@ class FacebookController extends Controller
                     'provider' => 'facebook',
                     'user' => $check_email->id,
                 ]);
-                $loginLog = DB::table("login_log")->insert([
-                    'user_id' => $check_email->id,
-                    'login_time' => $time,
-                ]);
+                $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+                $check = DB::table('login_log')->where('user_id', $check_email->id)->whereDate('login_time', $day)->first();
+                if ($check == null) {
+                    $loginLog = DB::table("login_log")->insert([
+                        'user_id' => $check_email->id,
+                        'login_time' => $time,
+                    ]);
+                }
                 Auth::login($check_email);
                 if (auth()->user()->hasRole('admin')) {
                     return redirect()->intended(RouteServiceProvider::HOME);
