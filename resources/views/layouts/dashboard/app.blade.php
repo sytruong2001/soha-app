@@ -21,6 +21,7 @@
     <!--     Fonts and icons     -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="css/dashboard/pe-icon-7-stroke.css">
     <link href="css/dashboard/nestable.css">
     <link href="css/app.css">
