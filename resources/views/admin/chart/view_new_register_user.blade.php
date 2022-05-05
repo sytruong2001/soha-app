@@ -111,11 +111,11 @@
             var to = $('#to').val();
             $.ajax({
                 url: url,
-                type: 'POST',
+                type: 'GET',
                 dataType: 'json',
                 data: {
-                    from: from,
-                    to: to,
+                    start_date: from,
+                    end_date: to,
                 },
                 success: function(res) {
                     load_detail_data(res.users);

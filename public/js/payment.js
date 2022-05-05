@@ -147,10 +147,6 @@ function nap_coin() {
     $("#payment-content-ct").append(html);
     // điền giá trị coin lựa chọn vào ô tổng kết
     $("button").on("click", function () {
-        var checkbox = document.querySelector("#checkbox-atm:checked");
-        if (checkbox !== null) {
-            console.log(1);
-        }
         var value = $(this).val();
         $("#input-payment").val(value);
         document.getElementById("sum-coin").innerHTML = value;

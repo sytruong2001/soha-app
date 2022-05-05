@@ -8,21 +8,22 @@ use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 use App\Models\logKC;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Carbon\Carbon;
 
 class ChartController extends Controller
 {
     public function showNRU(Request $request)
     {
-        $from = '';
-        $to = '';
-        if ($request->get('to') && $request->get('from')) {
-            $from = $request->get('from');
-            $to = $request->get('to');
+        $start_date = '';
+        $end_date = '';
+        if ($request->get('end_date') && $request->get('start_date')) {
+            $start_date = $request->get('start_date');
+            $end_date = $request->get('end_date');
             $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
                 ->whereYear('created_at', date('Y'))
                 ->where([
-                    ['created_at', '>=', $from],
-                    ['created_at', '<=', $to],
+                    ['created_at', '>=', $start_date],
+                    ['created_at', '<=', $end_date],
                 ])
                 ->groupBy(DB::raw("Date(created_at)"))
                 ->pluck('new_user', 'day_name');
