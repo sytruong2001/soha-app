@@ -20,12 +20,28 @@
 
                     </div>
                     <div id="id01" class="w3-modal">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                                    <span onclick="document.getElementById('id01').style.display='none'"
+                                        class="w3-button w3-display-topright">&times;</span>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="content">
 
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

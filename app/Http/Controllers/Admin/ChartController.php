@@ -14,8 +14,8 @@ class ChartController extends Controller
 {
     public function showNRU(Request $request)
     {
-        $start_date = Carbon::today()->subDays(4);
-        $end_date = Carbon::today();
+        $start_date = Carbon::today()->subDays(6);
+        $end_date = Carbon::today()->addDay(1);
         if ($request->get('end_date') && $request->get('start_date')) {
             $start_date = $request->get('start_date');
             $end_date = $request->get('end_date');

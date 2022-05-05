@@ -45,7 +45,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/revenue', [ChartController::class, 'showREV']);
     Route::get('/revenue/update', [ChartController::class, 'update']);
     Route::resource('/account', AccountController::class);
+    Route::get('/lock-account/{id}', [AccountController::class, 'lockAccount']);
+    Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
+    Route::get('/account-locked', [AccountController::class, 'accountLocked']);
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
+    Route::get('/info-admin/{id}', [AccountController::class, 'infoAdmin']);
 });
 
 
