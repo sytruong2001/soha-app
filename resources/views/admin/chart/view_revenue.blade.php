@@ -38,6 +38,8 @@
 <script type="text/javascript">
     var labels = {{Js::from($labels)}};
     var kc_numb = {{Js::from($data)}};
+    const base_api = location.origin;
+    var url = base_api + location.pathname;
     const data = {
         labels: labels,
         datasets: [{
@@ -60,9 +62,53 @@
         config
     );
 
+
+    loadData();
+    function loadData() {
+        $.ajax({
+            type: "GET",
+            url: url + '/update',
+            success: function(rs) {
+                let table = rs.users;
+                let _str = '';
+                Object.keys(table).forEach(function(key, value) {
+                    _str += ` 
+                    <tr>
+                        <td>
+                            <div style='width: 200px; height: 100px; overflow: auto;'>
+                            ` + key + `
+                            </div>
+                        </td>
+                        <td>
+                            <div style='width: 200px; height: 100px; overflow: auto;'>
+                            ` + table[key] + `
+                            </div>
+                        </td>
+                    </tr>
+                    `;
+                });
+                $('#body').html(_str);
+
+                $(document).ready(function() {
+                    $('#datatable_user').DataTable({
+                        "pagingType": "full_numbers",
+                        "lengthMenu": [
+                            [5, 10, 25, 50, -1],
+                            [5, 10, 25, 50, "Tất cả"]
+                        ],
+                        responsive: true,
+                        language: {
+                            search: "_INPUT_",
+                            searchPlaceholder: "Tìm kiếm doanh thu",
+                        },
+                        "bDestroy": true
+                    });
+                });
+            }
+        });
+    }
+
     var updateChart = function() {
-        const base_api = location.origin
-        var url = base_api + location.pathname;
         $.ajax({
             url: url + '/update',
             type: 'GET',
@@ -71,15 +117,16 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-
                 myChart.data.labels = data.labels;
                 myChart.data.datasets[0].data = data.data;
+                users = data.users;
                 myChart.update();
+                loadData();
             },
         });
     }
     setInterval(() => {
         updateChart();
-    }, 10000);
+    }, 60000);
 </script>
 @endpush

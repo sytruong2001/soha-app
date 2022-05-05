@@ -26,15 +26,8 @@ class ChartController extends Controller
         $labels = $users->keys();
         
         $data = $users->values();
-
-        $datas = [
-            'labels' => $labels,
-            'data' => $data,
-        ];
     
-        return view('admin.chart.view_revenue',[
-            'datas' => $datas,
-        ], compact('labels', 'data'));
+        return view('admin.chart.view_revenue', compact('labels', 'data', 'users'));
     }
 
     public function update(){
@@ -47,6 +40,6 @@ class ChartController extends Controller
         
         $data = $users->values();
     
-        return response()->json(compact('labels', 'data'));
+        return response()->json(compact('labels', 'data', 'users'));
     }
 }
