@@ -308,7 +308,7 @@ function info_login(id) {
         },
     });
 }
-
+// xác nhận và đổi mật khẩu
 function confirm(id) {
     var result = document.getElementById("pw-confirm");
     var result1 = document.getElementById("info-login");
@@ -414,7 +414,7 @@ function confirm(id) {
         },
     });
 }
-
+//  show form đổi thông tin cá nhân
 function update_info(id) {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
@@ -482,6 +482,7 @@ function update_info(id) {
         },
     });
 }
+// lấy dữ liệu cá nhân sau khi đổi và lưu trữ
 function update() {
     var name = $("#frm_update_info #name").val();
     var phone = $("#frm_update_info #phone").val();
@@ -504,6 +505,7 @@ function update() {
         debugger;
     }
 }
+// lịch sử giao dịch
 function history(id) {
     var result = document.getElementById("history");
     var result1 = document.getElementById("pw-confirm");
@@ -512,4 +514,172 @@ function history(id) {
     result1.classList.remove("active");
     result2.classList.remove("active");
     $("#title-option").empty();
+    $.ajax({
+        url: "/user/get-info-payment",
+        type: "get",
+        dataType: "json",
+        success: function (res) {
+            var logCoin = res.logCoin.data;
+            var logKc = res.logKc.data;
+            var html = ``;
+            html += `<div class="col-md-12 col-md-offset-1">
+                <div class="row collections">
+                    <div class="col-md-12" style="text-align: left">
+                        <h4 class="title">
+                            <a href="">
+                            <i class="icon material-icons">history</i> Lịch sử mua coin
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row collections">
+                    <div class="col-md-4" style="text-align: center">
+                        <b>Mã giao dịch</b>
+                    </div>
+                    <div class="col-md-3" style="text-align: center">
+                        <b>Số lượng</b>
+                    </div>
+                    <div class="col-md-5" style="text-align: center">
+                        <b>Thời gian</b>
+                    </div>
+                </div>`;
+            if (logCoin.length == 0) {
+                html += `
+                <div class="row collections">
+                    <div class="col-md-12" style="text-align: center">
+                        <i>Không có dữ liệu</i>
+                    </div>
+
+                </div>
+                `;
+            } else {
+                logCoin.forEach((coin) => {
+                    html += `
+                    <div class="row collections">
+                        <div class="col-md-4" style="text-align: center">
+                            <i>C-${coin.id}</i>
+                        </div>
+                        <div class="col-md-3" style="text-align: center">
+                            <i>${coin.coin_numb} coin</i>
+                        </div>
+                        <div class="col-md-5" style="text-align: center">
+                            <i>${coin.nap_coin_time}</i>
+                        </div>
+                    </div>
+
+                    `;
+                });
+            }
+
+            html += `
+                    <div class="row collections">
+                        <div class="col-md-12" style="text-align: center; color:blue">
+                            <a id="read-more-hisCoin">Xem thêm</a>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-12 col-md-offset-1">
+                <div class="row collections">
+                    <div class="col-md-12" style="text-align: left">
+                        <h4 class="title">
+                            <a href="">
+                            <i class="icon material-icons">history</i> Lịch sử mua kim cương
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row collections">
+                    <div class="col-md-4" style="text-align: center">
+                        <b>Mã giao dịch</b>
+                    </div>
+                    <div class="col-md-3" style="text-align: center">
+                        <b>Số lượng</b>
+                    </div>
+                    <div class="col-md-5" style="text-align: center">
+                        <b>Thời gian</b>
+                    </div>
+                </div>`;
+            if (logKc.length == 0) {
+                html += `
+                <div class="row collections">
+                    <div class="col-md-12" style="text-align: center">
+                        <i>Không có dữ liệu</i>
+                    </div>
+
+                </div>
+                `;
+            } else {
+                logKc.forEach((kc) => {
+                    html += `
+                    <div class="row collections">
+                        <div class="col-md-4" style="text-align: center">
+                            <i>KC-${kc.id}</i>
+                        </div>
+                        <div class="col-md-3" style="text-align: center">
+                            <i>${kc.kc_numb} kim cương</i>
+                        </div>
+                        <div class="col-md-5" style="text-align: center">
+                            <i>${kc.mua_kc_time}</i>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+
+            html += `
+                <div class="row collections">
+                    <div class="col-md-12" style="text-align: center; color:blue">
+                        <a id="read-more-hisKC">Xem thêm</a>
+                    </div>
+                </div>
+            </div>`;
+            $("#title-option").append(html);
+            $("a#read-more-hisCoin").on("click", function () {
+                $("#title-submit").html("LỊCH SỬ NẠP COIN");
+                $.ajax({
+                    url: "/user/get-info-payment",
+                    type: "get",
+                    dataType: "json",
+                    success: function (data) {
+                        var logCoin = data.payment.log_coin;
+                        $("#body-history").empty();
+                        logCoin.forEach((coin) => {
+                            var html = `
+                            <tr>
+                                <td>C-${coin.id}</td>
+                                <td>${coin.coin_numb} coin</td>
+                                <td>${coin.nap_coin_time}</td>
+                            </tr>
+                            `;
+                            $("#body-history").append(html);
+                        });
+                    },
+                });
+                document.getElementById("id01").style.display = "block";
+            });
+            $("a#read-more-hisKC").on("click", function () {
+                $("#title-submit").html("LỊCH SỬ MUA KIM CƯƠNG");
+                $.ajax({
+                    url: "/user/get-info-payment",
+                    type: "get",
+                    dataType: "json",
+                    success: function (data) {
+                        var logKc = data.payment.log_kc;
+                        $("#body-history").empty();
+                        logKc.forEach((kc) => {
+                            var html = `
+                            <tr>
+                                <td>KC-${kc.id}</td>
+                                <td>${kc.kc_numb} kim cương</td>
+                                <td>${kc.mua_kc_time}</td>
+                            </tr>
+                            `;
+                            $("#body-history").append(html);
+                        });
+                    },
+                });
+                document.getElementById("id01").style.display = "block";
+            });
+        },
+    });
 }

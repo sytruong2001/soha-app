@@ -12,27 +12,67 @@ use Illuminate\Support\Carbon;
 
 class ChartController extends Controller
 {
-    public function showNRU()
+
+    public function showNRU(Request $request)
     {
-        return view('admin.chart.view_new_register_user');
+        $from = '';
+        $to = '';
+        if ($request->get('to') && $request->get('from')) {
+            $from = $request->get('from');
+            $to = $request->get('to');
+            $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
+                ->whereYear('created_at', date('Y'))
+                ->where([
+                    ['created_at', '>=', $from],
+                    ['created_at', '<=', $to],
+                ])
+                ->groupBy(DB::raw("Date(created_at)"))
+                ->pluck('new_user', 'day_name');
+            $labels = $users->keys();
+            $data = $users->values();
+            $datas = [
+                'labels' => $labels,
+                'data' => $data,
+            ];
+            return response()->json(['users' => $users, 'datas' => $datas, 'labels' => $labels, 'data' => $data]);
+        } else {
+            $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
+                ->whereYear('created_at', date('Y'))
+                ->groupBy(DB::raw("Date(created_at)"))
+                ->pluck('new_user', 'day_name');
+        }
+
+
+        $labels = $users->keys();
+
+        $data = $users->values();
+
+        $datas = [
+            'labels' => $labels,
+            'data' => $data,
+        ];
+        return view('admin.chart.view_new_register_user', [
+            'datas' => $datas, 'users' => $users,
+        ], compact('labels', 'data'));
     }
     public function showDAU()
     {
         return view('admin.chart.view_daily_active_user');
     }
-    // public function showREV()
-    // {
-    //     $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
-    //         ->whereYear('mua_kc_time', date('Y'))
-    //         ->groupBy(DB::raw("Date(mua_kc_time)"))
-    //         ->pluck('kc_numb', 'day_name');
+    public function showREV()
 
-    //     $labels = $users->keys();
+    {
+        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
+            ->whereYear('mua_kc_time', date('Y'))
+            ->groupBy(DB::raw("Date(mua_kc_time)"))
+            ->pluck('kc_numb', 'day_name');
 
-    //     $data = $users->values();
+        $labels = $users->keys();
 
-    //     return view('admin.chart.view_revenue', compact('labels', 'data', 'users'));
-    // }
+        $data = $users->values();
+
+        return view('admin.chart.view_revenue', compact('labels', 'data'));
+    }
 
     public function update()
     {
@@ -44,61 +84,23 @@ class ChartController extends Controller
         $labels = $users->keys();
 
         $data = $users->values();
-        return response()->json(compact('labels', 'data', 'users'));
+
+
+        return response()->json(compact('labels', 'data'));
+
     }
-
-    // public function show(Request $rq)
-    // {
-    //     if ($rq->get('start_date') && $rq->get('end_date')){
-            
-    //         $start_date = $rq->start_date;
-    //         $end_date = $rq->end_date;
-    //     }else{
-    //         $start_date = Carbon::today()->subDays(6);
-    //         $end_date = Carbon::today();
-    //     }
-    //     $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
-    //     ->where(
-    //         [
-    //             ['mua_kc_time', '>=', $rq->start_date],
-    //             ['mua_kc_time', '<=', $rq->end_date],
-    //         ])
-    //     ->groupBy(DB::raw("Date(mua_kc_time)"))
-    //     ->pluck('kc_numb', 'day_name');
-
-    //     $labels = $users->keys();
-
-    //     $data = $users->values();
-    //     return response()->json(compact('labels', 'data', 'users'));
-    // }
-    public function showREV(Request $rq)
+    public function updateNRU()
     {
-        
-        if ($rq->get('start_date') && $rq->get('end_date')){
-            // dd(1);
-            $start_date = $rq->start_date;
-            $end_date = $rq->end_date;
-        }else{
-            // dd(2);
-            $start_date = Carbon::today()->subDays(6);
-            $end_date = Carbon::today();
-        }
-
-        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
-            ->where(
-                [
-                    ['mua_kc_time', '>=', $start_date],
-                    ['mua_kc_time', '<=', $end_date],
-                ])
-            ->groupBy(DB::raw("Date(mua_kc_time)"))
-            ->pluck('kc_numb', 'day_name');
-
-
-
+        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(DB::raw("Date(created_at)"))
+            ->pluck('new_user', 'day_name');
         $labels = $users->keys();
-
         $data = $users->values();
-
-        return view('admin.chart.view_revenue', compact('labels', 'data', 'users'));
+        $datas = [
+            'labels' => $labels,
+            'data' => $data,
+        ];
+        return response()->json(['users' => $users, 'datas' => $datas, 'labels' => $labels, 'data' => $data]);
     }
 }
