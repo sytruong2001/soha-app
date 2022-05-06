@@ -26,38 +26,52 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
-    Route::get('/get-info', [UserController::class, 'getInfoUser'])->name('user.getInfoUser');
-    Route::post('/update_info', [UserController::class, 'updateInfoUser'])->name('user.updateInfoUser');
-    Route::get('/reset-password', [NewPasswordController::class, 'create'])->name('user.reset');
-    Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('user.updatePass');
-    Route::get('/payment', [UserController::class, 'payment'])->name('user.payment');
-    Route::get('/get-info-payment', [UserController::class, 'getInfoPayment'])->name('user.getInfoPayment');
-    Route::post('/update-payment', [UserController::class, 'UpdatePayment'])->name('user.updatePayment');
-    Route::post('/update-kc', [UserController::class, 'UpdateKC'])->name('user.updateKC');
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/dashboard','index')->name('user.dashboard');
+        Route::get('/get-info','getInfoUser')->name('user.getInfoUser');
+        Route::post('/update_info','updateInfoUser')->name('user.updateInfoUser');
+        Route::get('/payment','payment')->name('user.payment');
+        Route::get('/get-info-payment','getInfoPayment')->name('user.getInfoPayment');
+        Route::post('/update-payment','UpdatePayment')->name('user.updatePayment');
+        Route::post('/update-kc', 'UpdateKC')->name('user.updateKC');
+    });
+    
+    Route::controller(NewPasswordController::class)->group(function () {
+        Route::get('/reset-password', 'create')->name('user.reset');
+        Route::post('/reset-password', 'store')->name('user.updatePass');
+    }); 
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
-    Route::get('/new-register-user', [ChartController::class, 'showNRU']);
-    // Route::post('/new-register-user', [ChartController::class, 'showNRU']);
-    Route::get('/daily-active-user', [ChartController::class, 'showDAU']);
-    Route::get('/revenue', [ChartController::class, 'showREV']);
-    Route::resource('/account', AccountController::class);
-    Route::get('/lock-account/{id}', [AccountController::class, 'lockAccount']);
-    Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
-    Route::get('/account-locked', [AccountController::class, 'accountLocked']);
+
+    Route::controller(ChartController::class)->group(function () {
+        Route::get('/new-register-user', 'showNRU');
+        // Route::post('/new-register-user', 'showNRU');
+        Route::get('/daily-active-user', 'showDAU');
+        Route::get('/revenue', 'showREV');
+    }); 
+
+    Route::controller(AccountController::class)->group(function () {
+        Route::get('/account', 'index');
+        Route::get('/lock-account/{id}', 'lockAccount');
+        Route::get('/unlock-account/{id}', 'unlockAccount');
+        Route::get('/account-locked', 'accountLocked');
+        Route::get('/info-admin/{id}', 'infoAdmin');
+    }); 
+   
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
-    Route::get('/info-admin/{id}', [AccountController::class, 'infoAdmin']);
 });
 
 //Route cho file Api
 Route::prefix('api')->group(function () {
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-        Route::get('/revenue/update', [ApiController::class, 'updateREV']);
-        Route::get('/new-register-user/update', [ApiController::class, 'updateNRU']);
-        Route::get('/revenue', [ApiController::class, 'showREV']);
-        Route::get('/new-register-user', [ApiController::class, 'showNRU']);
+        Route::controller(ApiController::class)->group(function () {
+            Route::get('/revenue/update', 'updateREV');
+            Route::get('/new-register-user/update', 'updateNRU');
+            Route::get('/revenue', 'showREV');
+            Route::get('/new-register-user', 'showNRU');
+        }); 
     });
 });
 
