@@ -15,7 +15,6 @@ class ChartController extends Controller
     public function showNRU(Request $request)
     {
         $start_date = Carbon::today()->subDays(6);
-<<<<<<< HEAD
         $end_date = Carbon::today()->addDay(1);
         if ($request->get('end_date') && $request->get('start_date')) {
             $start_date = $request->get('start_date');
@@ -44,9 +43,7 @@ class ChartController extends Controller
                 ->pluck('new_user', 'day_name');
         }
 
-=======
         $end_date = Carbon::now()->toDateTimeString();
->>>>>>> 5bad605d3edc7ea74709d400ffa46fc0adc8cc92
 
         $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
             ->where([
@@ -55,7 +52,7 @@ class ChartController extends Controller
             ])
             ->groupBy(DB::raw("Date(created_at)"))
             ->pluck('new_user', 'day_name');
-        
+
         $labels = $users->keys();
 
         $data = $users->values();
@@ -71,14 +68,14 @@ class ChartController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-  
+
         $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
-        ->where([
-            ['mua_kc_time', '>=', $start_date],
-            ['mua_kc_time', '<=', $end_date],
-        ])
-        ->groupBy(DB::raw("Date(mua_kc_time)"))
-        ->pluck('kc_numb', 'day_name');
+            ->where([
+                ['mua_kc_time', '>=', $start_date],
+                ['mua_kc_time', '<=', $end_date],
+            ])
+            ->groupBy(DB::raw("Date(mua_kc_time)"))
+            ->pluck('kc_numb', 'day_name');
 
         $labels = $users->keys();
 

@@ -9,7 +9,7 @@ $(document).ready(function () {
 load_data();
 function load_data() {
     $.ajax({
-        url: "/user/get-info-payment",
+        url: "/api/user/get-info-payment",
         type: "get",
         dataType: "json",
         success: function (res) {
@@ -261,7 +261,7 @@ function mua_kc() {
     $("button").on("click", function () {
         var value = $(this).val();
         $.ajax({
-            url: "/user/get-info-payment",
+            url: "/api/user/get-info-payment",
             type: "get",
             dataType: "json",
             success: function (res) {
@@ -357,6 +357,10 @@ function sum_price() {
 function nap() {
     var sc = document.getElementById("sum-coin");
     var spr = document.getElementById("sum-price-vnd");
+    let num = new Intl.NumberFormat("vi", {
+        style: "currency",
+        currency: "VND",
+    }).format(spr.value);
     if (sc.value != 0 && sc.value != "" && sc.value != undefined) {
         $(".content").empty();
         $(".modal-footer").empty();
@@ -376,7 +380,7 @@ function nap() {
                         <div class="form-group">
                             <label>Tổng tiền phải trả</label>
                             <input type="text" class="form-control" disabled
-                            value="${spr.value}">
+                            value="${num}">
                         </div>
                     </div>
                 </div>
@@ -442,7 +446,7 @@ function save() {
     var pw = $("#pw").val();
     if (name_bank != "" && stk != "" && pw != "") {
         $.ajax({
-            url: "/user/update-payment",
+            url: "/api/user/update-payment",
             type: "post",
             dataType: "json",
             data: { coin: sc.value },
@@ -465,7 +469,7 @@ function save() {
 }
 function save1(KC) {
     $.ajax({
-        url: "/user/update-kc",
+        url: "/api/user/update-kc",
         type: "post",
         dataType: "json",
         data: { kc: KC },

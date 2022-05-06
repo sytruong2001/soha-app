@@ -9,7 +9,7 @@ $(document).ready(function () {
 load_data();
 function load_data() {
     $.ajax({
-        url: "/user/get-info",
+        url: "/api/user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
@@ -180,7 +180,7 @@ function info_login() {
     result.classList.add("active");
     $("#title-option").empty();
     $.ajax({
-        url: "user/get-info",
+        url: "/api/user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
@@ -415,7 +415,7 @@ function update_info(id) {
     result1.classList.remove("active");
     result2.classList.remove("active");
     $.ajax({
-        url: "user/get-info",
+        url: "/api/user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
@@ -484,7 +484,7 @@ function update() {
         console.log(phone);
         debugger;
         $.ajax({
-            url: "/user/update_info",
+            url: "/api/user/update_info",
             type: "post",
             dataType: "json",
             data: {
@@ -514,7 +514,7 @@ function history(id) {
     result2.classList.remove("active");
     $("#title-option").empty();
     $.ajax({
-        url: "/user/get-info-payment",
+        url: "/api/user/get-info-payment",
         type: "get",
         dataType: "json",
         success: function (res) {
@@ -637,7 +637,7 @@ function history(id) {
                 $("#datatable_history").empty();
                 $("#title-submit").html("LỊCH SỬ NẠP COIN");
                 $.ajax({
-                    url: "/user/get-info-payment",
+                    url: "/api/user/get-info-payment",
                     type: "get",
                     dataType: "json",
                     success: function (data) {
@@ -675,7 +675,7 @@ function history(id) {
                 $("#datatable_history").empty();
                 $("#title-submit").html("LỊCH SỬ MUA KIM CƯƠNG");
                 $.ajax({
-                    url: "/user/get-info-payment",
+                    url: "/api/user/get-info-payment",
                     type: "get",
                     dataType: "json",
                     success: function (data) {

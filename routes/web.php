@@ -59,6 +59,13 @@ Route::prefix('api')->group(function () {
         Route::get('/revenue', [ApiController::class, 'showREV']);
         Route::get('/new-register-user', [ApiController::class, 'showNRU']);
     });
+    Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+        Route::get('/get-info', [ApiController::class, 'getInfoUser'])->name('user.getInfoUser');
+        Route::post('/update_info', [ApiController::class, 'updateInfoUser'])->name('user.updateInfoUser');
+        Route::get('/get-info-payment', [ApiController::class, 'getInfoPayment'])->name('user.getInfoPayment');
+        Route::post('/update-payment', [ApiController::class, 'UpdatePayment'])->name('user.updatePayment');
+        Route::post('/update-kc', [ApiController::class, 'UpdateKC'])->name('user.updateKC');
+    });
 });
 
 
