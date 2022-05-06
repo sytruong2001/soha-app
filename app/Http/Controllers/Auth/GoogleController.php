@@ -11,7 +11,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\InfoUser;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\DB;
 
 class GoogleController extends Controller
 {
@@ -23,11 +23,20 @@ class GoogleController extends Controller
     public function callback()
     {
         try {
+            $time =  Carbon::now('Asia/Ho_Chi_Minh');
             $google_user = Socialite::driver('google')->user();
             $user = User::where('email', $google_user->email)->first();
-
             if ($user) {
+                $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+                $check = DB::table('login_log')->where('user_id', $user->id)->whereDate('login_time', $day)->first();
+                if ($check === null) {
+                    $loginLog = DB::table("login_log")->insert([
+                        'user_id' => $user->id,
+                        'login_time' => $time,
+                    ]);
+                }
                 Auth::login($user);
+
                 if (auth()->user()->hasRole('admin')) {
                     return redirect()->intended(RouteServiceProvider::HOME);
                 } else {
@@ -43,10 +52,13 @@ class GoogleController extends Controller
                 ]);
                 $new_user->assignRole('user');
                 $info_user = InfoUser::create([
-                    'user_number' => 'SHA'.Carbon::now()->format('su'),
+                    'user_number' => 'SHA' . Carbon::now()->format('su'),
                     'user_id' => $new_user->id,
                 ]);
-
+                $loginLog = DB::table("login_log")->insert([
+                    'user_id' => $new_user->id,
+                    'login_time' => $time,
+                ]);
                 Auth::login($new_user);
 
                 if (auth()->user()->hasRole('admin')) {

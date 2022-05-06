@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class logKC extends Model
+class logCoin extends Model
 {
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'kc_numb',
-        'mua_kc_time',
+        'coin_numb',
+        'nap_coin_time',
     ];
-    protected $table    = 'mua_kc_log';
+    protected $table    = 'nap_coin_log';
     public $timestamps  = false;
 
     public function user()

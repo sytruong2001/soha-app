@@ -39,14 +39,18 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
     Route::get('/new-register-user', [ChartController::class, 'showNRU']);
-    Route::post('/new-register-user', [ChartController::class, 'showNRU']);
+    // Route::post('/new-register-user', [ChartController::class, 'showNRU']);
     Route::get('/new-register-user/update', [ChartController::class, 'updateNRU']);
     Route::get('/daily-active-user', [ChartController::class, 'showDAU']);
     Route::get('/revenue', [ChartController::class, 'showREV']);
     Route::get('/revenue/update', [ChartController::class, 'update']);
     Route::get('/revenue/show', [ChartController::class, 'show']);
     Route::resource('/account', AccountController::class);
+    Route::get('/lock-account/{id}', [AccountController::class, 'lockAccount']);
+    Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
+    Route::get('/account-locked', [AccountController::class, 'accountLocked']);
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
+    Route::get('/info-admin/{id}', [AccountController::class, 'infoAdmin']);
 });
 
 

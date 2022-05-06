@@ -2,19 +2,12 @@
     <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
         style="width:100%">
         <thead>
-            <tr>
-                <th>Ngày</th>
-                <th>Số người đăng ký</th>
+            <tr id="thead">
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th>Ngày</th>
-                <th>Số người đăng ký</th>
+        <tbody>
+            <tr id="tbody">
             </tr>
-        </tfoot>
-        <tbody id="body">
-
         </tbody>
     </table>
 </div>
@@ -37,18 +30,18 @@
             });
         });
         var load_detail_data = function(users) {
-            $('#body').empty();
+            console.log(users);
+            $('#thead').empty();
+            $('#tbody').empty();
             for (key in users) {
                 if (users.hasOwnProperty(key)) {
                     var value = users[key];
-
                     var html = `
-                    <tr>
-                        <td>${key}</td>
-                        <td>${value}</td>
-                    </tr>
-                    `;
-                    $('#body').append(html);
+                    <td>${key}</td>`;
+                    $('#thead').append(html);
+                    var html1 = `
+                        <td>${value}</td>`;
+                    $('#tbody').append(html1);
                 }
             }
         }

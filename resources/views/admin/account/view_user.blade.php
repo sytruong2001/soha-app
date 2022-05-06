@@ -1,5 +1,6 @@
 <div class="fresh-datatables">
-    <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+    <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+        style="width:100%">
         <thead>
             <tr>
                 <th>Tên</th>
@@ -15,33 +16,34 @@
             </tr>
         </tfoot>
         <tbody>
-            @foreach($accounts_user as $user)
-            <tr>
-                <td>
-                    <div style='width: 200px; height: 100px; overflow: auto;'>
-                        {{$user->name}}
-                    </div>
-                </td>
-                <td>
-                    <div style='width: 200px; height: 100px; overflow: auto;'>
-                        {{$user->email}}
-                    </div>
-                </td>
-                <td class="text-right" style="text-align: center;">
-                    <button type="button" class="btn btn-info btn-warning btn-icon edit" data-toggle="modal" data-target="#exampleModalCenter" value="{{$user->user_id}}"><i class="fa fa-file-text-o"></i></button>
-                    <form action="#" method="post" style="display: inline">
-                        {{ csrf_field() }}
-                        @method('DELETE')
-                        <button class="btn btn-danger" type="submit" style="height: 38px; width: 38px; padding: 0 8px 0 8px"><i class="fa fa-lock"></i></button>
-                    </form>
-                </td>
-            </tr>
+            @foreach ($accounts_user as $user)
+                <tr>
+                    <td>
+                        <div style='width: 200px; height: 100px; overflow: auto;'>
+                            {{ $user->name }}
+                        </div>
+                    </td>
+                    <td>
+                        <div style='width: 200px; height: 100px; overflow: auto;'>
+                            {{ $user->email }}
+                        </div>
+                    </td>
+                    <td class="text-right" style="text-align: center;">
+                        <button type="button" class="btn btn-info btn-warning btn-icon edit" data-toggle="modal"
+                            data-target="#exampleModalCenter" value="{{ $user->user_id }}"><i
+                                class="fa fa-file-text-o"></i></button>
+                        <button class="btn btn-danger lock" onclick="lock({{ $user->user_id }})"
+                            style="height: 38px; width: 38px; padding: 0 8px 0 8px"><i
+                                class="fa fa-lock"></i></button>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
 </div>
 
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -125,65 +127,79 @@
 </div>
 
 @push('js')
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#datatable_user').DataTable({
-            "pagingType": "full_numbers",
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [5, 10, 25, 50, "Tất cả"]
-            ],
-            responsive: true,
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Tìm kiếm người dùng",
-            }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable_user').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [5, 10, 25, 50, -1],
+                    [5, 10, 25, 50, "Tất cả"]
+                ],
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Tìm kiếm người dùng",
+                }
 
+            });
         });
-    });
-</script>
-<script>
-    $(document).on('click','.edit',function(){
-        const base_api = location.origin
-        var url = base_api + location.pathname;
-        var user_id= $(this).val();
-        console.log(url + '/' + user_id);
+    </script>
+    <script>
+        $(document).on('click', '.edit', function() {
+            const base_api = location.origin
+            var url = base_api + location.pathname;
+            var user_id = $(this).val();
+            console.log(url + '/' + user_id);
 
-        $.get(url + '/' + user_id, function (data) {
-            console.log(data);
-            $('#email_info').val(data.data.email);
-            $('#name_info').val(data.data.name);
-            if(data.data.date_of_birth == null){
-                $('#date_info').val("Chưa có thông tin ngày sinh");
-            }else{
-                $('#date_info').val(data.data.date_of_birth);
+            $.get(url + '/' + user_id, function(data) {
+                console.log(data);
+                $('#email_info').val(data.data.email);
+                $('#name_info').val(data.data.name);
+                if (data.data.date_of_birth == null) {
+                    $('#date_info').val("Chưa có thông tin ngày sinh");
+                } else {
+                    $('#date_info').val(data.data.date_of_birth);
+                }
+                if (data.data.region == null) {
+                    $('#region_info').val("Chưa có thông tin quốc gia");
+                } else {
+                    $('#region_info').val(data.data.region);
+                }
+                if (data.data.phone == null) {
+                    $('#phone_info').val("Chưa có thông tin số điện thoại");
+                } else {
+                    $('#phone_info').val(data.data.phone);
+                }
+                if (data.data.identify_numb == null) {
+                    $('#idn_info').val("Chưa có thông tin");
+                } else {
+                    $('#idn_info').val(data.data.identify_numb);
+                }
+                if (data.data.user_number == null) {
+                    $('#uid_info').val("Chưa có thông tin");
+                } else {
+                    $('#uid_info').val(data.data.user_number);
+                }
+                if (data.data.coin == null) {
+                    $('#coin_info').val("Chưa có thông tin");
+                } else {
+                    $('#coin_info').val(data.data.coin);
+                }
+            })
+        });
+
+        function lock(user_id) {
+            const rs = confirm("Bạn có chắc muốn khóa tài khoản này hay không?");
+            if (rs) {
+                $.ajax({
+                    url: "/admin/lock-account/" + user_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(res) {
+                        alert("Đã khóa tài khoản thành công!");
+                    },
+                })
             }
-            if(data.data.region == null){
-                $('#region_info').val("Chưa có thông tin quốc gia");
-            }else{
-                $('#region_info').val(data.data.region);
-            }
-            if(data.data.phone == null){
-                $('#phone_info').val("Chưa có thông tin số điện thoại");
-            }else{
-                $('#phone_info').val(data.data.phone);
-            }
-            if(data.data.identify_numb == null){
-                $('#idn_info').val("Chưa có thông tin");
-            }else{
-                $('#idn_info').val(data.data.identify_numb);
-            }
-            if(data.data.user_number == null){
-                $('#uid_info').val("Chưa có thông tin");
-            }else{
-                $('#uid_info').val(data.data.user_number);
-            }
-            if(data.data.coin == null){
-                $('#coin_info').val("Chưa có thông tin");
-            }else{
-                $('#coin_info').val(data.data.coin);
-            }
-        }) 
-    });
-</script>
+        }
+    </script>
 @endpush

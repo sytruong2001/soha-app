@@ -12,7 +12,8 @@ function load_data() {
         url: "/user/get-info-payment",
         type: "get",
         dataType: "json",
-        success: function (data) {
+        success: function (res) {
+            var data = res.payment;
             console.log(data);
             var html = ``;
             html += `
@@ -133,7 +134,7 @@ function nap_coin() {
                         <img src="data:image/png;base64,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" class="img-full" width="50px">
                     </div>
                 </div>
-                <input type="checkbox"> Tôi đồng ý sử dụng thẻ ATM để thanh toán
+                <input type="checkbox" id="checkbox-atm" checked disabled> Tôi đồng ý sử dụng thẻ ATM để thanh toán
             </div>
             <div class="col-md-12">
                 <input type="submit" value="XÁC NHẬN" id="submit" onClick="nap()">
@@ -263,46 +264,76 @@ function mua_kc() {
             url: "/user/get-info-payment",
             type: "get",
             dataType: "json",
-            success: function (data) {
-                console.log(value / 5);
+            success: function (res) {
+                var data = res.payment;
                 if (value / 5 > data.info_user.coin) {
-                    $("#id01").empty();
+                    $(".content").empty();
+                    $("#exampleModalLongTitle").empty();
+                    $(".modal-footer").empty();
+                    $("#exampleModalLongTitle").append("ĐÃ XẢY RA LỖI");
                     var html = `
-                    <div class="w3-modal-content">
-                        <div class="w3-container">
-                            <span onclick="document.getElementById('id01').style.display='none'"
-                                class="w3-button w3-display-topright">&times;</span>
-                            <p id="title-errors">Đã xảy ra lỗi</p>
-                            <h3>Số coin của bạn hiện tại không đủ. Xin vui lòng nạp thêm để thực hiện!</h3>
-                        </div>
-                    </div>`;
-                    $("#id01").append(html);
+                        <form>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" disabled
+                                        value="Số coin của bạn hiện tại không đủ. Xin vui lòng nạp thêm để thực hiện!">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        `;
+                    $(".content").append(html);
                     document.getElementById("id01").style.display = "block";
                 } else {
-                    $("#id01").empty();
+                    $(".content").empty();
+                    $("#exampleModalLongTitle").empty();
+                    $(".modal-footer").empty();
+                    $("#exampleModalLongTitle").append(
+                        "XÁC NHẬN MUA KIM CƯƠNG"
+                    );
                     var html = `
-                    <div class="w3-modal-content">
-                        <div class="w3-container">
-                            <span onclick="document.getElementById('id01').style.display='none'"
-                                class="w3-button w3-display-topright">&times;</span>
-                            <p id="title-submit">XÁC NHẬN MUA KIM CƯƠNG</p>
-                            <h3>Số kim cương bạn mua:<span id="numbKC-submit"><b> ${value} KC</b></span></h3>
-                            <h3>Tổng số coin phải trả: <span id="numbCoin-submit">
-                                <b> ${value / 5} coin</b></span></h3>
-                            <h3>Số coin bạn hiện có:<span id="numbCoinCurrent-submit"><b> ${
-                                data.info_user.coin
-                            } coin</b></span></h3>
-                            <h3>Số coin còn dư:<span id="numbCoinLast-submit"><b> ${
-                                data.info_user.coin - value / 5
-                            } coin</b></span></h3>
-                            <form>
-                            <p id="confirm-submit">
-                                <input type="submit" value="Xác nhận" onClick="save1(${value})">
-                            </p>
-                            </form>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tổng số kim cương bạn mua</label>
+                                    <input type="text" class="form-control" disabled  value="${value}">
+                                </div>
+                            </div>
                         </div>
-                    </div>`;
-                    $("#id01").append(html);
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Tổng số coin phải trả</label>
+                                    <input type="text" class="form-control" disabled
+                                    value="${value / 5}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số coin bạn hiện có</label>
+                                    <input type="text" class="form-control" disabled
+                                    value="${data.info_user.coin}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số coin còn dư</label>
+                                    <input type="text" class="form-control" disabled
+                                    value="${data.info_user.coin - value / 5}">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    `;
+                    $(".content").append(html);
+                    var btn = `
+                    <input type="submit" class="btn btn-primary" value="Xác nhận" onClick="save1(${value})">
+                    `;
+                    $(".modal-footer").append(btn);
                     document.getElementById("id01").style.display = "block";
                 }
             },
@@ -322,44 +353,80 @@ function nap() {
     var sc = document.getElementById("sum-coin");
     var spr = document.getElementById("sum-price-vnd");
     if (sc.value != undefined) {
-        $("#id01").empty();
+        $(".content").empty();
+        $("#exampleModalLongTitle").empty();
+        $(".modal-footer").empty();
+        $("#exampleModalLongTitle").append("XÁC NHẬN NẠP COIN");
         var html = `
-        <div class="w3-modal-content">
-            <div class="w3-container">
-                <span onclick="document.getElementById('id01').style.display='none'"
-                    class="w3-button w3-display-topright">&times;</span>
-                <p id="title-submit">XÁC NHẬN NẠP COIN</p>
-                <h3>Số coin muốn mua:<span id="numbCoin-submit"><b> ${sc.value} coin</b></span></h3>
-                <h3>Tổng tiền:<span id="numbPrice-submit"><b> ${spr.value} VNĐ</b></span></h3>
-                <form>
-                <p id="info-atm-submit">
-                    Tên ngân hàng<br>
-                    <input type="text" placeholder="Nhập tên ngân hàng" required id="name-bank"><br>
-                    Số tài khoản<br>
-                    <input type="text" placeholder="Nhập số tài khoản ngân hàng" required id="stk"><br>
-                    Mật khẩu<br>
-                    <input type="password" placeholder="Mật khẩu" required id="pw">
-                </p>
-                <p id="confirm-submit">
-                    <input type="submit" value="Xác nhận" onClick="save()">
-                </p>
-                </form>
-            </div>
-        </div>`;
-        $("#id01").append(html);
+            <form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Số coin muốn mua</label>
+                            <input type="text" class="form-control" disabled
+                            value="${sc.value}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Tổng tiền phải trả</label>
+                            <input type="text" class="form-control" disabled
+                            value="${spr.value}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Tên ngân hàng</label>
+                            <input type="text" class="form-control" required id="name-bank">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Số tài khoản</label>
+                            <input type="text" class="form-control" required id="stk">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Mật khẩu</label>
+                            <input type="password" class="form-control" required id="pw">
+                        </div>
+                    </div>
+                </div>
+                <div id=""error>
+                </div>
+            </form>
+            `;
+        $(".content").append(html);
+        var btn = `
+                <input type="submit" class="btn btn-primary" value="Xác nhận" onClick="save()">
+                `;
+        $(".modal-footer").append(btn);
         document.getElementById("id01").style.display = "block";
     } else {
-        $("#id01").empty();
+        $(".content").empty();
+        $("#exampleModalLongTitle").empty();
+        $(".modal-footer").empty();
+        $("#exampleModalLongTitle").append("ĐÃ XẢY RA LỖI");
         var html = `
-        <div class="w3-modal-content">
-            <div class="w3-container">
-                <span onclick="document.getElementById('id01').style.display='none'"
-                    class="w3-button w3-display-topright">&times;</span>
-                <p id="title-errors">Đã xảy ra lỗi</p>
-                <h3>Số coin bạn muốn mua phải lớn hơn 0. Vui lòng nhập lại!</h3>
-            </div>
-        </div>`;
-        $("#id01").append(html);
+            <form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" disabled
+                            value="Số coin bạn muốn mua phải lớn hơn 0. Vui lòng nhập lại!">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            `;
+        $(".content").append(html);
         document.getElementById("id01").style.display = "block";
     }
 }
@@ -376,11 +443,20 @@ function save() {
             dataType: "json",
             data: { coin: sc.value },
             success: function (data) {
+                debugger;
                 if (data.code === 200) {
                     alert(data.success);
+                    document.getElementById("id01").style.display = "none";
+                    $("#payment-account").empty();
+                    load_data();
                 }
             },
         });
+    } else {
+        alert(
+            "Hãy điền đầy đủ thông tin liên qua đến tài khoản ngân hàng để thực hiện thanh toán!"
+        );
+        debugger;
     }
 }
 function save1(KC) {
@@ -392,7 +468,9 @@ function save1(KC) {
         success: function (data) {
             if (data.code === 200) {
                 alert(data.success);
-                debugger;
+                document.getElementById("id01").style.display = "none";
+                $("#payment-account").empty();
+                load_data();
             }
         },
     });

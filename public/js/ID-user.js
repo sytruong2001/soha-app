@@ -337,7 +337,6 @@ function confirm(id) {
 
                 <div class="row collections">
                     <div class="col-md-12">
-                        <h5>This is a secure area of the application. Please confirm your password before continuing.</h5>
                             <div class="row collections">
                                 <div class="col-md-2"></div>
                                 <div class="col-md-7">

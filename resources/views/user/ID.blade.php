@@ -18,7 +18,43 @@
                             <div class="col-md-6" id="title-option">
 
                             </div>
+                            <div id="id01" class="w3-modal">
+                                <div class="w3-modal-content">
+                                    <div class="w3-container">
+                                        <div class="row">
+                                            <span onclick="document.getElementById('id01').style.display='none'"
+                                                class="w3-button w3-display-topright">&times;</span>
+                                            <p id="title-submit"></p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="fresh-datatables">
+                                                <table id="datatable_history"
+                                                    class="table table-striped table-no-bordered table-hover"
+                                                    cellspacing="0" width="100%" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Mã giao dịch</th>
+                                                            <th>Số lượng</th>
+                                                            <th>Thời gian</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Mã giao dịch</th>
+                                                            <th>Số lượng</th>
+                                                            <th>Thời gian</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody id="body-history">
 
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>

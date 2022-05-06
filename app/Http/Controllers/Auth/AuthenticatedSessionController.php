@@ -35,10 +35,14 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         $id = Auth::user()->id;
         $time =  Carbon::now('Asia/Ho_Chi_Minh');
-        $loginLog = DB::table("login_log")->insert([
-            'user_id' => $id,
-            'login_time' => $time,
-        ]);
+        $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        $check = DB::table('login_log')->where('user_id', $id)->whereDate('login_time', $day)->first();
+        if ($check == null) {
+            $loginLog = DB::table("login_log")->insert([
+                'user_id' => $id,
+                'login_time' => $time,
+            ]);
+        }
         if (auth()->user()->hasRole('admin')) {
             return redirect()->intended(RouteServiceProvider::HOME);
         } else {
