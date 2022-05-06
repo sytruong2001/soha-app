@@ -34,10 +34,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
         $id = Auth::user()->id;
+        $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
         $time =  Carbon::now('Asia/Ho_Chi_Minh');
         $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $check = DB::table('login_log')->where('user_id', $id)->whereDate('login_time', $day)->first();
-        if ($check == null) {
+        
+        if ($check == null && $role) {
+            // dd($role);
             $loginLog = DB::table("login_log")->insert([
                 'user_id' => $id,
                 'login_time' => $time,

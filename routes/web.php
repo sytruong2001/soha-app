@@ -47,7 +47,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::controller(ChartController::class)->group(function () {
         Route::get('/new-register-user', 'showNRU');
-        // Route::post('/new-register-user', 'showNRU');
+        Route::post('/new-register-user', 'showNRU');
         Route::get('/daily-active-user', 'showDAU');
         Route::get('/revenue', 'showREV');
     }); 
@@ -58,6 +58,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/unlock-account/{id}', 'unlockAccount');
         Route::get('/account-locked', 'accountLocked');
         Route::get('/info-admin/{id}', 'infoAdmin');
+        Route::post('/change-password', 'changePassword');
+
     }); 
    
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
@@ -69,14 +71,15 @@ Route::prefix('api')->group(function () {
         Route::controller(ApiController::class)->group(function () {
             Route::get('/revenue/update', 'updateREV');
             Route::get('/new-register-user/update', 'updateNRU');
+            Route::get('/daily-active-user/update', 'updateDAU');
+            Route::get('/daily-active-user', 'showDAU');
             Route::get('/revenue', 'showREV');
             Route::get('/new-register-user', 'showNRU');
+            Route::post('/change-password', 'changePassword');
+            Route::post('/change-info', 'changeInfo');
         }); 
     });
 });
 
 
-// Route::middleware(['auth', 'role:user'])->prefix('user')->group(function() {
-
-// });
 require __DIR__ . '/auth.php';
