@@ -68,7 +68,7 @@ class ChartController extends Controller
             ->whereDate('login_time', '<=', $end_date)
             ->groupBy(DB::raw("Date(login_time)"))
             ->pluck('user_log', 'day_log');
-        
+
         $labels = $users->keys();
 
         $data = $users->values();
@@ -82,19 +82,10 @@ class ChartController extends Controller
         $end_date = Carbon::now()->toDateTimeString();
 
         $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
-<<<<<<< HEAD
-            ->where([
-                ['mua_kc_time', '>=', $start_date],
-                ['mua_kc_time', '<=', $end_date],
-            ])
+            ->whereDate('mua_kc_time', '>=', $start_date)
+            ->whereDate('mua_kc_time', '<=', $end_date)
             ->groupBy(DB::raw("Date(mua_kc_time)"))
             ->pluck('kc_numb', 'day_name');
-=======
-        ->whereDate('mua_kc_time', '>=', $start_date)
-        ->whereDate('mua_kc_time', '<=', $end_date)
-        ->groupBy(DB::raw("Date(mua_kc_time)"))
-        ->pluck('kc_numb', 'day_name');
->>>>>>> 9df04a33138e581bdff15cb7edeee52e494a4d9a
 
         $labels = $users->keys();
 

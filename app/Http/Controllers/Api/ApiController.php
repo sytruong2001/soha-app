@@ -8,18 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\logKC;
 use App\Models\User;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use LengthException;
 use Nette\Utils\Json;
-=======
 use App\Models\loginLog;
-use Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use App\Models\InfoAdmin;
->>>>>>> 9df04a33138e581bdff15cb7edeee52e494a4d9a
 
 class ApiController extends Controller
 {
@@ -113,7 +108,6 @@ class ApiController extends Controller
         $data = $users->values();
         return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
     }
-<<<<<<< HEAD
 
     // lấy thông tin người dùng
     public function getInfoUser(Request $request)
@@ -323,8 +317,7 @@ class ApiController extends Controller
             echo json_encode($json);
         }
     }
-}
-=======
+
     function changeInfo(Request $request)
     {
 
@@ -388,4 +381,3 @@ class ApiController extends Controller
         }
     }
 }
->>>>>>> 9df04a33138e581bdff15cb7edeee52e494a4d9a
