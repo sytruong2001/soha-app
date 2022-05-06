@@ -1,19 +1,13 @@
 <div class="fresh-datatables">
-    <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+    <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+        style="width:100%">
         <thead>
-            <tr>
-                <th>Ngày</th>
-                <th>Doanh thu</th>
+            <tr id="thead">
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th>Ngày</th>
-                <th>Doanh thu</th>
+        <tbody>
+            <tr id="tbody">
             </tr>
-        </tfoot>
-        <tbody id="body">
-           
         </tbody>
     </table>
 </div>
@@ -35,5 +29,21 @@
 
         });
     });
+    var load_detail_data = function(users) {
+            // console.log(users);
+            $('#thead').empty();
+            $('#tbody').empty();
+            for (key in users) {
+                if (users.hasOwnProperty(key)) {
+                    var value = users[key];
+                    var html = `
+                    <td>${key}</td>`;
+                    $('#thead').append(html);
+                    var html1 = `
+                        <td>${value}</td>`;
+                    $('#tbody').append(html1);
+                }
+            }
+        }
 </script>
 @endpush

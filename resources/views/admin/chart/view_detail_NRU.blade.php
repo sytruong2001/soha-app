@@ -24,13 +24,13 @@
                 responsive: true,
                 language: {
                     search: "_INPUT_",
-                    searchPlaceholder: "Tìm kiếm người dùng nạp",
+                    searchPlaceholder: "Tìm kiếm người dùng mới đăng ký",
                 }
 
             });
         });
         var load_detail_data = function(users) {
-            console.log(users);
+            // console.log(users);
             $('#thead').empty();
             $('#tbody').empty();
             for (key in users) {

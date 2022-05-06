@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredAdminController;
 use App\Http\Controllers\Admin\ChartController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Api\ApiController;
 
 
 /*
@@ -40,10 +41,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
     Route::get('/new-register-user', [ChartController::class, 'showNRU']);
     // Route::post('/new-register-user', [ChartController::class, 'showNRU']);
-    Route::get('/new-register-user/update', [ChartController::class, 'updateNRU']);
     Route::get('/daily-active-user', [ChartController::class, 'showDAU']);
     Route::get('/revenue', [ChartController::class, 'showREV']);
-    Route::get('/revenue/update', [ChartController::class, 'update']);
     Route::resource('/account', AccountController::class);
     Route::get('/lock-account/{id}', [AccountController::class, 'lockAccount']);
     Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
@@ -52,6 +51,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/info-admin/{id}', [AccountController::class, 'infoAdmin']);
 });
 
+//Route cho file Api
+Route::prefix('api')->group(function () {
+    Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+        Route::get('/revenue/update', [ApiController::class, 'updateREV']);
+        Route::get('/new-register-user/update', [ApiController::class, 'updateNRU']);
+        Route::get('/revenue', [ApiController::class, 'showREV']);
+        Route::get('/new-register-user', [ApiController::class, 'showNRU']);
+    });
+});
 
 
 // Route::middleware(['auth', 'role:user'])->prefix('user')->group(function() {
