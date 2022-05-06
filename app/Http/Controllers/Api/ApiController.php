@@ -8,10 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\logKC;
 use App\Models\User;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use LengthException;
 use Nette\Utils\Json;
+=======
+use App\Models\loginLog;
+use Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Models\InfoAdmin;
+>>>>>>> 9df04a33138e581bdff15cb7edeee52e494a4d9a
 
 class ApiController extends Controller
 {
@@ -40,6 +48,35 @@ class ApiController extends Controller
             ->whereDate('created_at', '<=', $end_date)
             ->groupBy(DB::raw("Date(created_at)"))
             ->pluck('new_user', 'day_name');
+        $labels = $users->keys();
+        $data = $users->values();
+
+        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
+    }
+    public function updateDAU()
+    {
+        $start_date = Carbon::today()->subDays(6);
+        $end_date = Carbon::now()->toDateTimeString();
+        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("Date(login_time) as day_log"))
+            ->whereDate('login_time', '>=', $start_date)
+            ->whereDate('login_time', '<=', $end_date)
+            ->groupBy(DB::raw("Date(login_time)"), 'user_id')
+            ->pluck('user_log', 'day_log');
+        $labels = $users->keys();
+        $data = $users->values();
+
+        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
+    }
+    public function showDAU(Request $request)
+    {
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("Date(login_time) as day_log"))
+            ->whereDate('login_time', '>=', $start_date)
+            ->whereDate('login_time', '<=', $end_date)
+            ->groupBy(DB::raw("Date(login_time)"), 'user_id')
+            ->pluck('user_log', 'day_log');
+
         $labels = $users->keys();
         $data = $users->values();
 
@@ -76,6 +113,7 @@ class ApiController extends Controller
         $data = $users->values();
         return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
     }
+<<<<<<< HEAD
 
     // lấy thông tin người dùng
     public function getInfoUser(Request $request)
@@ -286,3 +324,68 @@ class ApiController extends Controller
         }
     }
 }
+=======
+    function changeInfo(Request $request)
+    {
+
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'phone' => ['required', 'min:11',],
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            $query = User::find(Auth::user()->id)->update([
+                'name' => $request->name,
+            ]);
+            $info_user = InfoAdmin::find(Auth::user()->id)->update([
+                'phone' => $request->phone,
+            ]);
+
+            if (!$query && !$info_user) {
+                return response()->json(['status' => 0, 'msg' => 'Lỗi.']);
+            } else {
+                return response()->json(['status' => 1, 'msg' => 'Sửa thành công.']);
+            }
+        }
+    }
+    function changePassword(Request $request)
+    {
+        //Validate form
+        $validator = \Validator::make($request->all(), [
+            'old_pass' => [
+                'required', function ($attribute, $value, $fail) {
+                    if (!Hash::check($value, Auth::user()->password)) {
+                        return $fail(__('Mật khẩu không đúng'));
+                    }
+                },
+                'min:7',
+                'max:30'
+            ],
+            'new_pass' => 'required|min:7|max:30',
+            're_new_pass' => 'required|same:new_pass'
+        ], [
+            'old_pass.required' => 'Nhập mật khẩu hiện tại',
+            'old_pass.min' => 'Mật khẩu yêu cầu 8 ký tự trở lên',
+            'new_pass.required' => 'Nhập mật khẩu mới',
+            'new_pass.min' => 'Mật khẩu yêu cầu 8 ký tự trở lên',
+            're_new_pass.required' => 'Xác nhận mật khẩu mới',
+            're_new_pass.same' => 'Mật khẩu không khớp với mật khẩu mới'
+        ]);
+        if (!$validator->passes()) {
+
+            return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $update = User::find(Auth::user()->id)->update(['password' => \Hash::make($request->new_pass)]);
+
+            if (!$update) {
+                return response()->json(['status' => 0, 'msg' => 'Đổi mật khẩu thất bại']);
+            } else {
+                return response()->json(['status' => 1, 'msg' => 'Đổi mật khẩu thành công']);
+            }
+        }
+    }
+}
+>>>>>>> 9df04a33138e581bdff15cb7edeee52e494a4d9a

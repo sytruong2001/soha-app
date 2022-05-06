@@ -41,6 +41,11 @@
                                 @csrf
                             </form>
                         </li>
+                        <li>
+                            <a href="admin/info-admin/{{ Auth::user()->id }}">
+                                {{ __('Thông tin cá nhân') }}
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -89,12 +94,7 @@
                         <p>Quản lý tài khoản bị khóa</p>
                     </a>
                 </li>
-                <li>
-                    <a href="admin/info-admin/{{ Auth::user()->id }}">
-                        <i class="pe-7s-graph"></i>
-                        <p>Thông tin cá nhân</p>
-                    </a>
-                </li>
+                
             @endrole
         </ul>
     </div>

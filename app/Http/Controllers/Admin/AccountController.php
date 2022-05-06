@@ -77,7 +77,7 @@ class AccountController extends Controller
         $accounts_admin = User::query()
             ->join('info_admin', 'users.id', '=', 'info_admin.user_id')
             ->where('user_id', $id)
-            ->get();
+            ->first();
         return view('admin.account.view_info_admin', [
             'accounts_admin' => $accounts_admin,
         ]);

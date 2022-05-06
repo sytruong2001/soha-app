@@ -9,6 +9,7 @@ use App\Models\logKC;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\loginLog;
 
 class ChartController extends Controller
 {
@@ -46,10 +47,8 @@ class ChartController extends Controller
         $end_date = Carbon::now()->toDateTimeString();
 
         $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
-            ->where([
-                ['created_at', '>=', $start_date],
-                ['created_at', '<=', $end_date],
-            ])
+            ->whereDate('created_at', '>=', $start_date)
+            ->whereDate('created_at', '<=', $end_date)
             ->groupBy(DB::raw("Date(created_at)"))
             ->pluck('new_user', 'day_name');
 
@@ -61,7 +60,20 @@ class ChartController extends Controller
 
     public function showDAU()
     {
-        return view('admin.chart.view_daily_active_user');
+        $start_date = Carbon::today()->subDays(6);
+        $end_date = Carbon::now()->toDateTimeString();
+
+        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("Date(login_time) as day_log"))
+            ->whereDate('login_time', '>=', $start_date)
+            ->whereDate('login_time', '<=', $end_date)
+            ->groupBy(DB::raw("Date(login_time)"))
+            ->pluck('user_log', 'day_log');
+        
+        $labels = $users->keys();
+
+        $data = $users->values();
+
+        return view('admin.chart.view_daily_active_user', compact('labels', 'data', 'users'));
     }
 
     public function showREV(Request $request)
@@ -70,12 +82,19 @@ class ChartController extends Controller
         $end_date = Carbon::now()->toDateTimeString();
 
         $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
+<<<<<<< HEAD
             ->where([
                 ['mua_kc_time', '>=', $start_date],
                 ['mua_kc_time', '<=', $end_date],
             ])
             ->groupBy(DB::raw("Date(mua_kc_time)"))
             ->pluck('kc_numb', 'day_name');
+=======
+        ->whereDate('mua_kc_time', '>=', $start_date)
+        ->whereDate('mua_kc_time', '<=', $end_date)
+        ->groupBy(DB::raw("Date(mua_kc_time)"))
+        ->pluck('kc_numb', 'day_name');
+>>>>>>> 9df04a33138e581bdff15cb7edeee52e494a4d9a
 
         $labels = $users->keys();
 
