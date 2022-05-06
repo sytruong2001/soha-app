@@ -71,7 +71,7 @@ class ChartController extends Controller
 
         $data = $users->values();
 
-        return view('admin.chart.view_revenue', compact('labels', 'data'));
+        return view('admin.chart.view_revenue', compact('labels', 'data', 'users'));
     }
 
     public function update()
