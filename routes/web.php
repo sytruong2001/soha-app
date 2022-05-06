@@ -24,6 +24,9 @@ use App\Http\Controllers\Api\ApiController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
+    Route::get('/', [UserController::class, 'dialog'])->name('lock.dialog');
+});
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
@@ -65,6 +68,10 @@ Route::prefix('api')->group(function () {
         Route::get('/get-info-payment', [ApiController::class, 'getInfoPayment'])->name('user.getInfoPayment');
         Route::post('/update-payment', [ApiController::class, 'UpdatePayment'])->name('user.updatePayment');
         Route::post('/update-kc', [ApiController::class, 'UpdateKC'])->name('user.updateKC');
+    });
+    Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
+        Route::post('/repost', [ApiController::class, 'CSKH'])->name('lock.CSKH');
+        Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
     });
 });
 

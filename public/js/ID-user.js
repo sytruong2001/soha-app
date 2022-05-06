@@ -427,6 +427,7 @@ function update_info(id) {
                         <div class="form-group">
                             <label>Họ và tên <span style="color:red">*</span></label>
                             <input id="name-user" class="form-control" type="text" name="name" required value="${data.name}"/>
+                            <i id="error-name-user" style="color:red"></i>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -441,12 +442,15 @@ function update_info(id) {
                         <div class="form-group">
                             <label>Số điện thoại <span style="color:red">*</span></label>
                             <input id="phone-user" class="form-control" type="number" name="phone" required value="${data.info_user.phone}"  />
+                            <i id="error-phone-user" style="color:red"></i>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Chứng minh thư nhân dân/CCCD</label>
-                            <input id="identify-numb-user" class="form-control" type="number" name="identify_numb" value="${data.info_user.identify_numb}" />
+                            <label>Chứng minh thư nhân dân/CCCD <span style="color:red">*</span></label>
+                            <input id="identify-numb-user" class="form-control" type="number" required name="identify_numb" value="${data.info_user.identify_numb}" />
+                            <i id="error-identify-numb-user" style="color:red"></i>
+
                         </div>
                     </div>
                 </div>
@@ -478,9 +482,19 @@ function update() {
     var date_of_birth = $("#date-of-birth-user").val();
     var identify_numb = $("#identify-numb-user").val();
     var region = $("#region-user").val();
-    console.log(phone);
-    debugger;
-    if (name !== "" && phone !== "") {
+    $("#error-name-user").empty();
+    $("#error-phone-user").empty();
+    $("#error-identify-numb-user").empty();
+    if (name == "") {
+        $("#error-name-user").html("Chưa nhập tên người dùng");
+    } else if (phone == "") {
+        $("#error-phone-user").html("Chưa nhập số điện thoại");
+    } else if (identify_numb == "") {
+        $("#error-identify-numb-user").html(
+            "Chưa nhập số chứng minh thư nhân dân/CCCD"
+        );
+    }
+    if (name !== "" && phone !== "" && identify_numb !== "") {
         console.log(phone);
         debugger;
         $.ajax({

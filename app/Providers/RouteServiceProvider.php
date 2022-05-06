@@ -20,6 +20,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public const HOME = '/admin';
     public const WELCOME = '/user/dashboard';
+    public const DIALOG = '/lock';
 
 
     /**

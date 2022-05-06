@@ -215,6 +215,8 @@
         });
 
         function unlock(user_id) {
+            const base_api = location.origin
+            var url = base_api + location.pathname;
             const rs = confirm("Bạn có chắc muốn mở tài khoản này hay không?");
             if (rs) {
                 $.ajax({
@@ -223,6 +225,7 @@
                     dataType: "json",
                     success: function(res) {
                         alert("Đã mở tài khoản thành công!");
+                        window.location.replace(url);
                     },
                 })
             }

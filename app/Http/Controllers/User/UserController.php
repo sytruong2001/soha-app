@@ -27,4 +27,9 @@ class UserController extends Controller
     {
         return view('user.Payment');
     }
+
+    public function dialog()
+    {
+        return view('user.error_login');
+    }
 }
