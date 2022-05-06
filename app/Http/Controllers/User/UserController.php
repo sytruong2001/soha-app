@@ -139,17 +139,4 @@ class UserController extends Controller
         $json['code'] = 200;
         echo json_encode($json);
     }
-
-    // public function historyCoin(Request $request)
-    // {
-    //     $current_page = $request->get('page') ? $request->get('page') : 1;
-    //     $limit = 5;
-    //     $paginate = DB::table('nap_coin_log')
-    //         ->paginate($limit);
-    //     $coin = DB::table('nap_coin_log')
-    //         ->limit($limit)->offset(($current_page - 1) * $limit)->get();
-    //     $json['coin'] = $coin;
-    //     $json['paginate'] = $paginate;
-    //     echo json_encode($json);
-    // }
 }

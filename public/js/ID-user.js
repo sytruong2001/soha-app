@@ -18,7 +18,7 @@ function load_data() {
             <li><b>Email đăng nhập:</b> ${data.email}</li><br>
             <li><b>Số <span style="color:Orange">Coin</span> hiện tại của bạn:</b> ${data.info_user.coin} coin</li><br>
             <li class="nav-user">
-                <button id="info-login" onClick="info_login(${data.id})">
+                <button id="info-login" onClick="info_login()">
                     <a>
                         <i class="icon material-icons">info</i> <span>Thông tin đăng nhập</span>
                     </a>
@@ -170,7 +170,7 @@ $("button").on("click", function () {
     console.log("button click");
 });
 // Lấy thông tin đăng nhập
-function info_login(id) {
+function info_login() {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("history");
@@ -316,67 +316,58 @@ function confirm(id) {
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
-    $("#title-option").empty();
     $.ajax({
         url: "/user/reset-password",
         type: "get",
         dataType: "json",
         success: function (data) {
+            $("#datatable_history").empty();
+            $("#title-submit").html("CẬP NHẬT MẬT KHẨU");
             var html = `
-            <div class="col-md-12 col-md-offset-1">
-                <div class="row collections">
-                    <div class="col-md-6" style="text-align: left">
-                    <h4 class="title">
-                        <a href="">
-                            <i class="icon material-icons">account_circle</i> Cập nhật mật khẩu
-                        </a>
-                    </h4>
-                    </div>
-
-                </div>
-
-                <div class="row collections">
+                <div class="row">
                     <div class="col-md-12">
-                            <div class="row collections">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-7">
-                                    Email:
-                                    <input id="email" class="pw-confirm"
-                                    type="email"
-                                    name="email"
-                                    readonly
-                                    value="${data}"/>
-                                    Mật khẩu cũ:
-                                    <input id="re_password" class="pw-confirm"
-                                    type="password"
-                                    name="re_password"
-                                    required/>
-                                    <div style="color: red" id="error-password"></div>
-                                    Mật khẩu mới:
-                                    <input id="password" class="pw-confirm"
-                                    type="password"
-                                    name="password"
-                                    required/>
-                                    Nhập lại mật khẩu mới:
-                                    <input id="password_confirmation" class="pw-confirm"
-                                    type="password"
-                                    name="password_confirmation"
-                                    required/>
-                                    <div style="color: red" id="error-confirm"></div>
-                                </div>
-                                <div class="col-md-6"></div>
-                            </div>
-                            <div class="row collections">
-                                <div class="col-md-7 btn-update" style="text-align: right">
-                                    <button id="updatePass">Cập nhật</button>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input id="email" class="form-control" type="email" name="email" readonly value="${data}"/>
+                        </div>
                     </div>
                 </div>
-
-            </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Mật khẩu cũ</label>
+                            <input id="re_password" class="form-control" type="password" name="re_password" required/>
+                            <div style="color: red" id="error-password"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Mật khẩu mới</label>
+                            <input id="password" class="form-control" type="password" name="password" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nhập lại mật khẩu</label>
+                            <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" required/>
+                            <div style="color: red" id="error-confirm"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button id="updatePass" class="btn btn-success" style="margin:auto; display:block">Cập nhật</button>
+                        </div>
+                    </div>
+                </div>
             `;
-            $("#title-option").append(html);
+            $("#datatable_history").append(html);
+            document.getElementById("id01").style.display = "block";
             $("button#updatePass").on("click", function () {
                 var email = $("#email").val();
                 var repassword = $("#re_password").val();
@@ -395,10 +386,10 @@ function confirm(id) {
                     success: function (data) {
                         if (data.code == 400) {
                             $("#error-password").empty();
-                            $("#error-confirm").append(data.error);
+                            $("#error-confirm").html(data.error);
                         } else if (data.code == 401) {
                             $("#error-confirm").empty();
-                            $("#error-password").append(data.error);
+                            $("#error-password").html(data.error);
                         } else if (data.code == 200) {
                             $("#error-confirm").empty();
                             $("#error-password").empty();
@@ -406,6 +397,8 @@ function confirm(id) {
                             $("#re_password").val("");
                             $("#password").val("");
                             alert(data.message);
+                            document.getElementById("id01").style.display =
+                                "none";
                         }
                     },
                 });
@@ -421,70 +414,70 @@ function update_info(id) {
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
-    $("#title-option").empty();
     $.ajax({
         url: "user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
+            $("#datatable_history").empty();
+            $("#title-submit").html("CẬP NHẬT THÔNG TIN CÁ NHÂN");
             var html = `
-            <div class="col-md-12 col-md-offset-1">
-            <h4 class="title">
-                <a href="">
-                    <i class="icon material-icons">drive_file_rename_outline</i> Cập nhật thông tin cá nhân
-                </a>
-            </h4>
-
-            <form id="frm_update_info">
-                    <div class="row collections">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-7">
-                            <b>Họ và tên:<span style="color:red">*</span></b>
-                            <input id="name" class="pw-confirm"
-                                            type="text"
-                                            name="name"
-                                            required
-                                            value="${data.name}"/>
-                            <b>Ngày sinh:</b>
-                            <input id="date_of_birth" class="pw-confirm"
-                                            type="date"
-                                            name="date_of_birth"
-                                            value="${data.info_user.date_of_birth}" />
-                            <b>Chứng minh thư nhân dân/CCCD:</b>
-                            <input id="identify_numb" class="pw-confirm"
-                                            type="number"
-                                            name="identify_numb"
-                                            value="${data.info_user.identify_numb}" />
-                            <b>Số điện thoại:<span style="color:red">*</span></b>
-                            <input id="phone" class="pw-confirm"
-                                            type="number"
-                                            name="phone"
-                                            required
-                                            value="${data.info_user.phone}"  />
-                            <b>Quốc tịch:</b>
-                            <input id="region" class="pw-confirm"
-                                            type="text"
-                                            name="region"
-                                            value="${data.info_user.region}" />
-                        </div>
-                        <div class="col-md-6"></div>
-                    </div>
-                    <div class="row collections">
-                        <div class="col-md-7 btn-update" style="text-align: right">
-                            <button onClick="update()">Cập nhật</button>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Họ và tên <span style="color:red">*</span></label>
+                            <input id="name-user" class="form-control" type="text" name="name" required value="${data.name}"/>
                         </div>
                     </div>
-                </form>
-        </div>
-        `;
-            $("#title-option").append(html);
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ngày sinh</label>
+                            <input id="date-of-birth-user" class="form-control" type="date" name="date_of_birth" value="${data.info_user.date_of_birth}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Số điện thoại <span style="color:red">*</span></label>
+                            <input id="phone-user" class="form-control" type="number" name="phone" required value="${data.info_user.phone}"  />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Chứng minh thư nhân dân/CCCD</label>
+                            <input id="identify-numb-user" class="form-control" type="number" name="identify_numb" value="${data.info_user.identify_numb}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Quốc tịch</label>
+                            <input id="region-user" class="form-control" type="text" name="region" value="${data.info_user.region}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button onClick="update()" class="btn btn-success" style="margin:auto; display:block">Cập nhật</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $("#datatable_history").append(html);
+            document.getElementById("id01").style.display = "block";
         },
     });
 }
 // lấy dữ liệu cá nhân sau khi đổi và lưu trữ
 function update() {
-    var name = $("#frm_update_info #name").val();
-    var phone = $("#frm_update_info #phone").val();
+    var name = $("#name-user").val();
+    var phone = $("#phone-user").val();
+    var date_of_birth = $("#date-of-birth-user").val();
+    var identify_numb = $("#identify-numb-user").val();
+    var region = $("#region-user").val();
     console.log(phone);
     debugger;
     if (name !== "" && phone !== "") {
@@ -494,10 +487,17 @@ function update() {
             url: "/user/update_info",
             type: "post",
             dataType: "json",
-            data: $("#frm_update_info").serialize(),
+            data: {
+                name: name,
+                phone: phone,
+                date_of_birth: date_of_birth,
+                identify_numb: identify_numb,
+                region: region,
+            },
             success: function (data) {
                 alert(data.success);
-                load_data();
+                info_login();
+                document.getElementById("id01").style.display = "none";
             },
         });
     } else {
@@ -634,6 +634,7 @@ function history(id) {
             </div>`;
             $("#title-option").append(html);
             $("a#read-more-hisCoin").on("click", function () {
+                $("#datatable_history").empty();
                 $("#title-submit").html("LỊCH SỬ NẠP COIN");
                 $.ajax({
                     url: "/user/get-info-payment",
@@ -641,7 +642,21 @@ function history(id) {
                     dataType: "json",
                     success: function (data) {
                         var logCoin = data.payment.log_coin;
+                        var str = `
+                        <thead>
+                            <tr>
+                                <th>Mã giao dịch</th>
+                                <th>Số lượng</th>
+                                <th>Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-history">
+
+                        </tbody>
+                        `;
+                        $("#datatable_history").append(str);
                         $("#body-history").empty();
+
                         logCoin.forEach((coin) => {
                             var html = `
                             <tr>
@@ -657,6 +672,7 @@ function history(id) {
                 document.getElementById("id01").style.display = "block";
             });
             $("a#read-more-hisKC").on("click", function () {
+                $("#datatable_history").empty();
                 $("#title-submit").html("LỊCH SỬ MUA KIM CƯƠNG");
                 $.ajax({
                     url: "/user/get-info-payment",
@@ -664,6 +680,19 @@ function history(id) {
                     dataType: "json",
                     success: function (data) {
                         var logKc = data.payment.log_kc;
+                        var str = `
+                        <thead>
+                            <tr>
+                                <th>Mã giao dịch</th>
+                                <th>Số lượng</th>
+                                <th>Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-history">
+
+                        </tbody>
+                        `;
+                        $("#datatable_history").append(str);
                         $("#body-history").empty();
                         logKc.forEach((kc) => {
                             var html = `

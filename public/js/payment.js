@@ -268,9 +268,11 @@ function mua_kc() {
                 var data = res.payment;
                 if (value / 5 > data.info_user.coin) {
                     $(".content").empty();
-                    $("#exampleModalLongTitle").empty();
                     $(".modal-footer").empty();
-                    $("#exampleModalLongTitle").append("ĐÃ XẢY RA LỖI");
+                    $("#exampleModalLongTitle").html("ĐÃ XẢY RA LỖI");
+                    document.getElementById(
+                        "exampleModalLongTitle"
+                    ).style.color = "red";
                     var html = `
                         <form>
                             <div class="row">
@@ -292,6 +294,9 @@ function mua_kc() {
                     $("#exampleModalLongTitle").append(
                         "XÁC NHẬN MUA KIM CƯƠNG"
                     );
+                    document.getElementById(
+                        "exampleModalLongTitle"
+                    ).style.color = "green";
                     var html = `
                     <form>
                         <div class="row">
@@ -331,7 +336,7 @@ function mua_kc() {
                     `;
                     $(".content").append(html);
                     var btn = `
-                    <input type="submit" class="btn btn-primary" value="Xác nhận" onClick="save1(${value})">
+                    <input type="submit" class="btn btn-success" value="Xác nhận" onClick="save1(${value})">
                     `;
                     $(".modal-footer").append(btn);
                     document.getElementById("id01").style.display = "block";
@@ -352,24 +357,22 @@ function sum_price() {
 function nap() {
     var sc = document.getElementById("sum-coin");
     var spr = document.getElementById("sum-price-vnd");
-    if (sc.value != undefined) {
+    if (sc.value != 0 && sc.value != "" && sc.value != undefined) {
         $(".content").empty();
-        $("#exampleModalLongTitle").empty();
         $(".modal-footer").empty();
-        $("#exampleModalLongTitle").append("XÁC NHẬN NẠP COIN");
+        $("#exampleModalLongTitle").html("XÁC NHẬN NẠP COIN");
+        document.getElementById("exampleModalLongTitle").style.color = "green";
         var html = `
             <form>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Số coin muốn mua</label>
                             <input type="text" class="form-control" disabled
                             value="${sc.value}">
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Tổng tiền phải trả</label>
                             <input type="text" class="form-control" disabled
@@ -405,7 +408,7 @@ function nap() {
             `;
         $(".content").append(html);
         var btn = `
-                <input type="submit" class="btn btn-primary" value="Xác nhận" onClick="save()">
+                <input type="submit" class="btn btn-success" value="Xác nhận" onClick="save()">
                 `;
         $(".modal-footer").append(btn);
         document.getElementById("id01").style.display = "block";
@@ -414,6 +417,7 @@ function nap() {
         $("#exampleModalLongTitle").empty();
         $(".modal-footer").empty();
         $("#exampleModalLongTitle").append("ĐÃ XẢY RA LỖI");
+        document.getElementById("exampleModalLongTitle").style.color = "red";
         var html = `
             <form>
                 <div class="row">
