@@ -489,12 +489,19 @@ function update() {
         $("#error-name-user").html("Chưa nhập tên người dùng");
     } else if (phone == "") {
         $("#error-phone-user").html("Chưa nhập số điện thoại");
+    } else if (phone.length < 10) {
+        $("#error-phone-user").html("Số điện thoại phải là 10 số");
     } else if (identify_numb == "") {
         $("#error-identify-numb-user").html(
             "Chưa nhập số chứng minh thư nhân dân/CCCD"
         );
     }
-    if (name !== "" && phone !== "" && identify_numb !== "") {
+    if (
+        name !== "" &&
+        phone !== "" &&
+        identify_numb !== "" &&
+        phone.length == 10
+    ) {
         console.log(phone);
         debugger;
         $.ajax({

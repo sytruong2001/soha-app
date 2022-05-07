@@ -30,19 +30,19 @@ Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::controller(UserController::class)->group(function () {
-        Route::get('/dashboard','index')->name('user.dashboard');
-        Route::get('/get-info','getInfoUser')->name('user.getInfoUser');
-        Route::post('/update_info','updateInfoUser')->name('user.updateInfoUser');
-        Route::get('/payment','payment')->name('user.payment');
-        Route::get('/get-info-payment','getInfoPayment')->name('user.getInfoPayment');
-        Route::post('/update-payment','UpdatePayment')->name('user.updatePayment');
+        Route::get('/dashboard', 'index')->name('user.dashboard');
+        Route::get('/get-info', 'getInfoUser')->name('user.getInfoUser');
+        Route::post('/update_info', 'updateInfoUser')->name('user.updateInfoUser');
+        Route::get('/payment', 'payment')->name('user.payment');
+        Route::get('/get-info-payment', 'getInfoPayment')->name('user.getInfoPayment');
+        Route::post('/update-payment', 'UpdatePayment')->name('user.updatePayment');
         Route::post('/update-kc', 'UpdateKC')->name('user.updateKC');
     });
-    
+
     Route::controller(NewPasswordController::class)->group(function () {
         Route::get('/reset-password', 'create')->name('user.reset');
         Route::post('/reset-password', 'store')->name('user.updatePass');
-    }); 
+    });
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -53,7 +53,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::post('/new-register-user', 'showNRU');
         Route::get('/daily-active-user', 'showDAU');
         Route::get('/revenue', 'showREV');
-    }); 
+    });
 
     Route::controller(AccountController::class)->group(function () {
         Route::get('/account', 'index');
@@ -62,9 +62,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/account-locked', 'accountLocked');
         Route::get('/info-admin/{id}', 'infoAdmin');
         Route::post('/change-password', 'changePassword');
+    });
 
-    }); 
-   
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 });
 
@@ -80,7 +79,7 @@ Route::prefix('api')->group(function () {
             Route::get('/new-register-user', 'showNRU');
             Route::post('/change-password', 'changePassword');
             Route::post('/change-info', 'changeInfo');
-        }); 
+        });
     });
     Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
         Route::get('/get-info', [ApiController::class, 'getInfoUser'])->name('user.getInfoUser');
@@ -88,6 +87,7 @@ Route::prefix('api')->group(function () {
         Route::get('/get-info-payment', [ApiController::class, 'getInfoPayment'])->name('user.getInfoPayment');
         Route::post('/update-payment', [ApiController::class, 'UpdatePayment'])->name('user.updatePayment');
         Route::post('/update-kc', [ApiController::class, 'UpdateKC'])->name('user.updateKC');
+        Route::post('/reset-password', [ApiController::class, 'changePasswordUser'])->name('user.updatePass');
     });
     Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
         Route::post('/repost', [ApiController::class, 'CSKH'])->name('lock.CSKH');
