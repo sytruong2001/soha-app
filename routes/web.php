@@ -40,8 +40,8 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     });
 
     Route::controller(NewPasswordController::class)->group(function () {
-        Route::get('/reset-password', 'create')->name('user.reset');
-        Route::post('/reset-password', 'store')->name('user.updatePass');
+        Route::get('/reset-password', 'getInfo')->name('user.reset');
+        // Route::post('/reset-password', 'store')->name('user.updatePass');
     });
 });
 

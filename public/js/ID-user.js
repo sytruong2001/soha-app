@@ -346,6 +346,7 @@ function confirm(id) {
                         <div class="form-group">
                             <label>Mật khẩu mới</label>
                             <input id="password" class="form-control" type="password" name="password" required/>
+                            <div style="color: red" id="error-new-password"></div>
                         </div>
                     </div>
                 </div>
@@ -373,35 +374,45 @@ function confirm(id) {
                 var repassword = $("#re_password").val();
                 var password = $("#password").val();
                 var password_confirmation = $("#password_confirmation").val();
-                $.ajax({
-                    url: "/user/reset-password",
-                    type: "post",
-                    dataType: "json",
-                    data: {
-                        email: email,
-                        repassword: repassword,
-                        password: password,
-                        password_confirmation: password_confirmation,
-                    },
-                    success: function (data) {
-                        if (data.code == 400) {
-                            $("#error-password").empty();
-                            $("#error-confirm").html(data.error);
-                        } else if (data.code == 401) {
-                            $("#error-confirm").empty();
-                            $("#error-password").html(data.error);
-                        } else if (data.code == 200) {
-                            $("#error-confirm").empty();
-                            $("#error-password").empty();
-                            $("#password_confirmation").val("");
-                            $("#re_password").val("");
-                            $("#password").val("");
-                            alert(data.message);
-                            document.getElementById("id01").style.display =
-                                "none";
-                        }
-                    },
-                });
+                $("#error-confirm").empty();
+                $("#error-password").empty();
+                $("#error-new-password").empty();
+                if (repassword.length == "") {
+                    $("#error-password").html("Chưa nhập mật khẩu cũ");
+                } else {
+                    if (password.length < 8) {
+                        $("#error-new-password").html(
+                            "Độ dài mật khẩu phải từ 8 kí tự trở lên"
+                        );
+                    } else {
+                        $.ajax({
+                            url: "/api/user/reset-password",
+                            type: "post",
+                            dataType: "json",
+                            data: {
+                                email: email,
+                                repassword: repassword,
+                                password: password,
+                                password_confirmation: password_confirmation,
+                            },
+                            success: function (data) {
+                                if (data.code == 400) {
+                                    $("#error-confirm").html(data.error);
+                                } else if (data.code == 401) {
+                                    $("#error-password").html(data.error);
+                                } else if (data.code == 200) {
+                                    $("#password_confirmation").val("");
+                                    $("#re_password").val("");
+                                    $("#password").val("");
+                                    alert(data.message);
+                                    document.getElementById(
+                                        "id01"
+                                    ).style.display = "none";
+                                }
+                            },
+                        });
+                    }
+                }
             });
         },
     });
