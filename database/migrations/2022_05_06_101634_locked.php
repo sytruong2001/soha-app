@@ -17,6 +17,8 @@ class Locked extends Migration
             $table->id();
             $table->integer('locked_id')->unsigned();
             $table->text('message');
+            $table->integer('locked_by')->unsigned();
+            $table->timestamps();
         });
     }
 

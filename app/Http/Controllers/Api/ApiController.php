@@ -426,7 +426,32 @@ class ApiController extends Controller
                 'text' => $message
             ]);
             return response()->json(['status' => 1]);
-            
+        }
+    }
+    public function changePasswordUser(Request $request)
+    {
+        $email = $request->get('email');
+        $repassword = $request->get('repassword');
+        $password = $request->get('password');
+        $password_confirmation = $request->get('password_confirmation');
+        if ($password_confirmation !== $password) {
+            $json['error'] = "Không khớp với mật khẩu mới";
+            $json['code'] = 400;
+            echo json_encode($json);
+        } else {
+            $checkInfo = User::where('email', $email)->select('password')->first();
+            if (Hash::check($repassword, $checkInfo->password)) {
+                $data = User::where('email', $email)->update([
+                    'password' => Hash::make($password)
+                ]);
+                $json['message'] = "Thay đổi mật khẩu thành công";
+                $json['code'] = 200;
+                echo json_encode($json);
+            } else {
+                $json['error'] = "Sai mật khẩu";
+                $json['code'] = 401;
+                echo json_encode($json);
+            }
         }
     }
 }
