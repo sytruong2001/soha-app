@@ -140,11 +140,45 @@
 @endsection
 
 @push('js')
+<<<<<<< HEAD
     <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+=======
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('#AdminInfoForm').on('submit', function(e){
+        e.preventDefault();
+        $.ajax({
+           url:$(this).attr('action'),
+           method:$(this).attr('method'),
+           data:new FormData(this),
+           processData:false,
+           dataType:'json',
+           contentType:false,
+           beforeSend:function(){
+               $(document).find('span.error-text').text('');
+           },
+           success:function(data){
+                if(data.status == 0){
+                  $.each(data.error, function(prefix, val){
+                    $('span.'+prefix+'_error').text(val[0]);
+                  });
+                }else{
+                    $('.admin_name').each(function(){
+                        $(this).html( $('#AdminInfoForm').find( $('input[name="name"]') ).val() );
+                    });
+                    onFinishWizard();
+                }
+           }
+>>>>>>> 3c53c2b8cece349a82b35939888608831d097010
         });
 
         $('#AdminInfoForm').on('submit', function(e) {
@@ -160,11 +194,16 @@
                     $(document).find('span.error-text').text('');
                 },
                 success: function(data) {
+<<<<<<< HEAD
+=======
+                    // console.log(data)
+>>>>>>> 3c53c2b8cece349a82b35939888608831d097010
                     if (data.status == 0) {
                         $.each(data.error, function(prefix, val) {
                             $('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
+<<<<<<< HEAD
                         $('.admin_name').each(function() {
                             $(this).html($('#AdminInfoForm').find($('input[name="name"]'))
                                 .val());
@@ -175,11 +214,21 @@
                                 $(this).remove();
                             });
                         }, 3000);
+=======
+                        $('#change_pass')[0].reset();
+                        onFinishWizard();
+                        // window.setTimeout(function(){
+                        //     $("#alerts").fadeTo(500, 0).slideUp(500, function(){
+                        //         $(this).remove(); 
+                        //     });
+                        // }, 3000);
+>>>>>>> 3c53c2b8cece349a82b35939888608831d097010
                     }
                 }
             });
         });
 
+<<<<<<< HEAD
         $(function() {
             $('#change_pass').on('submit', function(e) {
                 e.preventDefault();
@@ -224,3 +273,19 @@
         }
     </script>
 @endpush
+=======
+    // function alertSuccess(message){
+    //     $('#alerts').append(
+    //         '<div class="alert alert-success">' +
+    //             '<button type="button" aria-hidden="true" class="close">×</button>' +
+    //             '<span> Đổi thành công</span>' +
+    //         '</div>'
+    //     );
+    // }
+    function onFinishWizard() {
+
+    swal("Hoàn tất!", "Cập nhật thành công", "success");
+    }
+</script>
+@endpush
+>>>>>>> 3c53c2b8cece349a82b35939888608831d097010

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ChartController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\TelegramController;
 
 
 /*
@@ -27,6 +28,10 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
     Route::get('/', [UserController::class, 'dialog'])->name('lock.dialog');
 });
+
+// Route::post('login-otp', [AuthenticatedSessionController::class, 'store']);
+
+Route::get('/updated-activity', [TelegramController::class, 'updatedActivity']);
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::controller(UserController::class)->group(function () {
@@ -68,6 +73,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 });
 
+
 //Route cho file Api
 Route::prefix('api')->group(function () {
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -83,6 +89,7 @@ Route::prefix('api')->group(function () {
         });
     });
     Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+
         Route::get('/get-info', [ApiController::class, 'getInfoUser'])->name('user.getInfoUser');
         Route::post('/update_info', [ApiController::class, 'updateInfoUser'])->name('user.updateInfoUser');
         Route::get('/get-info-payment', [ApiController::class, 'getInfoPayment'])->name('user.getInfoPayment');
@@ -93,6 +100,10 @@ Route::prefix('api')->group(function () {
     Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
         Route::post('/repost', [ApiController::class, 'CSKH'])->name('lock.CSKH');
         Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
+    });
+
+    Route::middleware('guest')->group(function () {
+        Route::post('/login', [ApiController::class, 'phone']);
     });
 });
 
