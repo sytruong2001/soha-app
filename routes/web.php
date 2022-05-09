@@ -57,7 +57,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::controller(AccountController::class)->group(function () {
         Route::get('/account', 'index');
-        Route::get('/lock-account/{id}', 'lockAccount');
+        Route::get('/account/{id}', 'show');
+        Route::post('/lock-account', 'lockAccount');
         Route::get('/unlock-account/{id}', 'unlockAccount');
         Route::get('/account-locked', 'accountLocked');
         Route::get('/info-admin/{id}', 'infoAdmin');

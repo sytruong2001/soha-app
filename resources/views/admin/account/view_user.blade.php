@@ -53,7 +53,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="content">
+                <div class="content-user">
                     <form>
                         <div class="row">
                             <div class="col-md-12">
@@ -187,53 +187,69 @@
                 }
             })
         });
+    </script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+        });
 
-        function change() {
+        function delete_error() {
             $(".form-group #error-msg").empty();
         }
 
         function lock(user_id) {
             $('#exampleModalCenter').modal('show');
+            $('.modal-content .modal-footer').empty();
             $('.modal-header #exampleModalLongTitle').html("Lý do khóa tài khoản");
             var html = `
+            <form>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Lý do</label>
-                            <input type="text" class="form-control" id="message" oninput="change()">
+                            <input type="text" class="form-control" id="content-msg" oninput="delete_error()">
                             <i id="error-msg" style="color:red"></i>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button class="btn btn-success" id="post-value" style="margin:auto; display:block">Xác nhận</button>
+                        </div>
+                    </div>
                 </div>
+            </form>
             `;
-            $('.modal-body .content').html(html);
-            var btn_submit = `
-                <div class="btn btn-success" id="submit" onClick="post(${user_id})">Xác nhận</div>
-            `;
-            $('.modal-footer').html(btn_submit);
-        }
+            $('.content-user').html(html);
 
-        function post(id) {
-            const base_api = location.origin
-            var url = base_api + location.pathname;
-            var message = document.getElementById('message').value;
-            change();
-            if (message == "") {
-                $('.form-group #error-msg').html("Chưa nhập lý do khóa!");
-            } else {
-                const rs = confirm("Bạn có chắc muốn khóa tài khoản này hay không?");
-                if (rs) {
-                    $.ajax({
-                        url: "/admin/lock-account/" + id,
-                        type: "GET",
-                        dataType: "json",
-                        success: function(res) {
-                            alert("Đã khóa tài khoản thành công!");
-                            window.location.replace(url);
-                        },
-                    })
+
+            $('button#post-value').on('click', function() {
+                const base_api = location.origin
+                var url = base_api + location.pathname;
+                var msg = $('.form-group #content-msg').val();
+                if (msg == "") {
+                    $('.form-group #error-msg').html("Chưa nhập lý do khóa!");
+                } else {
+                    const rs = confirm("Bạn có chắc muốn khóa tài khoản này hay không?");
+                    if (rs) {
+                        $.ajax({
+                            url: "/admin/lock-account",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                msg: msg,
+                                id: user_id,
+                            },
+                            success: function(res) {
+                                alert("Đã khóa tài khoản thành công!");
+                                window.location.replace(url);
+                            },
+                        });
+                    }
                 }
-            }
+
+            })
         }
     </script>
 @endpush

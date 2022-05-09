@@ -19,6 +19,8 @@
                             <tr>
                                 <th>Tên</th>
                                 <th>Email</th>
+                                <th>Lý do bị khóa</th>
+                                <th>Người khóa</th>
                                 <th class="disabled-sorting text-right" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
@@ -26,6 +28,8 @@
                             <tr>
                                 <th>Tên</th>
                                 <th>Email</th>
+                                <th>Lý do bị khóa</th>
+                                <th>Người khóa</th>
                                 <th class="text-right" style="text-align: center;">Thao tác</th>
                             </tr>
                         </tfoot>
@@ -34,19 +38,29 @@
                                 <tr>
                                     <td>
                                         <div style='width: 200px; height: 100px; overflow: auto;'>
-                                            {{ $user->name }}
+                                            {{ $user->user->name }}
                                         </div>
                                     </td>
                                     <td>
                                         <div style='width: 200px; height: 100px; overflow: auto;'>
-                                            {{ $user->email }}
+                                            {{ $user->user->email }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='width: 200px; height: 100px; overflow: auto;'>
+                                            {{ $user->message }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='width: 200px; height: 100px; overflow: auto;'>
+                                            {{ $user->locker->name }}
                                         </div>
                                     </td>
                                     <td class="text-right" style="text-align: center;">
                                         <button type="button" class="btn btn-info btn-warning btn-icon edit"
                                             data-toggle="modal" data-target="#exampleModalCenter"
-                                            value="{{ $user->user_id }}"><i class="fa fa-file-text-o"></i></button>
-                                        <button class="btn btn-success lock" onclick="unlock({{ $user->user_id }})"
+                                            value="{{ $user->locked_id }}"><i class="fa fa-file-text-o"></i></button>
+                                        <button class="btn btn-success lock" onclick="unlock({{ $user->locked_id }})"
                                             style="height: 38px; width: 38px; padding: 0 8px 0 8px"><i
                                                 class="fa fa-unlock"></i></button>
                                     </td>
@@ -151,11 +165,109 @@
         </div> <!-- end card -->
 
     </div> <!-- end col-md-12 -->
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="header">
+                <legend>Danh sách tài khoản gửi yêu cầu mở khóa</legend>
+            </div>
+            <div class="content">
+                <div class="fresh-datatables">
+                    <table id="datatable_user_req" class="table table-striped table-no-bordered table-hover" cellspacing="0"
+                        width="100%" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Số CMT/CCCD</th>
+                                <th>Lần nạp 1</th>
+                                <th>Số tiền</th>
+                                <th>Lần nạp 2</th>
+                                <th>Số tiền</th>
+                                <th>Lần nạp 3</th>
+                                <th>Số tiền</th>
+                                <th class="disabled-sorting text-right" style="text-align: center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($accounts_requested as $user)
+                                <tr>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->user->name }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->email }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->identify_numb }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->buy_coin_1 }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->price_1 }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->buy_coin_2 }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->price_2 }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->buy_coin_3 }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style='height: 100px; overflow: auto;'>
+                                            {{ $user->price_3 }}
+                                        </div>
+                                    </td>
+                                    <td class="text-right" style="text-align: center;">
+                                        <button type="button" class="btn btn-info btn-warning btn-icon edit"
+                                            data-toggle="modal" data-target="#exampleModalCenter"
+                                            value="{{ $user->user_id }}"><i class="fa fa-file-text-o"></i></button>
+                                        <button class="btn btn-success lock" onclick="unlock({{ $user->user_id }})"
+                                            style="height: 38px; width: 38px; padding: 0 8px 0 8px"><i
+                                                class="fa fa-unlock"></i></button>
+                                        <button class="btn btn-danger lock" onclick="lock({{ $user->user_id }})"
+                                            style="height: 38px; width: 38px; padding: 0 8px 0 8px"><i
+                                                class="fa fa-lock"></i></button>
+
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end card -->
+
+    </div> <!-- end col-md-12 -->
 @endsection
 
 
 @push('js')
     <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+        });
         $(document).ready(function() {
             $('#datatable_user').DataTable({
                 "pagingType": "full_numbers",
@@ -171,8 +283,21 @@
 
             });
         });
-    </script>
-    <script>
+        $(document).ready(function() {
+            $('#datatable_user_req').DataTable({
+                "pagingType": "full_numbers",
+                "lengthMenu": [
+                    [5, 10, 25, 50, -1],
+                    [5, 10, 25, 50, "Tất cả"]
+                ],
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Tìm kiếm người dùng",
+                },
+            });
+        });
+
         $(document).on('click', '.edit', function() {
             var url = "/admin/account";
             var user_id = $(this).val();
@@ -228,6 +353,27 @@
                         window.location.replace(url);
                     },
                 })
+            }
+        }
+
+        function lock(user_id) {
+            const base_api = location.origin
+            var url = base_api + location.pathname;
+            const rs = confirm("Bạn có chắc muốn hủy yêu cầu mở khóa tài khoản này hay không?");
+            if (rs) {
+                $.ajax({
+                    url: "/admin/lock-account",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        id: user_id,
+                    },
+                    success: function(res) {
+                        // console.log(res);
+                        alert("Đã hủy mở khóa tài khoản thành công!");
+                        window.location.replace(url);
+                    },
+                });
             }
         }
     </script>
