@@ -15,6 +15,9 @@ use Nette\Utils\Json;
 use App\Models\loginLog;
 use Illuminate\Support\Facades\Hash;
 use App\Models\InfoAdmin;
+use App\Models\InfoUser;
+use Telegram\Bot\Laravel\Facades\Telegram;
+
 
 class ApiController extends Controller
 {
@@ -346,6 +349,7 @@ class ApiController extends Controller
     function changePassword(Request $request)
     {
         //Validate form
+        
         $validator = \Validator::make($request->all(), [
             'old_pass' => [
                 'required', function ($attribute, $value, $fail) {
@@ -378,6 +382,51 @@ class ApiController extends Controller
             } else {
                 return response()->json(['status' => 1, 'msg' => 'Đổi mật khẩu thành công']);
             }
+        }
+    }
+
+    public function phone(Request $rq){
+        $id = $rq->id;
+        // dd($id);
+        $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
+        $validator = \Validator::make($rq->all(), [
+            'phone' => ['required', 'min:10', 'unique:info_admin', 'unique:info_user'],
+        ], [
+            'phone.required' => 'Không được bỏ trống',
+        ]);
+        if (!$validator->passes()) {
+
+            return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            if ($role) {
+                $find = InfoUser::query()->where('user_id', '=', $id)->first();
+                // dd($find);
+                if ($find) {
+                    $update = InfoUser::where('user_id','=',$id)->update(['phone' => $rq->phone]);
+                }
+                
+            } else{
+                $find = InfoAdmin::query()->where('user_id', '=', $id)->first();
+                // dd($find);
+                if ($find) {
+                    $update = InfoAdmin::where('user_id','=',$id)->update(['phone' => $rq->phone]);
+                }else{
+                    $create = InfoAdmin::create(['phone' => $rq->phone, 'user_id' => $id]);
+                }
+            }
+            $otp = rand(100000,999999);
+            $add_otp = User::where('id','=',$id)->update(['otp' => $otp]);
+            $message = "Mã OTP của bạn là:\n"
+                . "$otp"
+                . " thời gian sử dụng là 5 phút\n";
+            // dd($message);
+            Telegram::sendMessage([
+                'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                'parse_mode' => 'HTML',
+                'text' => $message
+            ]);
+            return response()->json(['status' => 1]);
+            
         }
     }
 }

@@ -159,12 +159,7 @@
                     $('.admin_name').each(function(){
                         $(this).html( $('#AdminInfoForm').find( $('input[name="name"]') ).val() );
                     });
-                    alertSuccess();
-                    window.setTimeout(function(){
-                        $("#alerts").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove(); 
-                        });
-                    }, 3000);
+                    onFinishWizard();
                 }
            }
         });
@@ -185,32 +180,36 @@
                     $(document).find('span.error-text').text('');
                 },
                 success: function(data) {
-                    console.log(data)
+                    // console.log(data)
                     if (data.status == 0) {
                         $.each(data.error, function(prefix, val) {
                             $('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
                         $('#change_pass')[0].reset();
-                        alertSuccess();
-                        window.setTimeout(function(){
-                            $("#alerts").fadeTo(500, 0).slideUp(500, function(){
-                                $(this).remove(); 
-                            });
-                        }, 3000);
+                        onFinishWizard();
+                        // window.setTimeout(function(){
+                        //     $("#alerts").fadeTo(500, 0).slideUp(500, function(){
+                        //         $(this).remove(); 
+                        //     });
+                        // }, 3000);
                     }
                 }
             });
         });
     });
 
-    function alertSuccess(message){
-        $('#alerts').append(
-            '<div class="alert alert-success">' +
-                '<button type="button" aria-hidden="true" class="close">×</button>' +
-                '<span> Đổi thành công</span>' +
-            '</div>'
-        );
+    // function alertSuccess(message){
+    //     $('#alerts').append(
+    //         '<div class="alert alert-success">' +
+    //             '<button type="button" aria-hidden="true" class="close">×</button>' +
+    //             '<span> Đổi thành công</span>' +
+    //         '</div>'
+    //     );
+    // }
+    function onFinishWizard() {
+
+    swal("Hoàn tất!", "Cập nhật thành công", "success");
     }
 </script>
 @endpush
