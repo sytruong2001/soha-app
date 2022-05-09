@@ -46,6 +46,7 @@ class AuthenticatedSessionController extends Controller
             $id = $user->id;
             $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
             $time =  Carbon::now('Asia/Ho_Chi_Minh');
+            $otp_verified =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
             $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $check = DB::table('login_log')->where('user_id', $id)->whereDate('login_time', $day)->first();
 
@@ -68,7 +69,7 @@ class AuthenticatedSessionController extends Controller
             // dd($info->phone);
             if ($info->phone) {
                 $otp = rand(100000,999999);
-                $add_otp = User::where('id','=',$id)->update(['otp' => $otp]);
+                $add_otp = User::where('id','=',$id)->update(['otp' => $otp, 'updated_at' => $time, 'otp_verified_at' => $otp_verified]);
                 $message = "Mã OTP của bạn là:\n"
                     . "$otp"
                     . " thời gian sử dụng là 5 phút\n";
@@ -101,8 +102,15 @@ class AuthenticatedSessionController extends Controller
     public function store(Request $request)
     {   
         $otp = $request->otp;
+        $time =  Carbon::now('Asia/Ho_Chi_Minh');
         $user_id = $request->id;
-        $log  = User::where('id','=', $user_id)->where('otp', '=', $otp)->first();
+        $log  = User::where('id','=', $user_id)
+                ->where('otp', '=', $otp)
+                ->where([
+                    ['updated_at', '<=', $time],
+                    ['otp_verified_at', '>=', $time],
+                ])
+                ->first();
         // dd($log);
         if ($log) {
             Auth::login($log);
@@ -116,7 +124,7 @@ class AuthenticatedSessionController extends Controller
             }
         }else{
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => trans('auth.expires'),
             ]);
         }
         
