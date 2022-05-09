@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->integer('otp')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('otp_verified_at')->nullable();
         });
     }
 
