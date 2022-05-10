@@ -22,6 +22,7 @@ class InfoUser extends Migration
             $table->string('region', 30)->nullable($value = true);
             $table->date('date_of_birth')->nullable($value = true);
             $table->integer('user_id')->unsigned()->unique();
+            $table->tinyInteger('status');
         });
     }
 

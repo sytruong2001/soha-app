@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\InfoAdmin;
 use App\Models\InfoUser;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use App\Models\Otp;
 
 
 class ApiController extends Controller
@@ -388,6 +389,7 @@ class ApiController extends Controller
     public function phone(Request $rq){
         $id = $rq->id;
         // dd($id);
+        // Kiểm tra phân quyền và thông tin nhập vào
         $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
         $validator = \Validator::make($rq->all(), [
             'phone' => ['required', 'min:10', 'unique:info_admin', 'unique:info_user'],
@@ -398,6 +400,7 @@ class ApiController extends Controller
 
             return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
+            // Kiểm tra tồn tại số điện thoại của người dùng
             if ($role) {
                 $find = InfoUser::query()->where('user_id', '=', $id)->first();
                 // dd($find);
@@ -414,8 +417,10 @@ class ApiController extends Controller
                     $create = InfoAdmin::create(['phone' => $rq->phone, 'user_id' => $id]);
                 }
             }
+            $time =  Carbon::now('Asia/Ho_Chi_Minh');
+            $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
             $otp = rand(100000,999999);
-            $add_otp = User::where('id','=',$id)->update(['otp' => $otp]);
+            $add_otp = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
             $message = "Mã OTP của bạn là:\n"
                 . "$otp"
                 . " thời gian sử dụng là 5 phút\n";
