@@ -21,7 +21,7 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'check']);
+    Route::post('login', [AuthenticatedSessionController::class, 'check'])->middleware('throttle:limit');
 
     Route::post('login-otp', [AuthenticatedSessionController::class, 'store']);
 
