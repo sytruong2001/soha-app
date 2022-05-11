@@ -180,10 +180,11 @@ function info_login() {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("history");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
-    result.classList.add("active");
+    result3.classList.remove("active");
     $("#title-option").empty();
     $.ajax({
         url: "/api/user/get-info",
@@ -319,9 +320,11 @@ function confirm(id) {
     var result = document.getElementById("pw-confirm");
     var result1 = document.getElementById("info-login");
     var result2 = document.getElementById("history");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
+    result3.classList.remove("active");
     $.ajax({
         url: "/user/reset-password",
         type: "get",
@@ -428,9 +431,11 @@ function update_info(id) {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("history");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
+    result3.classList.remove("active");
     $.ajax({
         url: "/api/user/get-info",
         type: "get",
@@ -547,9 +552,11 @@ function history(id) {
     var result = document.getElementById("history");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("info-login");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
+    result3.classList.remove("active");
     $("#title-option").empty();
     $.ajax({
         url: "/api/user/get-info-payment",
@@ -748,4 +755,142 @@ function history(id) {
             });
         },
     });
+}
+function authentication() {
+    var result = document.getElementById("authentication");
+    var result3 = document.getElementById("pw-confirm");
+    var result1 = document.getElementById("info-login");
+    var result2 = document.getElementById("history");
+    result.classList.add("active");
+    result1.classList.remove("active");
+    result2.classList.remove("active");
+    result3.classList.remove("active");
+    $("#datatable_history").empty();
+    // form điền thông tin số điện thoại và lựa chọn xác thực 2 bước bằng telegram
+    $("#title-submit").html("Xác thực đăng nhập 2 bước bằng Telegram");
+    var html = `
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Số điện thoại đăng ký Telegram</label>
+                    <input id="phone" class="form-control" type="number" name="phone" required value="" oninput="check_phone()"/>
+                    <div style="color: red" id="error-phone"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Có muốn mở xác thực 2 bước ?</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1" style="text-align:right">
+                <div class="form-group">
+                    <input id="btn-ok" type="radio" name="authen" value="0" checked/>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <div class="form-group">
+                    Đồng ý
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-1" style="text-align:right">
+                <div class="form-group">
+                    <input id="btn-no" type="radio" name="authen" value="1"/>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <div class="form-group">
+                    Không đồng ý
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <button id="updateStatus" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
+                </div>
+            </div>
+        </div>`;
+    $("#datatable_history").append(html);
+    document.getElementById("id01").style.display = "block";
+
+    // sau khi xác nhận thì sẽ xử lý thông tin tại đây
+    $("button#updateStatus").on("click", function () {
+        var phone = $("#phone").val();
+        $("#error-phone").empty();
+        if (phone.length == 0) {
+            $("#error-phone").html("Số điện thoại không được để trống");
+        } else {
+            var checked = $('input[type="radio"]:checked').val();
+
+            // gửi số điện thoại lên controller để so sánh với số điện thoại trong db
+            $.ajax({
+                url: "/api/user/get-phone",
+                type: "get",
+                dataType: "json",
+                data: { phone: phone, status: checked },
+                success: function (data) {
+                    // nếu số điện thoại đúng thì hiển thị form nhập mã otp
+                    if (data.code == 200) {
+                        $("#datatable_history").empty();
+                        $("#title-submit").html("Nhập mã xác thực OTP");
+                        var html = `
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Nhập mã OTP</label>
+                                        <input id="ma-otp" class="form-control" type="number" name="ma-otp" required/>
+                                        <div style="color: red" id="error-otp"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <button id="sendAuthen" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
+                                    </div>
+                                </div>
+                            </div>`;
+                        $("#datatable_history").append(html);
+                        $("button#sendAuthen").on("click", function () {
+                            var otp = $("#ma-otp").val();
+                            $.ajax({
+                                url: "/api/user/get-phone",
+                                type: "get",
+                                dataType: "json",
+                                data: { otp: otp, status: data.status },
+                                success: function (res) {
+                                    if (res.code == 200) {
+                                        alert(res.message);
+                                        document.getElementById(
+                                            "id01"
+                                        ).style.display = "none";
+                                    } else if (res.code == 401) {
+                                        $("#error-phone").html(res.error);
+                                    }
+                                },
+                            });
+                        });
+                    } else if (data.code == 401) {
+                        $("#error-phone").html(data.error);
+                    }
+                },
+            });
+        }
+    });
+}
+// kiểm tra độ dài của số điện thoại nhập vào
+function check_phone() {
+    var phone = $("#phone").val();
+    $("#error-phone").empty();
+    if (phone.length < 10 || phone.length > 10) {
+        $("#error-phone").html("Độ dài số điện thoại phải là 10 chữ số");
+    }
 }

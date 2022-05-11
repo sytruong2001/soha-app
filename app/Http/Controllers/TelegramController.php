@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -18,14 +19,19 @@ class TelegramController extends Controller
         $chat_id = Arr::last($activity)->message->chat->id;
         $text = Arr::last($activity)->message->text;
         $check = substr($text, 0, 6);
-        if( $check == "/start" ){
-            $otp = substr($text, 7, 6);
-            $cache_otp =  Redis::get('otp_tele');
-            if ($otp == $cache_otp) {
-                $update = InfoAdmin::where('user_id','=',$id)->update(['telegram_id' => $chat_id]);
-            }
-            else{
-                dd(Arr::last($activity));
+
+        if ($check == "/start") {
+            $check_admin = InfoAdmin::where('user_id', '=', $id)->where('telegram_id', '=', $chat_id)->count();
+            if ($check_admin == 1) {
+            } else {
+                // $otp = substr($text, 7, 6);
+                // $cache_otp =  Redis::get('otp_tele');
+                // if ($otp == $cache_otp) {
+                $update = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+                // }
+                // else{
+                // dd(Arr::last($activity));
+                // }
             }
         }
         dd(Arr::last($activity));

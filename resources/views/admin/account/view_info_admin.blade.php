@@ -120,7 +120,7 @@
                                         alt="..." />
 
                                     <h4 class="title">{{ $accounts_admin->name }}<br />
-                                        <small>{{ $accounts_admin->email }}4</small>
+                                        <small>{{ $accounts_admin->email }}</small>
                                     </h4>
                                 </a>
                             </div>

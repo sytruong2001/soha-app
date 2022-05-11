@@ -75,13 +75,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 
     Route::get('/link', function () {
-        $otp = rand(100000,999999);
+        $otp = rand(100000, 999999);
         $url = "https://t.me/SohaAppBot?start=";
-        Redis::set('otp_tele', $otp, 'EX', 100);
-        $get_otp = Redis::get('otp_tele');
-        return Redirect::to($url.$get_otp);
+        // Redis::set('otp_tele', $otp, 'EX', 100);
+        // $get_otp = Redis::get('otp_tele');
+        return Redirect::to($url . $otp);
     });
-
 });
 
 
@@ -107,6 +106,7 @@ Route::prefix('api')->group(function () {
         Route::post('/update-payment', [ApiController::class, 'UpdatePayment'])->name('user.updatePayment');
         Route::post('/update-kc', [ApiController::class, 'UpdateKC'])->name('user.updateKC');
         Route::post('/reset-password', [ApiController::class, 'changePasswordUser'])->name('user.updatePass');
+        Route::get('/get-phone', [ApiController::class, 'getPhoneUser'])->name('user.getPhone');
     });
     Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
         Route::post('/repost', [ApiController::class, 'CSKH'])->name('lock.CSKH');

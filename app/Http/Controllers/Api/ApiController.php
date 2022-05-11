@@ -308,7 +308,7 @@ class ApiController extends Controller
     function changePassword(Request $request)
     {
         //Validate form
-        
+
         $validator = \Validator::make($request->all(), [
             'old_pass' => [
                 'required', function ($attribute, $value, $fail) {
@@ -344,7 +344,8 @@ class ApiController extends Controller
         }
     }
 
-    public function phone(Request $rq){
+    public function phone(Request $rq)
+    {
         $id = $rq->id;
         // dd($id);
         // Kiểm tra phân quyền và thông tin nhập vào
@@ -363,21 +364,20 @@ class ApiController extends Controller
                 $find = InfoUser::query()->where('user_id', '=', $id)->first();
                 // dd($find);
                 if ($find) {
-                    $update = InfoUser::where('user_id','=',$id)->update(['phone' => $rq->phone]);
+                    $update = InfoUser::where('user_id', '=', $id)->update(['phone' => $rq->phone]);
                 }
-                
-            } else{
+            } else {
                 $find = InfoAdmin::query()->where('user_id', '=', $id)->first();
                 // dd($find);
                 if ($find) {
-                    $update = InfoAdmin::where('user_id','=',$id)->update(['phone' => $rq->phone]);
-                }else{
+                    $update = InfoAdmin::where('user_id', '=', $id)->update(['phone' => $rq->phone]);
+                } else {
                     $create = InfoAdmin::create(['phone' => $rq->phone, 'user_id' => $id]);
                 }
             }
             $time =  Carbon::now('Asia/Ho_Chi_Minh');
             $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
-            $otp = rand(100000,999999);
+            $otp = rand(100000, 999999);
             $add_otp = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
             $message = "Mã OTP của bạn là:\n"
                 . "$otp"
@@ -389,6 +389,63 @@ class ApiController extends Controller
                 'text' => $message
             ]);
             return response()->json(['status' => 1]);
+        }
+    }
+    public function getPhoneUser(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->get('phone')) {
+            $phone = $request->get('phone');
+            $phone_check = InfoUser::where('user_id', '=', $id)->where('phone', '=', $phone)->first();
+            if ($phone_check) {
+                $otp = rand(100000, 999999);
+                $time =  Carbon::now('Asia/Ho_Chi_Minh');
+                $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
+                // Kiểm tra tồn tại của bảng otp
+                $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                if ($find) {
+                    $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                } else {
+                    $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                }
+                $message = "Mã OTP của bạn là:\n"
+                    . "$otp"
+                    . " thời gian sử dụng là 5 phút\n";
+                // dd($message);
+                Telegram::sendMessage([
+                    'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                    'parse_mode' => 'HTML',
+                    'text' => $message
+                ]);
+                $json['status'] = $request->get('status');
+                $json['code'] = 200;
+                echo json_encode($json);
+            } else {
+                $json['code'] = 401;
+                $json['error'] = 'Sai số điện thoại';
+                echo json_encode($json);
+            }
+        } else if ($request->get('otp')) {
+            $otp = $request->get('otp');
+            $status = $request->get('status');
+            $time_check =  Carbon::now('Asia/Ho_Chi_Minh');
+            $log  = Otp::where('user_id', '=', $id)
+                ->where('otp', '=', $otp)
+                ->where([
+                    ['created_at', '<=', $time_check],
+                    ['updated_at', '>=', $time_check],
+                ])
+                ->first();
+            if ($log) {
+                $update = InfoUser::where('user_id', '=', $id)->update(['status' => $status]);
+                $json['code'] = 200;
+                $json['message'] = "Thay đổi thành công";
+                echo json_encode($json);
+            } else {
+                $json['code'] = 401;
+                $json['error'] = "Mã code sai hoặc đã hết hạn";
+                echo json_encode($json);
+            }
         }
     }
     public function changePasswordUser(Request $request)

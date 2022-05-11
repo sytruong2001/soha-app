@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function check(Request $request)
     {
-        
+
         // Kiểm tra thông tin đăng nhập (email và mật khẩu)
         $user  = User::where('email', '=', request('email'))->first();
         \Hash::check(request('password'), $user->password);
@@ -57,22 +57,24 @@ class AuthenticatedSessionController extends Controller
                     'login_time' => $time,
                 ]);
             }
-            // Lấy thông tin người đăng nhập
+            // Lấy thông tin người đăng nhập dành cho user
             if ($role) {
                 $info = DB::table('info_user')->where('user_id', '=', $id)->first();
-                if ($info->status == 0) {
-                    if ($info) {
+                // nếu mà có thông tin user trong bảng info_user thì thực hiện gửi otp
+                if ($info) {
+                    // kiểm tra status có bằng 0 hay không, nếu bằng thì cho gửi otp, nếu không thì đăng nhập luôn
+                    if ($info->status == 0) {
                         // Kiểm tra tồn tại thông tin về số điện thoại
                         if ($info->phone != null) {
-                            $otp = rand(100000,999999);
+                            $otp = rand(100000, 999999);
                             // Kiểm tra tồn tại của bảng otp
-                            // $find = DB::table('otp')->where('user_id', '=', $id)->first();
-                            // if ($find) {
-                            //     $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                            // }else{
-                            //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
-                            // }
-                            Redis::set('otp', $otp, 'EX', 300);
+                            $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                            if ($find) {
+                                $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                            } else {
+                                $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                            }
+                            // Redis::set('otp', $otp, 'EX', 300);
                             $message = "Mã OTP của bạn là:\n"
                                 . "$otp"
                                 . " thời gian sử dụng là 5 phút\n";
@@ -87,31 +89,31 @@ class AuthenticatedSessionController extends Controller
                                 'info_phone'  => $info->phone,
                                 'id' => $id,
                             ]);
-                        }    
+                        }
                         return view('auth.login-otp', [
                             'info' => $info,
                             'info_phone'  => $info->phone,
                             'id' => $id,
                         ]);
-                    }else{
-                        $create = InfoUser::create(['phone' => null, 'user_id' => $id]);
-                        return view('auth.login-otp', [
-                            'info' => $create,
-                            'info_phone'  => $create->phone,
-                            'id' => $id,
-                        ]);
-                    }
-                } else{
-                    $login = User::where('id','=', $id)->first();
-                    Auth::login($login);
-
-                    if (auth()->user()->hasRole('admin')) {
-                        return redirect()->intended(RouteServiceProvider::HOME);
-                    } else if (auth()->user()->hasRole('user')) {
-                        return redirect()->intended(RouteServiceProvider::WELCOME);
                     } else {
-                        return redirect()->intended(RouteServiceProvider::DIALOG);
+                        $login = User::where('id', '=', $id)->first();
+                        Auth::login($login);
+
+                        if (auth()->user()->hasRole('admin')) {
+                            return redirect()->intended(RouteServiceProvider::HOME);
+                        } else if (auth()->user()->hasRole('user')) {
+                            return redirect()->intended(RouteServiceProvider::WELCOME);
+                        } else {
+                            return redirect()->intended(RouteServiceProvider::DIALOG);
+                        }
                     }
+                } else {
+                    $create = InfoUser::create(['user_number' => 'SHA' . Carbon::now()->format('su'), 'phone' => null, 'user_id' => $id]);
+                    return view('auth.login-otp', [
+                        'info' => $create,
+                        'info_phone'  => $create->phone,
+                        'id' => $id,
+                    ]);
                 }
             } else {
                 $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
@@ -119,16 +121,16 @@ class AuthenticatedSessionController extends Controller
             if ($info) {
                 // Kiểm tra tồn tại thông tin về số điện thoại
                 if ($info->phone != null) {
-                    $otp = rand(100000,999999);
+                    $otp = rand(100000, 999999);
                     // Kiểm tra tồn tại của bảng otp
-                    // $find = DB::table('otp')->where('user_id', '=', $id)->first();
-                    // if ($find) {
-                    //     $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                    // }else{
-                    //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
-                    // }
+                    $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                    if ($find) {
+                        $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                    } else {
+                        $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                    }
 
-                    Redis::set('otp', $otp, 'EX', 300);
+                    // Redis::set('otp', $otp, 'EX', 300);
 
                     $message = "Mã OTP của bạn là:\n"
                         . "$otp"
@@ -144,13 +146,13 @@ class AuthenticatedSessionController extends Controller
                         'info_phone'  => $info->phone,
                         'id' => $id,
                     ]);
-                }    
+                }
                 return view('auth.login-otp', [
                     'info' => $info,
                     'info_phone'  => $info->phone,
                     'id' => $id,
                 ]);
-            }else{
+            } else {
                 $create = InfoAdmin::create(['phone' => null, 'user_id' => $id]);
                 return view('auth.login-otp', [
                     'info' => $create,
@@ -158,31 +160,30 @@ class AuthenticatedSessionController extends Controller
                     'id' => $id,
                 ]);
             }
-
         } else {
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
-        }  
+        }
     }
 
     public function store(Request $request)
-    {   
+    {
         $otp = $request->otp;
-        // $time =  Carbon::now('Asia/Ho_Chi_Minh');
+        $time =  Carbon::now('Asia/Ho_Chi_Minh');
         $user_id = $request->id;
-        // $log  = Otp::where('user_id','=', $user_id)
-        //         ->where('otp', '=', $otp)
-        //         ->where([
-        //             ['created_at', '<=', $time],
-        //             ['updated_at', '>=', $time],
-        //         ])
-        //         ->first();
-        $cache = Redis::get('otp');
-        // dd($log);
+        $log  = Otp::where('user_id', '=', $user_id)
+            ->where('otp', '=', $otp)
+            ->where([
+                ['created_at', '<=', $time],
+                ['updated_at', '>=', $time],
+            ])
+            ->first();
+        // $cache = Redis::get('otp');
         // Kiểm tra đăng nhập
-        if ($otp == $cache) {
-            $login = User::where('id','=', $user_id)->first();
+        // if ($otp == $cache) {
+        if ($log) {
+            $login = User::where('id', '=', $user_id)->first();
             Auth::login($login);
 
             if (auth()->user()->hasRole('admin')) {
@@ -192,12 +193,11 @@ class AuthenticatedSessionController extends Controller
             } else {
                 return redirect()->intended(RouteServiceProvider::DIALOG);
             }
-        }else{
+        } else {
             throw ValidationException::withMessages([
                 'email' => trans('auth.expires'),
             ]);
         }
-        
     }
 
     /**

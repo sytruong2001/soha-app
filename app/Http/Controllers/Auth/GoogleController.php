@@ -43,18 +43,20 @@ class GoogleController extends Controller
                 }
                 if ($role) {
                     $info = DB::table('info_user')->where('user_id', '=', $id)->first();
+                    dd($info);
                     if ($info->status == 0) {
                         if ($info) {
                             // Kiểm tra tồn tại thông tin về số điện thoại
                             if ($info->phone != null) {
-                                $otp = rand(100000,999999);
+                                $otp = rand(100000, 999999);
                                 // Kiểm tra tồn tại của bảng otp
                                 $find = DB::table('otp')->where('user_id', '=', $id)->first();
                                 if ($find) {
-                                    $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                                }else{
+                                    $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                                } else {
                                     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
                                 }
+                                dd($create);
                                 $message = "Mã OTP của bạn là:\n"
                                     . "$otp"
                                     . " thời gian sử dụng là 5 phút\n";
@@ -69,13 +71,13 @@ class GoogleController extends Controller
                                     'info_phone'  => $info->phone,
                                     'id' => $id,
                                 ]);
-                            }    
+                            }
                             return view('auth.login-otp', [
                                 'info' => $info,
                                 'info_phone'  => $info->phone,
                                 'id' => $id,
                             ]);
-                        }else{
+                        } else {
                             $create = InfoUser::create(['phone' => null, 'user_id' => $id]);
                             return view('auth.login-otp', [
                                 'info' => $create,
@@ -83,9 +85,9 @@ class GoogleController extends Controller
                                 'id' => $id,
                             ]);
                         }
-                    } else{
+                    } else {
                         Auth::login($user);
-    
+
                         if (auth()->user()->hasRole('admin')) {
                             return redirect()->intended(RouteServiceProvider::HOME);
                         } else if (auth()->user()->hasRole('user')) {
@@ -98,14 +100,16 @@ class GoogleController extends Controller
                     $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
                 }
                 if ($info) {
+                    // dd($info->phone);
+
                     // Kiểm tra tồn tại thông tin về số điện thoại
                     if ($info->phone != null) {
-                        $otp = rand(100000,999999);
+                        $otp = rand(100000, 999999);
                         // Kiểm tra tồn tại của bảng otp
                         $find = DB::table('otp')->where('user_id', '=', $id)->first();
                         if ($find) {
-                            $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                        }else{
+                            $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                        } else {
                             $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
                         }
                         $message = "Mã OTP của bạn là:\n"
@@ -122,13 +126,13 @@ class GoogleController extends Controller
                             'info_phone'  => $info->phone,
                             'id' => $id,
                         ]);
-                    }    
+                    }
                     return view('auth.login-otp', [
                         'info' => $info,
                         'info_phone'  => $info->phone,
                         'id' => $id,
                     ]);
-                }else{
+                } else {
                     $create = InfoAdmin::create(['phone' => null, 'user_id' => $id]);
                     return view('auth.login-otp', [
                         'info' => $create,
