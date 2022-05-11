@@ -144,7 +144,7 @@ class ApiController extends Controller
             ->update([
                 'name' => $name,
             ]);
-        $json['success'] = "Cập nhật thành công";
+        $json['message'] = "Cập nhật thành công";
         $json['code'] = 200;
         echo json_encode($json);
     }

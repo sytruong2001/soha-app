@@ -217,7 +217,6 @@
         //     );
         // }
         function onFinishWizard() {
-
             swal("Hoàn tất!", "Cập nhật thành công", "success");
         }
     </script>

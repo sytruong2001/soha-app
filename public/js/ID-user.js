@@ -59,7 +59,7 @@ function load_data() {
             </h4>
             </div>
             <div class="col-md-6 btn-update" style="text-align: right">
-            <button onClick="update_info(${data.id})">Cập nhật</button>
+            <button onClick="form_update_info(${data.id})">Cập nhật</button>
             </div>
             </div>
             <div class="row collections">
@@ -172,9 +172,7 @@ function load_data() {
         },
     });
 }
-$("button").on("click", function () {
-    console.log("button click");
-});
+
 // Lấy thông tin đăng nhập
 function info_login() {
     var result = document.getElementById("info-login");
@@ -202,7 +200,7 @@ function info_login() {
             </h4>
             </div>
             <div class="col-md-6 btn-update" style="text-align: right">
-            <button onClick="update_info(${data.id})">Cập nhật</button>
+            <button onClick="form_update_info(${data.id})">Cập nhật</button>
             </div>
             </div>
 
@@ -427,7 +425,7 @@ function confirm(id) {
     });
 }
 //  show form đổi thông tin cá nhân
-function update_info(id) {
+function form_update_info(id) {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("history");
@@ -538,7 +536,7 @@ function update() {
                 region: region,
             },
             success: function (data) {
-                alert(data.success);
+                alert(data.message);
                 info_login();
                 document.getElementById("id01").style.display = "none";
             },
@@ -756,6 +754,7 @@ function history(id) {
         },
     });
 }
+// xác thực 2 bước bằng telegram
 function authentication() {
     var result = document.getElementById("authentication");
     var result3 = document.getElementById("pw-confirm");
