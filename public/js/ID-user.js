@@ -37,7 +37,13 @@ function load_data() {
                         <i class="icon material-icons">history</i> Lịch sử giao dịch
                     </a>
                 </button>
-
+            </li>
+            <li class="nav-user">
+                <button id="authentication" onClick="authentication()">
+                    <a>
+                        <i class="icon material-icons">fingerprint</i> Cài đặt tài khoản
+                    </a>
+                </button>
             </li>
             `;
 

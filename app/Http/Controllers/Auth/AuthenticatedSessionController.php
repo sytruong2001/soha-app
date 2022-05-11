@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Redis;
 
 
 class AuthenticatedSessionController extends Controller
@@ -59,25 +60,80 @@ class AuthenticatedSessionController extends Controller
             // Lấy thông tin người đăng nhập
             if ($role) {
                 $info = DB::table('info_user')->where('user_id', '=', $id)->first();
+                if ($info->status == 0) {
+                    if ($info) {
+                        // Kiểm tra tồn tại thông tin về số điện thoại
+                        if ($info->phone != null) {
+                            $otp = rand(100000,999999);
+                            // Kiểm tra tồn tại của bảng otp
+                            // $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                            // if ($find) {
+                            //     $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                            // }else{
+                            //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                            // }
+                            Redis::set('otp', $otp, 'EX', 300);
+                            $message = "Mã OTP của bạn là:\n"
+                                . "$otp"
+                                . " thời gian sử dụng là 5 phút\n";
+                            // dd($message);
+                            Telegram::sendMessage([
+                                'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                                'parse_mode' => 'HTML',
+                                'text' => $message
+                            ]);
+                            return view('auth.login-otp', [
+                                'info' => $info,
+                                'info_phone'  => $info->phone,
+                                'id' => $id,
+                            ]);
+                        }    
+                        return view('auth.login-otp', [
+                            'info' => $info,
+                            'info_phone'  => $info->phone,
+                            'id' => $id,
+                        ]);
+                    }else{
+                        $create = InfoUser::create(['phone' => null, 'user_id' => $id]);
+                        return view('auth.login-otp', [
+                            'info' => $create,
+                            'info_phone'  => $create->phone,
+                            'id' => $id,
+                        ]);
+                    }
+                } else{
+                    $login = User::where('id','=', $id)->first();
+                    Auth::login($login);
+
+                    if (auth()->user()->hasRole('admin')) {
+                        return redirect()->intended(RouteServiceProvider::HOME);
+                    } else if (auth()->user()->hasRole('user')) {
+                        return redirect()->intended(RouteServiceProvider::WELCOME);
+                    } else {
+                        return redirect()->intended(RouteServiceProvider::DIALOG);
+                    }
+                }
             } else {
                 $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
             }
-            // dd($info);
             if ($info) {
                 // Kiểm tra tồn tại thông tin về số điện thoại
                 if ($info->phone != null) {
                     $otp = rand(100000,999999);
                     // Kiểm tra tồn tại của bảng otp
-                    $find = DB::table('otp')->where('user_id', '=', $id)->first();
-                    if ($find) {
-                        $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                    }else{
-                        $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
-                    }
+                    // $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                    // if ($find) {
+                    //     $update = Otp::where('user_id','=',$id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                    // }else{
+                    //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                    // }
+
+                    Redis::set('otp', $otp, 'EX', 300);
+
                     $message = "Mã OTP của bạn là:\n"
                         . "$otp"
                         . " thời gian sử dụng là 5 phút\n";
-                    // dd($message);
+
                     Telegram::sendMessage([
                         'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
                         'parse_mode' => 'HTML',
@@ -113,18 +169,19 @@ class AuthenticatedSessionController extends Controller
     public function store(Request $request)
     {   
         $otp = $request->otp;
-        $time =  Carbon::now('Asia/Ho_Chi_Minh');
+        // $time =  Carbon::now('Asia/Ho_Chi_Minh');
         $user_id = $request->id;
-        $log  = Otp::where('user_id','=', $user_id)
-                ->where('otp', '=', $otp)
-                ->where([
-                    ['created_at', '<=', $time],
-                    ['updated_at', '>=', $time],
-                ])
-                ->first();
+        // $log  = Otp::where('user_id','=', $user_id)
+        //         ->where('otp', '=', $otp)
+        //         ->where([
+        //             ['created_at', '<=', $time],
+        //             ['updated_at', '>=', $time],
+        //         ])
+        //         ->first();
+        $cache = Redis::get('otp');
         // dd($log);
         // Kiểm tra đăng nhập
-        if ($log) {
+        if ($otp == $cache) {
             $login = User::where('id','=', $user_id)->first();
             Auth::login($login);
 

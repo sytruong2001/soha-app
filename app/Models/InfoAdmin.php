@@ -10,7 +10,8 @@ class InfoAdmin extends Model
     use HasFactory;
     protected $fillable = [
         'phone',
-        'user_id'
+        'user_id',
+        'telegram_id'
     ];
     protected $table    = 'info_admin';
     public $timestamps  = false;

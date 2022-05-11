@@ -9,6 +9,8 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\TelegramController;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Redirect;
 
 
 /*
@@ -71,6 +73,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     });
 
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
+
+    Route::get('/link', function () {
+        $otp = rand(100000,999999);
+        $url = "https://t.me/SohaAppBot?start=";
+        Redis::set('otp_tele', $otp, 'EX', 100);
+        $get_otp = Redis::get('otp_tele');
+        return Redirect::to($url.$get_otp);
+    });
+
 });
 
 

@@ -127,9 +127,8 @@
                         </div>
                         <hr>
                         <div class="text-center">
-                            <button href="#" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
-                            <button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>
-
+                            <a href="{{ url('/admin/link') }}"><button class="btn btn-simple"><i class="fa fa-telegram"
+                                        style="font-size: 20px;"></i></button></a>
                         </div>
                     </div>
                 </div>
@@ -167,7 +166,7 @@
                     } else {
                         $('.admin_name').each(function() {
                             $(this).html($('#AdminInfoForm').find($('input[name="name"]'))
-                            .val());
+                                .val());
                         });
                         onFinishWizard();
                     }
