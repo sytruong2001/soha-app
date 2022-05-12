@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Facades\Redis;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Redis;
 
 class GoogleController extends Controller
 {

@@ -11,68 +11,68 @@
 
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
-        
+
         @if ($info_phone == null)
-        <form method="POST" action="{{ url('login-otp') }}">
-        @csrf
-            <div>Vui lòng nhập số điện thoại của bạn để nhận mã OTP</div>
-            <div>
-                <x-label for="email" :value="__('Phone')" />
-                <x-input id="phone" class="block mt-1 w-full" type="number" name="phone" required autofocus />
-                <span class="text-danger error-text phone_error"></span>
-            </div>
+            <form method="POST" action="{{ url('login-otp') }}">
+                @csrf
+                <div>Vui lòng nhập số điện thoại của bạn để nhận mã OTP</div>
+                <div>
+                    <x-label for="email" :value="__('Phone')" />
+                    <x-input id="phone" class="block mt-1 w-full" type="number" name="phone" required autofocus />
+                    <span class="text-danger error-text phone_error"></span>
+                </div>
 
-            <!-- OTP -->
-            <div class="mt-4 otp">
-                <x-label for="password" :value="__('OTP')" />
+                <!-- OTP -->
+                <div class="mt-4 otp">
+                    <x-label for="password" :value="__('OTP')" />
 
-                <x-input id="otp" class="block mt-1 w-full" type="number" name="otp" />
-                <x-input type="number" id="id" name="id" value="{{$id}}" hidden/>
-            </div>
+                    <x-input id="otp" class="block mt-1 w-full" type="number" name="otp" />
+                    <x-input type="number" id="id" name="id" value="{{ $id }}" hidden />
+                </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <!-- @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900"
+                <div class="flex items-center justify-end mt-4">
+                    <!-- @if (Route::has('password.request'))
+<a class="underline text-sm text-gray-600 hover:text-gray-900"
                         href="{{ route('password.request') }}">
                         {{ __('Forgot your password?') }}
                     </a>
-                @endif -->
+@endif -->
 
-                <x-button class="ml-3 otp" type="submit">
-                    {{ __('Login') }}
+                    <x-button class="ml-3 otp" type="submit">
+                        {{ __('Login') }}
+                    </x-button>
+                </div>
+            </form>
+            <div class="flex items-center justify-end mt-4 send-otp">
+                <x-button class="ml-3" onclick="sendOtp()">
+                    {{ __('Send OTP') }}
                 </x-button>
             </div>
-        </form>
-        <div class="flex items-center justify-end mt-4 send-otp">
-            <x-button class="ml-3" onclick="sendOtp()">
-                {{ __('Send OTP') }}
-            </x-button>
-        </div>
         @else
-        <form method="POST" action="{{ url('login-otp') }}">
-        @csrf
-            <div>Nhập mã OTP được gửi đến số {{$info->phone}}</div>
-            <div class="mt-4">
-                <x-label for="password" :value="__('OTP')" />
+            <form method="POST" action="{{ url('login-otp') }}">
+                @csrf
+                <div>Nhập mã OTP được gửi đến số {{ $info->phone }}</div>
+                <div class="mt-4">
+                    <x-label for="password" :value="__('OTP')" />
 
-                <x-input id="otp" class="block mt-1 w-full" type="number" name="otp" />
-            </div>
-            <x-input type="number" name="id" value="{{$info->user_id}}" hidden/>
-            <div class="flex items-center justify-end mt-4">
-                <!-- @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900"
+                    <x-input id="otp" class="block mt-1 w-full" type="number" name="otp" />
+                </div>
+                <x-input type="number" name="id" value="{{ $info->user_id }}" hidden />
+                <div class="flex items-center justify-end mt-4">
+                    <!-- @if (Route::has('password.request'))
+<a class="underline text-sm text-gray-600 hover:text-gray-900"
                         href="{{ route('password.request') }}">
                         {{ __('Forgot your password?') }}
                     </a>
-                @endif -->
+@endif -->
 
-                <x-button class="ml-3" type="submit">
-                    {{ __('Login') }}
-                </x-button>
-            </div>
+                    <x-button class="ml-3" type="submit">
+                        {{ __('Login') }}
+                    </x-button>
+                </div>
         @endif
         </form>
-        
+
     </x-auth-card>
 
 </x-guest-layout>
