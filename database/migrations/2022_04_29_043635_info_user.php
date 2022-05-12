@@ -23,6 +23,7 @@ class InfoUser extends Migration
             $table->date('date_of_birth')->nullable($value = true);
             $table->integer('user_id')->unsigned()->unique();
             $table->tinyInteger('status');
+            $table->bigInteger('telegram_id')->nullable($value = true);
         });
     }
 

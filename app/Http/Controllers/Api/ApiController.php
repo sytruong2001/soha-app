@@ -420,7 +420,8 @@ class ApiController extends Controller
             $time =  Carbon::now('Asia/Ho_Chi_Minh');
             $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
             $otp = rand(100000, 999999);
-            $add_otp = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+            Redis::set('otp', $otp, 'EX', 300);
+            // $add_otp = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
             $message = "Mã OTP của bạn là:\n"
                 . "$otp"
                 . " thời gian sử dụng là 5 phút\n";
