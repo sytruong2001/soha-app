@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\ProcessUpdate;
+
 
 class Kernel extends ConsoleKernel
 {
@@ -13,9 +15,13 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+    // protected $commands =[
+    //     'App\Console\Commands\UpdatedActivity'
+    // ];
+
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // $schedule->command('updated:activity')->everyMinute()->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**

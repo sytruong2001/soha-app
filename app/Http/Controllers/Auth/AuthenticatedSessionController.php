@@ -57,7 +57,7 @@ class AuthenticatedSessionController extends Controller
                     'login_time' => $time,
                 ]);
             }
-            // Lấy thông tin người đăng nhập
+            // Lấy thông tin người dùng bình thườn
             if ($role) {
                 $info = DB::table('info_user')->where('user_id', '=', $id)->first();
                 if ($info->status == 0) {
@@ -77,11 +77,19 @@ class AuthenticatedSessionController extends Controller
                                 . "$otp"
                                 . " thời gian sử dụng là 5 phút\n";
                             // dd($message);
-                            Telegram::sendMessage([
-                                'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                                'parse_mode' => 'HTML',
-                                'text' => $message
-                            ]);
+                            // if ($info->telegram_id) {
+                            //     Telegram::sendMessage([
+                            //         'chat_id' => $info->telegram_id,
+                            //         'parse_mode' => 'HTML',
+                            //         'text' => $message
+                            //     ]);
+                            // } else {
+                                Telegram::sendMessage([
+                                    'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                                    'parse_mode' => 'HTML',
+                                    'text' => $message
+                                ]);
+                            // }
                             return view('auth.login-otp', [
                                 'info' => $info,
                                 'info_phone'  => $info->phone,
@@ -116,6 +124,7 @@ class AuthenticatedSessionController extends Controller
             } else {
                 $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
             }
+            // Kiểm tra tồn tại thông tin của admin
             if ($info) {
                 // Kiểm tra tồn tại thông tin về số điện thoại
                 if ($info->phone != null) {
@@ -133,12 +142,19 @@ class AuthenticatedSessionController extends Controller
                     $message = "Mã OTP của bạn là:\n"
                         . "$otp"
                         . " thời gian sử dụng là 5 phút\n";
-
-                    Telegram::sendMessage([
-                        'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                        'parse_mode' => 'HTML',
-                        'text' => $message
-                    ]);
+                    if ($info->telegram_id) {
+                        Telegram::sendMessage([
+                            'chat_id' => $info->telegram_id,
+                            'parse_mode' => 'HTML',
+                            'text' => $message
+                        ]);
+                    } else {
+                        Telegram::sendMessage([
+                            'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                            'parse_mode' => 'HTML',
+                            'text' => $message
+                        ]);
+                    }
                     return view('auth.login-otp', [
                         'info' => $info,
                         'info_phone'  => $info->phone,

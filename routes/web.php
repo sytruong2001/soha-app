@@ -9,8 +9,6 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\TelegramController;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Redirect;
 
 
 /*
@@ -33,7 +31,6 @@ Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
 
 // Route::post('login-otp', [AuthenticatedSessionController::class, 'store']);
 
-Route::get('/updated-activity', [TelegramController::class, 'updatedActivity']);
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::controller(UserController::class)->group(function () {
@@ -73,14 +70,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 
-    Route::get('/link', function () {
-        $otp = rand(100000,999999);
-        $url = "https://t.me/SohaAppBot?start=";
-        Redis::set('otp_tele', $otp, 'EX', 100);
-        $get_otp = Redis::get('otp_tele');
-        return Redirect::to($url.$get_otp);
+    Route::controller(TelegramController::class)->group(function () {
+        Route::get('/link', 'connectTelegram');
+        Route::get('/updated-activity', 'updatedActivity');
     });
-
 });
 
 
