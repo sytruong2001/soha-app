@@ -26,7 +26,7 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
+        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("DATE_FORMAT(mua_kc_time, '%d-%m') as day_name"))
             ->whereDate('mua_kc_time', '>=', $start_date)
             ->whereDate('mua_kc_time', '<=', $end_date)
             ->groupBy(DB::raw("Date(mua_kc_time)"))
@@ -42,7 +42,7 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
+        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
             ->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
             ->groupBy(DB::raw("Date(created_at)"))
@@ -56,7 +56,7 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("Date(login_time) as day_log"))
+        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("DATE_FORMAT(login_time, '%d-%m') as day_log"))
             ->whereDate('login_time', '>=', $start_date)
             ->whereDate('login_time', '<=', $end_date)
             ->groupBy(DB::raw("Date(login_time)"), 'user_id')
@@ -70,7 +70,7 @@ class ApiController extends Controller
     {
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
-        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("Date(login_time) as day_log"))
+        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("DATE_FORMAT(login_time, '%d-%m') as day_log"))
             ->whereDate('login_time', '>=', $start_date)
             ->whereDate('login_time', '<=', $end_date)
             ->groupBy(DB::raw("Date(login_time)"), 'user_id')
@@ -85,7 +85,7 @@ class ApiController extends Controller
     {
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
-        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("Date(mua_kc_time) as day_name"))
+        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("DATE_FORMAT(mua_kc_time, '%d-%m') as day_name"))
             ->whereDate('mua_kc_time', '>=', $start_date)
             ->whereDate('mua_kc_time', '<=', $end_date)
             ->groupBy(DB::raw("Date(mua_kc_time)"))
@@ -102,7 +102,7 @@ class ApiController extends Controller
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
         //    dd($end_date);
-        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
+        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
             ->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
             ->groupBy(DB::raw("Date(created_at)"))
