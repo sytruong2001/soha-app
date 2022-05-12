@@ -33,6 +33,14 @@
             // console.log(users);
             $('#thead').empty();
             $('#tbody').empty();
+            var date = `
+            <td>Ngày</td>
+            `;
+            $('#thead').html(date);
+            var name = `
+            <td>Số người dùng đăng nhập</td>
+            `;
+            $('#tbody').html(name);
             for (key in users) {
                 if (users.hasOwnProperty(key)) {
                     var value = users[key];
