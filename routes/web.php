@@ -77,7 +77,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/updated-activity', 'updatedActivity');
     });
 });
-
+Route::middleware(['auth'])->group(function () {
+    Route::controller(TelegramController::class)->group(function () {
+        Route::get('/link', 'connectTelegram');
+        Route::get('/updated-activity', 'updatedActivity');
+    });
+});
 
 //Route cho file Api
 Route::prefix('api')->group(function () {

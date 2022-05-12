@@ -13,8 +13,10 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
 use App\Models\InfoAdmin;
+use App\Models\InfoUser;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ProcessUpdate implements ShouldQueue
 {
@@ -49,7 +51,13 @@ class ProcessUpdate implements ShouldQueue
             $otp = substr($text, 7, 6);
             $cache_otp = Redis::get('otp_tele');
             if ($otp == $cache_otp) {
-                $update = InfoAdmin::where('user_id', '=', $id_user)->update(['telegram_id' => $chat_id]);
+                $check_role = DB::table("model_has_roles")->where('role_id', '>', 2)->where('model_id', $id_user)->first();
+                // dd($check_role);
+                if ($check_role) {
+                    $update = InfoUser::where('user_id', '=', $id_user)->update(['telegram_id' => $chat_id]);
+                } else {
+                    $update = InfoAdmin::where('user_id', '=', $id_user)->update(['telegram_id' => $chat_id]);
+                }
             } else {
                 return 'mã otp k trùng';
             }

@@ -127,7 +127,7 @@
                         </div>
                         <hr>
                         <div class="text-center">
-                            <a href="{{ url('/admin/link') }}"><button class="btn btn-simple"><i class="fa fa-telegram"
+                            <a href="{{ url('/link') }}"><button class="btn btn-simple"><i class="fa fa-telegram"
                                         style="font-size: 20px;"></i></button></a>
                         </div>
                     </div>

@@ -17,6 +17,13 @@ function load_data() {
             <li><b>ID:</b> ${data.info_user.user_number}</li><br>
             <li><b>Email đăng nhập:</b> ${data.email}</li><br>
             <li><b>Số <span style="color:Orange">Coin</span> hiện tại của bạn:</b> ${data.info_user.coin} coin</li><br>
+            <li>
+                <a href="/link">
+                    <button class="btn btn-success">
+                        <i class="fa fa-telegram" style="font-size: 20px;"></i>
+                    </button>
+                </a>
+            </li>
             <li class="nav-user">
                 <button id="info-login" onClick="info_login()">
                     <a>
