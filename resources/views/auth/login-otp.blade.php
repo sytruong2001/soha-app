@@ -79,7 +79,7 @@
 <script>
     $('.otp').hide();
     const base_api = location.origin + '/api';
-    var url = base_api + location.pathname;
+    var url = base_api + '/login';
 
     function sendOtp() {
         $.ajaxSetup({
