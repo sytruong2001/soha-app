@@ -18,6 +18,7 @@ use App\Models\InfoAdmin;
 use App\Models\InfoUser;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Redis;
 
 
 class ApiController extends Controller
@@ -42,6 +43,7 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
+
         $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("Date(created_at) as day_name"))
             ->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
@@ -143,7 +145,7 @@ class ApiController extends Controller
             ->update([
                 'name' => $name,
             ]);
-        $json['success'] = "Cập nhật thành công";
+        $json['message'] = "Cập nhật thành công";
         $json['code'] = 200;
         echo json_encode($json);
     }
@@ -231,95 +233,52 @@ class ApiController extends Controller
 
     public function CSKH(Request $request)
     {
+        $id = Auth::user()->id;
         $email = $request->get('email');
         $identify_numb = $request->get('identify_numb');
-        $first = $request->get('first');
-        $first_money = $request->get('first_money');
-        $second = $request->get('second');
-        $second_money = $request->get('second_money');
-        $third = $request->get('third');
-        $third_money = $request->get('third_money');
-        $check_email = User::where('email', $email)->first();
-        if ($check_email) {
-            $check_identify_numb = DB::table('info_user')->where('user_id', $check_email->id)->where('identify_numb', $identify_numb)->first();
-            if ($check_identify_numb) {
-                $check_buy_coin = DB::table('nap_coin_log')->where('user_id', $check_email->id)->orderByDesc('id')->select(DB::raw("Date(nap_coin_time) as day_name, coin_numb as coin"))->get();
-                $count = $check_buy_coin->count();
-                if ($count == 1) {
-                    if ($first == $check_buy_coin->day_name && $first_money == $check_buy_coin->coin * 1000) {
-                        $json['id'] = $check_email->id;
-                        $json['code'] = 200;
-                        $json['message'] = "Dữ liệu gửi vào chính xác, xin chờ trong giây lát.";
-                        echo json_encode($json);
-                    } else {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 1";
-                        echo json_encode($json);
-                    }
-                } else if ($count == 2) {
-                    if ($first == $check_buy_coin[0]->day_name && $first_money == $check_buy_coin[0]->coin * 1000 && $second == $check_buy_coin[1]->day_name && $second_money == $check_buy_coin[1]->coin * 1000) {
-                        $json['id'] = $check_email->id;
-                        $json['code'] = 200;
-                        $json['message'] = "Dữ liệu gửi vào chính xác, xin chờ trong giây lát.";
-                        echo json_encode($json);
-                    } else if ($first != $check_buy_coin[0]->day_name || $first_money != $check_buy_coin[0]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 1";
-                        echo json_encode($json);
-                    } else if ($second != $check_buy_coin[1]->day_name || $second_money != $check_buy_coin[1]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 2";
-                        echo json_encode($json);
-                    }
-                } else if ($count == 3) {
-                    if ($first == $check_buy_coin[0]->day_name && $first_money == $check_buy_coin[0]->coin * 1000 && $second == $check_buy_coin[1]->day_name && $second_money == $check_buy_coin[1]->coin * 1000 && $third == $check_buy_coin[2]->day_name && $third_money == $check_buy_coin[2]->coin * 1000) {
-                        $json['id'] = $check_email->id;
-                        $json['code'] = 200;
-                        $json['message'] = "Dữ liệu gửi vào chính xác, xin chờ trong giây lát.";
-                        echo json_encode($json);
-                    } else if ($first != $check_buy_coin[0]->day_name || $first_money != $check_buy_coin[0]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 1";
-                        echo json_encode($json);
-                    } else if ($second != $check_buy_coin[1]->day_name || $second_money != $check_buy_coin[1]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 2";
-                        echo json_encode($json);
-                    } else if ($third != $check_buy_coin[2]->day_name || $third_money != $check_buy_coin[2]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 3";
-                        echo json_encode($json);
-                    }
-                } else {
-                    if ($first == $check_buy_coin[0]->day_name && $first_money == $check_buy_coin[0]->coin * 1000 && $second == $check_buy_coin[1]->day_name && $second_money == $check_buy_coin[1]->coin * 1000 && $third == $check_buy_coin[2]->day_name && $third_money == $check_buy_coin[2]->coin * 1000) {
-                        $json['id'] = $check_email->id;
-                        $json['code'] = 200;
-                        $json['message'] = "Dữ liệu gửi vào chính xác, xin chờ trong giây lát.";
-                        echo json_encode($json);
-                    } else if ($first != $check_buy_coin[0]->day_name || $first_money != $check_buy_coin[0]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 1";
-                        echo json_encode($json);
-                    } else if ($second != $check_buy_coin[1]->day_name || $second_money != $check_buy_coin[1]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 2";
-                        echo json_encode($json);
-                    } else if ($third != $check_buy_coin[2]->day_name || $third_money != $check_buy_coin[2]->coin * 1000) {
-                        $json['code'] = 202;
-                        $json['error'] = "Nhập sai lần nạp 3";
-                        echo json_encode($json);
-                    }
-                }
-            } else {
-                $json['code'] = 201;
-                $json['error'] = "Sai số chứng minh thư nhân dân/CCCD";
-                echo json_encode($json);
-            }
+        $buy_coin_1 = $request->get('first');
+        $price_1 = $request->get('first_money');
+        $buy_coin_2 = $request->get('second');
+        $price_2 = $request->get('second_money');
+        $buy_coin_3 = $request->get('third');
+        $price_3 = $request->get('third_money');
+        $time = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
+
+        $update = DB::table('locked')->where('locked_id', $id)->update([
+            'status' => 1,
+            'updated_at' => $time,
+        ]);
+        $check_req = DB::table('requested')->where('user_id', $id)->count();
+        if ($check_req == 1) {
+            $update_req = DB::table('requested')->where('user_id', $id)->update([
+                'email' => $email,
+                'identify_numb' => $identify_numb,
+                'buy_coin_1' => $buy_coin_1,
+                'price_1' => $price_1,
+                'buy_coin_2' => $buy_coin_2,
+                'price_2' => $price_2,
+                'buy_coin_3' => $buy_coin_3,
+                'price_3' => $price_3,
+                'updated_at' => $time,
+            ]);
         } else {
-            $json['code'] = 201;
-            $json['error'] = "Sai địa chỉ email";
-            echo json_encode($json);
+            $insert_req = DB::table('requested')
+                ->insert([
+                    'user_id' => $id,
+                    'email' => $email,
+                    'identify_numb' => $identify_numb,
+                    'buy_coin_1' => $buy_coin_1,
+                    'price_1' => $price_1,
+                    'buy_coin_2' => $buy_coin_2,
+                    'price_2' => $price_2,
+                    'buy_coin_3' => $buy_coin_3,
+                    'price_3' => $price_3,
+                    'created_at' => $time,
+                    'updated_at' => $time,
+                ]);
         }
+        $json['code'] = 200;
+        echo json_encode($json);
     }
 
     function changeInfo(Request $request)
@@ -350,7 +309,7 @@ class ApiController extends Controller
     function changePassword(Request $request)
     {
         //Validate form
-        
+
         $validator = \Validator::make($request->all(), [
             'old_pass' => [
                 'required', function ($attribute, $value, $fail) {
@@ -386,7 +345,8 @@ class ApiController extends Controller
         }
     }
 
-    public function phone(Request $rq){
+    public function phone(Request $rq)
+    {
         $id = $rq->id;
         // dd($id);
         // Kiểm tra phân quyền và thông tin nhập vào
@@ -405,21 +365,20 @@ class ApiController extends Controller
                 $find = InfoUser::query()->where('user_id', '=', $id)->first();
                 // dd($find);
                 if ($find) {
-                    $update = InfoUser::where('user_id','=',$id)->update(['phone' => $rq->phone]);
+                    $update = InfoUser::where('user_id', '=', $id)->update(['phone' => $rq->phone]);
                 }
-                
-            } else{
+            } else {
                 $find = InfoAdmin::query()->where('user_id', '=', $id)->first();
                 // dd($find);
                 if ($find) {
-                    $update = InfoAdmin::where('user_id','=',$id)->update(['phone' => $rq->phone]);
-                }else{
+                    $update = InfoAdmin::where('user_id', '=', $id)->update(['phone' => $rq->phone]);
+                } else {
                     $create = InfoAdmin::create(['phone' => $rq->phone, 'user_id' => $id]);
                 }
             }
             $time =  Carbon::now('Asia/Ho_Chi_Minh');
             $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
-            $otp = rand(100000,999999);
+            $otp = rand(100000, 999999);
             $add_otp = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
             $message = "Mã OTP của bạn là:\n"
                 . "$otp"
@@ -431,6 +390,77 @@ class ApiController extends Controller
                 'text' => $message
             ]);
             return response()->json(['status' => 1]);
+        }
+    }
+    public function getPhoneUser(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->get('phone')) {
+            $phone = $request->get('phone');
+            $phone_check = InfoUser::where('user_id', '=', $id)->where('phone', '=', $phone)->first();
+            if ($phone_check) {
+                $otp = rand(100000, 999999);
+                // $time =  Carbon::now('Asia/Ho_Chi_Minh');
+                // $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
+                // // Kiểm tra tồn tại của bảng otp
+                // $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                // if ($find) {
+                //     $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                // } else {
+                //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                // }
+                Redis::set('otp', $otp, 'EX', 300);
+                $message = "Mã OTP của bạn là:\n"
+                    . "$otp"
+                    . " thời gian sử dụng là 5 phút\n";
+                // dd($message);
+                Telegram::sendMessage([
+                    'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                    'parse_mode' => 'HTML',
+                    'text' => $message
+                ]);
+                $json['status'] = $request->get('status');
+                $json['code'] = 200;
+                echo json_encode($json);
+            } else {
+                $json['code'] = 401;
+                $json['error'] = 'Sai số điện thoại';
+                echo json_encode($json);
+            }
+        } else {
+            $select = InfoUser::where('user_id', '=', $id)->select('status')->first();
+            echo json_encode($select);
+        }
+    }
+    public function sendAuthen(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->get('otp')) {
+            $otp = $request->get('otp');
+            $status = $request->get('status');
+            // $time_check =  Carbon::now('Asia/Ho_Chi_Minh');
+            // $log  = Otp::where('user_id', '=', $id)
+            //     ->where('otp', '=', $otp)
+            //     ->where([
+            //         ['created_at', '<=', $time_check],
+            //         ['updated_at', '>=', $time_check],
+            //     ])
+            //     ->first();
+            $cache = Redis::get('otp');
+            if ($otp == $cache) {
+                // if ($log) {
+                $update = InfoUser::where('user_id', '=', $id)->update(['status' => $status]);
+                $json['code'] = 200;
+                $json['message'] = "Thay đổi thành công";
+                echo json_encode($json);
+            } else {
+                $json['code'] = 401;
+                $json['error'] = "Mã code sai hoặc đã hết hạn";
+                echo json_encode($json);
+            }
+        } else {
+            $status = InfoUser::where('user_id', '=', $id)->select('status')->first();
+            echo json_encode($status);
         }
     }
     public function changePasswordUser(Request $request)

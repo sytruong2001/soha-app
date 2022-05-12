@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class TelegramController extends Controller
         $chat_id = Arr::last($activity)->message->chat->id;
         $text = Arr::last($activity)->message->text;
         $check = substr($text, 0, 6);
+
         dd(Arr::last($activity));
         if( $check == "/start" ){
             $cache_otp = Redis::get('otp_tele');

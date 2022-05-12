@@ -602,10 +602,23 @@
                     },
                     success: function(res) {
                         if (res.code == 200) {
-                            alert(res.message);
-
-                        } else if (res.code == 201 || res.code == 202) {
-                            alert(res.error);
+                            $('#exampleModalLongTitle').html("Thông báo");
+                            var html = `
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Thông tin bạn nhập đã được lưu lại.</label>
+                                            <label>Xin hãy chờ đợi trong khi nhân viên hỗ trợ kiểm tra tính chính xác nếu đúng tài khoản của bạn sẽ được mở trong thời gian sớm nhất.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <a href="/logout" style="color:blue;">Thoát</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            $('.content').html(html)
                         }
                     }
                 });

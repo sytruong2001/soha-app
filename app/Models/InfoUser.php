@@ -11,7 +11,8 @@ class InfoUser extends Model
     protected $fillable = [
         'user_number',
         'user_id',
-        'coin'
+        'coin',
+        'status'
     ];
     protected $table    = 'info_user';
     public $timestamps  = false;
