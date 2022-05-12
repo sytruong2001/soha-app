@@ -1,4 +1,4 @@
-<div class="fresh-datatables">
+<div class="fresh-datatables" style="overflow: auto">
     <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
         style="width:100%">
         <thead>
@@ -15,19 +15,19 @@
 @push('js')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#datatable_user').DataTable({
-                "pagingType": "full_numbers",
-                "lengthMenu": [
-                    [5, 10, 25, 50, -1],
-                    [5, 10, 25, 50, "Tất cả"]
-                ],
-                responsive: true,
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Tìm kiếm đăng nhập hàng ngày",
-                }
+            // $('#datatable_user').DataTable({
+            //     "pagingType": "full_numbers",
+            //     "lengthMenu": [
+            //         [5, 10, 25, 50, -1],
+            //         [5, 10, 25, 50, "Tất cả"]
+            //     ],
+            //     responsive: true,
+            //     language: {
+            //         search: "_INPUT_",
+            //         searchPlaceholder: "Tìm kiếm đăng nhập hàng ngày",
+            //     }
 
-            });
+            // });
         });
         var load_detail_data = function(users) {
             // console.log(users);

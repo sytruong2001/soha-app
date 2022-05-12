@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Illuminate\Support\Facades\Redis;
 use App\Models\Otp;
-use Illuminate\Support\Facades\Redis;
 
 class GoogleController extends Controller
 {
@@ -51,24 +50,23 @@ class GoogleController extends Controller
                             // Kiểm tra tồn tại thông tin về số điện thoại
                             if ($info->phone != null) {
                                 $otp = rand(100000, 999999);
-                                // Kiểm tra tồn tại của bảng otp
-                                // $find = DB::table('otp')->where('user_id', '=', $id)->first();
-                                // if ($find) {
-                                //     $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                                // } else {
-                                //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
-                                // }
-                                // dd($create);
                                 Redis::set('otp', $otp, 'EX', 300);
                                 $message = "Mã OTP của bạn là:\n"
                                     . "$otp"
                                     . " thời gian sử dụng là 5 phút\n";
-                                // dd($message);
-                                Telegram::sendMessage([
-                                    'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                                    'parse_mode' => 'HTML',
-                                    'text' => $message
-                                ]);
+                                if ($info->telegram_id) {
+                                    Telegram::sendMessage([
+                                        'chat_id' => $info->telegram_id,
+                                        'parse_mode' => 'HTML',
+                                        'text' => $message
+                                    ]);
+                                } else {
+                                    Telegram::sendMessage([
+                                        'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                                        'parse_mode' => 'HTML',
+                                        'text' => $message
+                                    ]);
+                                }
                                 return view('auth.login-otp', [
                                     'info' => $info,
                                     'info_phone'  => $info->phone,
@@ -104,28 +102,28 @@ class GoogleController extends Controller
                     $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
                 }
                 if ($info) {
-                    // dd($info->phone);
 
                     // Kiểm tra tồn tại thông tin về số điện thoại
                     if ($info->phone != null) {
                         $otp = rand(100000, 999999);
-                        // Kiểm tra tồn tại của bảng otp
-                        // $find = DB::table('otp')->where('user_id', '=', $id)->first();
-                        // if ($find) {
-                        //     $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                        // } else {
-                        //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
-                        // }
                         Redis::set('otp', $otp, 'EX', 300);
                         $message = "Mã OTP của bạn là:\n"
                             . "$otp"
                             . " thời gian sử dụng là 5 phút\n";
                         // dd($message);
-                        Telegram::sendMessage([
-                            'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                            'parse_mode' => 'HTML',
-                            'text' => $message
-                        ]);
+                        if ($info->telegram_id) {
+                            Telegram::sendMessage([
+                                'chat_id' => $info->telegram_id,
+                                'parse_mode' => 'HTML',
+                                'text' => $message
+                            ]);
+                        } else {
+                            Telegram::sendMessage([
+                                'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                                'parse_mode' => 'HTML',
+                                'text' => $message
+                            ]);
+                        }
                         return view('auth.login-otp', [
                             'info' => $info,
                             'info_phone'  => $info->phone,
