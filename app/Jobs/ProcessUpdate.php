@@ -30,7 +30,6 @@ class ProcessUpdate implements ShouldQueue
     public function __construct($id)
     {
         $this->id = $id;
-
     }
 
     /**
@@ -46,17 +45,13 @@ class ProcessUpdate implements ShouldQueue
         $text = Arr::last($activity)->message->text;
         $check = substr($text, 0, 6);
 
-        if( $check == "/start" ){
+        if ($check == "/start") {
             $otp = substr($text, 7, 6);
             $cache_otp = Redis::get('otp_tele');
-
-
             if ($otp == $cache_otp) {
-                $update = InfoAdmin::where('user_id','=',$id_user)->update(['telegram_id' => $chat_id]);
-
-            }
-            else{
-               return 'mã otp k trùng';
+                $update = InfoAdmin::where('user_id', '=', $id_user)->update(['telegram_id' => $chat_id]);
+            } else {
+                return 'mã otp k trùng';
             }
         }
     }
