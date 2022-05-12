@@ -18,6 +18,7 @@ use App\Models\InfoAdmin;
 use App\Models\InfoUser;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Redis;
 
 
 class ApiController extends Controller
@@ -399,15 +400,16 @@ class ApiController extends Controller
             $phone_check = InfoUser::where('user_id', '=', $id)->where('phone', '=', $phone)->first();
             if ($phone_check) {
                 $otp = rand(100000, 999999);
-                $time =  Carbon::now('Asia/Ho_Chi_Minh');
-                $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
-                // Kiểm tra tồn tại của bảng otp
-                $find = DB::table('otp')->where('user_id', '=', $id)->first();
-                if ($find) {
-                    $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
-                } else {
-                    $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
-                }
+                // $time =  Carbon::now('Asia/Ho_Chi_Minh');
+                // $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
+                // // Kiểm tra tồn tại của bảng otp
+                // $find = DB::table('otp')->where('user_id', '=', $id)->first();
+                // if ($find) {
+                //     $update = Otp::where('user_id', '=', $id)->update(['otp' => $otp, 'created_at' => $time, 'updated_at' => $time_expire]);
+                // } else {
+                //     $create = Otp::create(['otp' => $otp, 'user_id' => $id, 'created_at' => $time, 'updated_at' => $time_expire]);
+                // }
+                Redis::set('otp', $otp, 'EX', 300);
                 $message = "Mã OTP của bạn là:\n"
                     . "$otp"
                     . " thời gian sử dụng là 5 phút\n";
@@ -425,18 +427,28 @@ class ApiController extends Controller
                 $json['error'] = 'Sai số điện thoại';
                 echo json_encode($json);
             }
-        } else if ($request->get('otp')) {
+        } else {
+            $select = InfoUser::where('user_id', '=', $id)->select('status')->first();
+            echo json_encode($select);
+        }
+    }
+    public function sendAuthen(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->get('otp')) {
             $otp = $request->get('otp');
             $status = $request->get('status');
-            $time_check =  Carbon::now('Asia/Ho_Chi_Minh');
-            $log  = Otp::where('user_id', '=', $id)
-                ->where('otp', '=', $otp)
-                ->where([
-                    ['created_at', '<=', $time_check],
-                    ['updated_at', '>=', $time_check],
-                ])
-                ->first();
-            if ($log) {
+            // $time_check =  Carbon::now('Asia/Ho_Chi_Minh');
+            // $log  = Otp::where('user_id', '=', $id)
+            //     ->where('otp', '=', $otp)
+            //     ->where([
+            //         ['created_at', '<=', $time_check],
+            //         ['updated_at', '>=', $time_check],
+            //     ])
+            //     ->first();
+            $cache = Redis::get('otp');
+            if ($otp == $cache) {
+                // if ($log) {
                 $update = InfoUser::where('user_id', '=', $id)->update(['status' => $status]);
                 $json['code'] = 200;
                 $json['message'] = "Thay đổi thành công";
@@ -446,6 +458,9 @@ class ApiController extends Controller
                 $json['error'] = "Mã code sai hoặc đã hết hạn";
                 echo json_encode($json);
             }
+        } else {
+            $status = InfoUser::where('user_id', '=', $id)->select('status')->first();
+            echo json_encode($status);
         }
     }
     public function changePasswordUser(Request $request)

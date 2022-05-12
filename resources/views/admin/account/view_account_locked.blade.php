@@ -181,11 +181,11 @@
                                 <th>Email</th>
                                 <th>Số CMT/CCCD</th>
                                 <th>Lần nạp 1</th>
-                                <th>Số tiền</th>
+                                <th>Số tiền(VND)</th>
                                 <th>Lần nạp 2</th>
-                                <th>Số tiền</th>
+                                <th>Số tiền(VND)</th>
                                 <th>Lần nạp 3</th>
-                                <th>Số tiền</th>
+                                <th>Số tiền(VND)</th>
                                 <th class="disabled-sorting text-right" style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
@@ -214,7 +214,7 @@
                                     </td>
                                     <td>
                                         <div style='height: 100px; overflow: auto;'>
-                                            {{ $user->price_1 }}
+                                            {{ number_format($user->price_1) }}
                                         </div>
                                     </td>
                                     <td>
@@ -224,7 +224,7 @@
                                     </td>
                                     <td>
                                         <div style='height: 100px; overflow: auto;'>
-                                            {{ $user->price_2 }}
+                                            {{ number_format($user->price_2) }}
                                         </div>
                                     </td>
                                     <td>
@@ -234,12 +234,12 @@
                                     </td>
                                     <td>
                                         <div style='height: 100px; overflow: auto;'>
-                                            {{ $user->price_3 }}
+                                            {{ number_format($user->price_3) }}
                                         </div>
                                     </td>
                                     <td class="text-right" style="text-align: center;">
-                                        <button type="button" class="btn btn-info btn-warning btn-icon edit"
-                                            data-toggle="modal" data-target="#exampleModalCenter"
+                                        <button type="button" class="btn btn-info btn-warning btn-icon search"
+                                            data-toggle="modal" data-target="#exampleModalCenter1"
                                             value="{{ $user->user_id }}"><i class="fa fa-file-text-o"></i></button>
                                         <button class="btn btn-success lock" onclick="unlock({{ $user->user_id }})"
                                             style="height: 38px; width: 38px; padding: 0 8px 0 8px"><i
@@ -254,8 +254,105 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Thông tin chi tiết</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="content">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input type="text" class="form-control" disabled id="email1_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Số CMT/CCCD</label>
+                                                    <input type="text" class="form-control" disabled id="identify_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>#3 lần nạp gần nhất</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Lần thứ 1</label>
+                                                    <input type="text" class="form-control" disabled id="date_1_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Số tiền lần 1</label>
+                                                    <input type="text" class="form-control" disabled id="money_1_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Lần thứ 2</label>
+                                                    <input type="text" class="form-control" disabled id="date_2_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Số tiền lần 2</label>
+                                                    <input type="text" class="form-control" disabled id="money_2_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Lần thứ 3</label>
+                                                    <input type="text" class="form-control" disabled id="date_3_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Số tiền lần 3</label>
+                                                    <input type="text" class="form-control" disabled id="money_3_info"
+                                                        value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div> <!-- end card -->
+        </div>
+    </div> <!-- end card -->
 
     </div> <!-- end col-md-12 -->
 @endsection
@@ -339,8 +436,52 @@
             })
         });
 
+        function covertNumber(num) {
+            return new Intl.NumberFormat("vi", {
+                style: "currency",
+                currency: "VND",
+            }).format(num);
+        }
+        $(document).on('click', '.search', function() {
+            var url = "/admin/get-request";
+            var user_id = $(this).val();
+
+
+            $.get(url + '/' + user_id, function(data) {
+                var user = data.user;
+                var coin = data.nap_coin.data;
+                $('#email1_info').val(user.email);
+                if (user.info_user.identify_numb == null) {
+                    $('#identify_info').val("Chưa có thông tin số CMT/CCCD");
+                } else {
+                    $('#identify_info').val(user.info_user.identify_numb);
+                }
+                if (coin[0] == null) {
+                    $('#date_1_info').val("Chưa có thông tin ngày nạp 1");
+                    $('#money_1_info').val("Chưa có số tiền lần nạp 1");
+                } else {
+                    $('#date_1_info').val(coin[0].nap_coin_time);
+                    $('#money_1_info').val(covertNumber(coin[0].coin_numb * 1000));
+                }
+                if (coin[1] == null) {
+                    $('#date_2_info').val("Chưa có thông tin ngày nạp 2");
+                    $('#money_2_info').val("Chưa có số tiền lần nạp 2");
+                } else {
+                    $('#date_2_info').val(coin[1].nap_coin_time);
+                    $('#money_2_info').val(covertNumber(coin[1].coin_numb * 1000));
+                }
+                if (coin[2] == null) {
+                    $('#date_3_info').val("Chưa có thông tin ngày nạp 3");
+                    $('#money_3_info').val("Chưa có số tiền lần nạp 3");
+                } else {
+                    $('#date_3_info').val(coin[2].nap_coin_time);
+                    $('#money_3_info').val(covertNumber(coin[2].coin_numb * 1000));
+                }
+            })
+        });
+
         function unlock(user_id) {
-            const base_api = location.origin
+            const base_api = location.origin;
             var url = base_api + location.pathname;
             const rs = confirm("Bạn có chắc muốn mở tài khoản này hay không?");
             if (rs) {
@@ -357,7 +498,7 @@
         }
 
         function lock(user_id) {
-            const base_api = location.origin
+            const base_api = location.origin;
             var url = base_api + location.pathname;
             const rs = confirm("Bạn có chắc muốn hủy yêu cầu mở khóa tài khoản này hay không?");
             if (rs) {
@@ -369,8 +510,7 @@
                         id: user_id,
                     },
                     success: function(res) {
-                        // console.log(res);
-                        alert("Đã hủy mở khóa tài khoản thành công!");
+                        console.log("Hủy mở khóa thành công!");
                         window.location.replace(url);
                     },
                 });

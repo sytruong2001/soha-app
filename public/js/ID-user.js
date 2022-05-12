@@ -764,125 +764,145 @@ function authentication() {
     result1.classList.remove("active");
     result2.classList.remove("active");
     result3.classList.remove("active");
-    $("#datatable_history").empty();
-    // form điền thông tin số điện thoại và lựa chọn xác thực 2 bước bằng telegram
-    $("#title-submit").html("Xác thực đăng nhập 2 bước bằng Telegram");
-    var html = `
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>Số điện thoại đăng ký Telegram</label>
-                    <input id="phone" class="form-control" type="number" name="phone" required value="" oninput="check_phone()"/>
-                    <div style="color: red" id="error-phone"></div>
+    $.ajax({
+        url: "/api/user/get-phone",
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            $("#datatable_history").empty();
+            // form điền thông tin số điện thoại và lựa chọn xác thực 2 bước bằng telegram
+            $("#title-submit").html("Xác thực đăng nhập 2 bước bằng Telegram");
+            var html = ``;
+            html += `<div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <x-auth-validation-errors class="mb-4" :errors="$errors" />
+                            <label>Số điện thoại đăng ký Telegram</label>
+                            <input id="phone" class="form-control" type="number" name="phone" required value="" oninput="check_phone()"/>
+                            <div style="color: red" id="error-phone"></div>
+                        </div>
+                    </div>
+                </div>`;
+            if (data.status == 1) {
+                html += `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            Tài khoản của bạn hiện đang "tắt" chức năng xác thực 2 bước:
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>Có muốn mở xác thực 2 bước ?</label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1" style="text-align:right">
-                <div class="form-group">
-                    <input id="btn-ok" type="radio" name="authen" value="0" checked/>
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="form-group">
-                    Đồng ý
-                </div>
-            </div>
+                `;
+            } else {
+                html += `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            Tài khoản của bạn hiện giờ đang "bật" chức năng xác thực 2 bước:
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
 
-        </div>
-        <div class="row">
-            <div class="col-md-1" style="text-align:right">
-                <div class="form-group">
-                    <input id="btn-no" type="radio" name="authen" value="1"/>
-                </div>
-            </div>
-            <div class="col-md-11">
-                <div class="form-group">
-                    Không đồng ý
-                </div>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <button id="updateStatus" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
-                </div>
-            </div>
-        </div>`;
-    $("#datatable_history").append(html);
-    document.getElementById("id01").style.display = "block";
-
+            html += `<div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button id="updateStatus" onclick="submit_phone()" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
+                            </div>
+                        </div>
+                    </div>`;
+            $("#datatable_history").append(html);
+            document.getElementById("id01").style.display = "block";
+        },
+    });
+}
+function submit_phone() {
     // sau khi xác nhận thì sẽ xử lý thông tin tại đây
-    $("button#updateStatus").on("click", function () {
-        var phone = $("#phone").val();
-        $("#error-phone").empty();
-        if (phone.length == 0) {
-            $("#error-phone").html("Số điện thoại không được để trống");
-        } else {
-            var checked = $('input[type="radio"]:checked').val();
-
-            // gửi số điện thoại lên controller để so sánh với số điện thoại trong db
-            $.ajax({
-                url: "/api/user/get-phone",
-                type: "get",
-                dataType: "json",
-                data: { phone: phone, status: checked },
-                success: function (data) {
-                    // nếu số điện thoại đúng thì hiển thị form nhập mã otp
-                    if (data.code == 200) {
-                        $("#datatable_history").empty();
-                        $("#title-submit").html("Nhập mã xác thực OTP");
-                        var html = `
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Nhập mã OTP</label>
-                                        <input id="ma-otp" class="form-control" type="number" name="ma-otp" required/>
-                                        <div style="color: red" id="error-otp"></div>
-                                    </div>
+    var phone = $("#phone").val();
+    $("#error-phone").empty();
+    if (phone.length == 0) {
+        $("#error-phone").html("Số điện thoại không được để trống");
+    } else {
+        var checked = $('input[type="checkbox"]:checked').val();
+        if (checked == "on") {
+            checked = 0;
+        } else if (checked == undefined) {
+            checked = 1;
+        }
+        // gửi số điện thoại lên controller để so sánh với số điện thoại trong db
+        $.ajax({
+            url: "/api/user/get-phone",
+            type: "get",
+            dataType: "json",
+            data: { phone: phone, status: checked },
+            success: function (data) {
+                // nếu số điện thoại đúng thì hiển thị form nhập mã otp
+                if (data.code == 200) {
+                    $("#datatable_history").empty();
+                    $("#title-submit").html("Nhập mã xác thực OTP");
+                    var html = `
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                <label>Nhập mã OTP</label>
+                                    <input id="ma-otp" class="form-control" type="number" name="ma-otp" required/>
+                                    <div style="color: red" id="error-otp"></div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <button id="sendAuthen" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <button id="sendOTP" onclick="send_otp(${data.status})" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
                                 </div>
-                            </div>`;
-                        $("#datatable_history").append(html);
-                        $("button#sendAuthen").on("click", function () {
-                            var otp = $("#ma-otp").val();
-                            $.ajax({
-                                url: "/api/user/get-phone",
-                                type: "get",
-                                dataType: "json",
-                                data: { otp: otp, status: data.status },
-                                success: function (res) {
-                                    if (res.code == 200) {
-                                        alert(res.message);
-                                        document.getElementById(
-                                            "id01"
-                                        ).style.display = "none";
-                                    } else if (res.code == 401) {
-                                        $("#error-phone").html(res.error);
-                                    }
-                                },
-                            });
-                        });
-                    } else if (data.code == 401) {
-                        $("#error-phone").html(data.error);
-                    }
-                },
-            });
-        }
+                            </div>
+                        </div>`;
+                    $("#datatable_history").append(html);
+                } else if (data.code == 401) {
+                    $("#error-phone").html(data.error);
+                }
+            },
+        });
+    }
+}
+function send_otp(status) {
+    console.log(status);
+    var otp = $("#ma-otp").val();
+    $.ajax({
+        url: "/api/user/send-authen",
+        type: "get",
+        dataType: "json",
+        data: {
+            otp: otp,
+            status: status,
+        },
+        success: function (res) {
+            if (res.code == 200) {
+                alert(res.message);
+                info_login();
+                document.getElementById("id01").style.display = "none";
+            } else if (res.code == 401) {
+                $("#error-otp").html(res.error);
+            }
+        },
     });
 }
 // kiểm tra độ dài của số điện thoại nhập vào

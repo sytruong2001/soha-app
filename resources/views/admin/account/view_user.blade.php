@@ -225,7 +225,7 @@
 
 
             $('button#post-value').on('click', function() {
-                const base_api = location.origin
+                const base_api = location.origin;
                 var url = base_api + location.pathname;
                 var msg = $('.form-group #content-msg').val();
                 if (msg == "") {

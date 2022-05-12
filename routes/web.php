@@ -64,6 +64,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::controller(AccountController::class)->group(function () {
         Route::get('/account', 'index');
+        Route::get('/get-request/{id}', 'show_req');
         Route::get('/account/{id}', 'show');
         Route::post('/lock-account', 'lockAccount');
         Route::get('/unlock-account/{id}', 'unlockAccount');
@@ -106,7 +107,8 @@ Route::prefix('api')->group(function () {
         Route::post('/update-payment', [ApiController::class, 'UpdatePayment'])->name('user.updatePayment');
         Route::post('/update-kc', [ApiController::class, 'UpdateKC'])->name('user.updateKC');
         Route::post('/reset-password', [ApiController::class, 'changePasswordUser'])->name('user.updatePass');
-        Route::get('/get-phone', [ApiController::class, 'getPhoneUser'])->name('user.getPhone');
+        Route::get('/get-phone', [ApiController::class, 'getPhoneUser'])->name('user.getPhone')->middleware('throttle:limit');
+        Route::get('/send-authen', [ApiController::class, 'sendAuthen'])->name('user.sendAuthen');
     });
     Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
         Route::post('/repost', [ApiController::class, 'CSKH'])->name('lock.CSKH');

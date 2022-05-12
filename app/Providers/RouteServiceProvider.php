@@ -62,11 +62,19 @@ class RouteServiceProvider extends ServiceProvider
     protected function configureRateLimiting()
     {
         RateLimiter::for('limit', function (Request $request) {
-            return Limit::perMinute(3)->by($request->email)->response(function (){
-                throw ValidationException::withMessages([
-                    'email' => trans('auth.limit'),
-                ]);
-            });
+            if ($request->email) {
+                return Limit::perMinute(3)->by($request->email)->response(function () {
+                    throw ValidationException::withMessages([
+                        'email' => trans('auth.limit'),
+                    ]);
+                });
+            } else if ($request->phone) {
+                return Limit::perMinute(3)->by($request->phone)->response(function () {
+                    throw ValidationException::withMessages([
+                        'phone' => trans('auth.limit'),
+                    ]);
+                });
+            }
         });
 
         RateLimiter::for('api', function (Request $request) {

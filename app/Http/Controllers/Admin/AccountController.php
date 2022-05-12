@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lock;
+use App\Models\logCoin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -41,6 +42,17 @@ class AccountController extends Controller
             ->find($id);
         return response()->json([
             'data' => $user
+        ]);
+    }
+
+    public function show_req($id)
+    {
+        $user = User::query()->with('info_user')
+            ->where('users.id', $id)->first();
+        $nap_coin = DB::table('nap_coin_log')->where('user_id', $id)->orderByDesc('id')->paginate(3);
+        return response()->json([
+            'user' => $user,
+            'nap_coin' => $nap_coin,
         ]);
     }
     public function lockAccount(Request $request)
