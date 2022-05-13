@@ -51,7 +51,6 @@ class ChartController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-
         $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
             ->whereDate('date', '>=', $start_date)
             ->whereDate('date', '<=', $end_date)
