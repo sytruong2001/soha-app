@@ -30,7 +30,6 @@
             // });
         });
         var load_detail_data = function(users) {
-            // console.log(users);
             $('#thead').empty();
             $('#tbody').empty();
             var date = `

@@ -10,15 +10,13 @@ use App\Models\logKC;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use LengthException;
-use Nette\Utils\Json;
-use App\Models\loginLog;
 use Illuminate\Support\Facades\Hash;
 use App\Models\InfoAdmin;
 use App\Models\InfoUser;
 use Telegram\Bot\Laravel\Facades\Telegram;
-use App\Models\Otp;
-
+use App\Models\RevDaily;
+use App\Models\DauDaily;
+use App\Models\NruDaily;
 
 class ApiController extends Controller
 {
@@ -26,10 +24,10 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("DATE_FORMAT(mua_kc_time, '%d-%m') as day_name"))
-            ->whereDate('mua_kc_time', '>=', $start_date)
-            ->whereDate('mua_kc_time', '<=', $end_date)
-            ->groupBy(DB::raw("Date(mua_kc_time)"))
+        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(date)"))
             ->pluck('kc_numb', 'day_name');
 
         $labels = $users->keys();
@@ -42,10 +40,10 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
-            ->whereDate('created_at', '>=', $start_date)
-            ->whereDate('created_at', '<=', $end_date)
-            ->groupBy(DB::raw("Date(created_at)"))
+        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(date)"))
             ->pluck('new_user', 'day_name');
         $labels = $users->keys();
         $data = $users->values();
@@ -56,10 +54,10 @@ class ApiController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("DATE_FORMAT(login_time, '%d-%m') as day_log"))
-            ->whereDate('login_time', '>=', $start_date)
-            ->whereDate('login_time', '<=', $end_date)
-            ->groupBy(DB::raw("Date(login_time)"), 'user_id')
+        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(login_time)"))
             ->pluck('user_log', 'day_log');
         $labels = $users->keys();
         $data = $users->values();
@@ -70,11 +68,11 @@ class ApiController extends Controller
     {
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
-        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("DATE_FORMAT(login_time, '%d-%m') as day_log"))
-            ->whereDate('login_time', '>=', $start_date)
-            ->whereDate('login_time', '<=', $end_date)
-            ->groupBy(DB::raw("Date(login_time)"), 'user_id')
-            ->pluck('user_log', 'day_log');
+        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
+        ->whereDate('date', '>=', $start_date)
+        ->whereDate('date', '<=', $end_date)
+        // ->groupBy(DB::raw("Date(login_time)"))
+        ->pluck('user_log', 'day_log');
 
         $labels = $users->keys();
         $data = $users->values();
@@ -85,10 +83,10 @@ class ApiController extends Controller
     {
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
-        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("DATE_FORMAT(mua_kc_time, '%d-%m') as day_name"))
-            ->whereDate('mua_kc_time', '>=', $start_date)
-            ->whereDate('mua_kc_time', '<=', $end_date)
-            ->groupBy(DB::raw("Date(mua_kc_time)"))
+        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(date)"))
             ->pluck('kc_numb', 'day_name');
 
         $labels = $users->keys();
@@ -102,10 +100,10 @@ class ApiController extends Controller
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
         //    dd($end_date);
-        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
-            ->whereDate('created_at', '>=', $start_date)
-            ->whereDate('created_at', '<=', $end_date)
-            ->groupBy(DB::raw("Date(created_at)"))
+        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(date)"))
             ->pluck('new_user', 'day_name');
 
         $labels = $users->keys();

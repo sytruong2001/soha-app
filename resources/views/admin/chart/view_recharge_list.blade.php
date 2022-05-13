@@ -15,19 +15,19 @@
 @push('js')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#datatable_user').DataTable({
-                // "pagingType": "full_numbers",
-                // "lengthMenu": [
-                //     [5, 10, 25, 50, -1],
-                //     [5, 10, 25, 50, "Tất cả"]
-                // ],
-                responsive: true,
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Tìm kiếm người dùng nạp",
-                }
+            // $('#datatable_user').DataTable({
+            //     // "pagingType": "full_numbers",
+            //     // "lengthMenu": [
+            //     //     [5, 10, 25, 50, -1],
+            //     //     [5, 10, 25, 50, "Tất cả"]
+            //     // ],
+            //     responsive: true,
+            //     language: {
+            //         search: "_INPUT_",
+            //         searchPlaceholder: "Tìm kiếm người dùng nạp",
+            //     }
 
-            });
+            // });
         });
 
         function convertNumber(num) {
