@@ -17,6 +17,7 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Models\RevDaily;
 use App\Models\DauDaily;
 use App\Models\NruDaily;
+use Illuminate\Support\Facades\Redis;
 
 class ApiController extends Controller
 {
@@ -69,10 +70,10 @@ class ApiController extends Controller
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
         $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
-        ->whereDate('date', '>=', $start_date)
-        ->whereDate('date', '<=', $end_date)
-        // ->groupBy(DB::raw("Date(login_time)"))
-        ->pluck('user_log', 'day_log');
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(login_time)"))
+            ->pluck('user_log', 'day_log');
 
         $labels = $users->keys();
         $data = $users->values();
@@ -128,22 +129,29 @@ class ApiController extends Controller
         $identify_numb = $request->get('identify_numb');
         $phone = $request->get('phone');
         $region = $request->get('region');
-        $data = DB::table("info_user")
-            ->where('user_id', $id)
-            ->update([
-                "identify_numb" => $identify_numb,
-                "phone" => $phone,
-                "region" => $region,
-                "date_of_birth" => $DOB,
-            ]);
-        $saveName = DB::table("users")
-            ->where('id', $id)
-            ->update([
-                'name' => $name,
-            ]);
-        $json['success'] = "Cập nhật thành công";
-        $json['code'] = 200;
-        echo json_encode($json);
+        $check_phone = DB::table('info_user')->where('phone', $phone)->where('user_id', '<>', $id)->count();
+        if ($check_phone == 0) {
+            $data = DB::table("info_user")
+                ->where('user_id', $id)
+                ->update([
+                    "identify_numb" => $identify_numb,
+                    "phone" => $phone,
+                    "region" => $region,
+                    "date_of_birth" => $DOB,
+                ]);
+            $saveName = DB::table("users")
+                ->where('id', $id)
+                ->update([
+                    'name' => $name,
+                ]);
+            $json['success'] = "Cập nhật thành công";
+            $json['code'] = 200;
+            echo json_encode($json);
+        } else {
+            $json['success'] = "Số điện thoại đã tồn tại";
+            $json['code'] = 401;
+            echo json_encode($json);
+        }
     }
     // lấy thông tin về số lượng coin và kc
     public function getInfoPayment(Request $request)
@@ -456,6 +464,60 @@ class ApiController extends Controller
                 $json['code'] = 401;
                 echo json_encode($json);
             }
+        }
+    }
+    public function getPhoneUser(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->get('phone')) {
+            $phone = $request->get('phone');
+            $phone_check = InfoUser::where('user_id', '=', $id)->where('phone', '=', $phone)->first();
+            if ($phone_check) {
+                $otp = rand(100000, 999999);
+                Redis::set('otp', $otp, 'EX', 300);
+                $message = "Mã OTP của bạn là:\n"
+                    . "$otp"
+                    . " thời gian sử dụng là 5 phút\n";
+                // dd($message);
+                Telegram::sendMessage([
+                    'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                    'parse_mode' => 'HTML',
+                    'text' => $message
+                ]);
+                $json['status'] = $request->get('status');
+                $json['code'] = 200;
+                echo json_encode($json);
+            } else {
+                $json['code'] = 401;
+                $json['error'] = 'Sai số điện thoại';
+                echo json_encode($json);
+            }
+        } else {
+            $select = InfoUser::where('user_id', '=', $id)->select('status')->first();
+            echo json_encode($select);
+        }
+    }
+    public function sendAuthen(Request $request)
+    {
+        $id = Auth::user()->id;
+        if ($request->get('otp')) {
+            $otp = $request->get('otp');
+            $status = $request->get('status');
+            $cache = Redis::get('otp');
+            if ($otp == $cache) {
+                // if ($log) {
+                $update = InfoUser::where('user_id', '=', $id)->update(['status' => $status]);
+                $json['code'] = 200;
+                $json['message'] = "Thay đổi thành công";
+                echo json_encode($json);
+            } else {
+                $json['code'] = 401;
+                $json['error'] = "Mã code sai hoặc đã hết hạn";
+                echo json_encode($json);
+            }
+        } else {
+            $status = InfoUser::where('user_id', '=', $id)->select('status')->first();
+            echo json_encode($status);
         }
     }
 }
