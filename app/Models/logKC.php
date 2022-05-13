@@ -21,10 +21,5 @@ class logKC extends Model
     {
         return $this->belongsTo(User::class);
     }
-    // // convert Y-m-d to d-m-Y when get dob Attribute
-    // public function getTimeAttribute($value)
-    // {
-    //     return Carbon::createFromFormat('Y-m-d', $value)
-    //         ->format('d-m');
-    // }
+    
 }

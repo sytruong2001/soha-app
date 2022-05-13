@@ -4,52 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use LaravelDaily\LaravelCharts\Classes\LaravelChart;
-use App\Models\logKC;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
 use Carbon\Carbon;
-use App\Models\loginLog;
+use App\Models\RevDaily;
+use App\Models\DauDaily;
+use App\Models\NruDaily;
 
 class ChartController extends Controller
 {
     public function showNRU(Request $request)
     {
         $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::today()->addDay(1);
-        if ($request->get('end_date') && $request->get('start_date')) {
-            $start_date = $request->get('start_date');
-            $end_date = $request->get('end_date');
-            $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
-                ->where([
-                    ['created_at', '>=', $start_date],
-                    ['created_at', '<=', $end_date],
-                ])
-                ->groupBy(DB::raw("Date(created_at)"))
-                ->pluck('new_user', 'day_name');
-            $labels = $users->keys();
-            $data = $users->values();
-            $datas = [
-                'labels' => $labels,
-                'data' => $data,
-            ];
-            return response()->json(['users' => $users, 'datas' => $datas, 'labels' => $labels, 'data' => $data]);
-        } else {
-            $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
-                ->where([
-                    ['created_at', '>=', $start_date],
-                    ['created_at', '<=', $end_date],
-                ])
-                ->groupBy(DB::raw("Date(created_at)"))
-                ->pluck('new_user', 'day_name');
-        }
-
         $end_date = Carbon::now()->toDateTimeString();
 
-        $users = User::select(DB::raw("COUNT(created_at) as new_user"), DB::raw("DATE_FORMAT(created_at, '%d-%m') as day_name"))
-            ->whereDate('created_at', '>=', $start_date)
-            ->whereDate('created_at', '<=', $end_date)
-            ->groupBy(DB::raw("Date(created_at)"))
+        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(date)"))
             ->pluck('new_user', 'day_name');
 
         $labels = $users->keys();
@@ -63,10 +34,10 @@ class ChartController extends Controller
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
 
-        $users = loginLog::select(DB::raw("COUNT(DISTINCT user_id) as user_log"), DB::raw("DATE_FORMAT(login_time, '%d-%m') as day_log"))
-            ->whereDate('login_time', '>=', $start_date)
-            ->whereDate('login_time', '<=', $end_date)
-            ->groupBy(DB::raw("Date(login_time)"))
+        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(login_time)"))
             ->pluck('user_log', 'day_log');
 
         $labels = $users->keys();
@@ -81,10 +52,10 @@ class ChartController extends Controller
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
 
-        $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("DATE_FORMAT(mua_kc_time, '%d-%m') as day_name"))
-            ->whereDate('mua_kc_time', '>=', $start_date)
-            ->whereDate('mua_kc_time', '<=', $end_date)
-            ->groupBy(DB::raw("Date(mua_kc_time)"))
+        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
+            ->whereDate('date', '>=', $start_date)
+            ->whereDate('date', '<=', $end_date)
+            // ->groupBy(DB::raw("Date(date)"))
             ->pluck('kc_numb', 'day_name');
 
         $labels = $users->keys();
