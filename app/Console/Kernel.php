@@ -18,10 +18,13 @@ class Kernel extends ConsoleKernel
     // protected $commands =[
     //     'App\Console\Commands\UpdatedActivity'
     // ];
-
+    protected $commands = [
+        'App\Console\Commands\Rev_daily'
+    ];
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('updated:activity')->everyMinute()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('updated:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**
@@ -31,7 +34,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
