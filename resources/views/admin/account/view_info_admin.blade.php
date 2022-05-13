@@ -127,17 +127,17 @@
                         </div>
                         <hr>
                         @if ($accounts_admin->telegram_id == null)
-                        <div class="text-center">
-                            Tài khoản của bạn chưa liên kết telegram, liên kết ngay:
-                            <a href="{{ url('/link') }}"><button class="btn btn-simple"><i class="fa fa-telegram"
-                                        style="font-size: 20px;"></i></button></a>
-                        </div>
-                        @else 
-                        <div class="text-center">
-                            Tài khoản của bạn đã liên kết telegram, liên kết lại:
-                            <a href="{{ url('/link') }}"><button class="btn btn-simple"><i class="fa fa-telegram"
-                                        style="font-size: 20px;"></i></button></a>
-                        </div>
+                            <div class="text-center">
+                                Tài khoản của bạn chưa liên kết telegram, liên kết ngay:
+                                <a target="_blank" href="{{ url('/link') }}"><button class="btn btn-simple"><i
+                                            class="fa fa-telegram" style="font-size: 20px;"></i></button></a>
+                            </div>
+                        @else
+                            <div class="text-center">
+                                Tài khoản của bạn đã liên kết telegram, liên kết lại:
+                                <a target="_blank" href="{{ url('/link') }}"><button class="btn btn-simple"><i
+                                            class="fa fa-telegram" style="font-size: 20px;"></i></button></a>
+                            </div>
                         @endif
                     </div>
                 </div>

@@ -10,7 +10,8 @@ use App\Models\InfoAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Jobs\ProcessUpdate;
-
+use App\Models\InfoUser;
+use Illuminate\Support\Facades\DB;
 
 class TelegramController extends Controller
 {
@@ -34,16 +35,22 @@ class TelegramController extends Controller
         $text = Arr::last($activity)->message->text;
         $check = substr($text, 0, 6);
 
-        dd(Arr::last($activity));
+        // dd(Arr::last($activity));
         if ($check == "/start") {
             $cache_otp = Redis::get('otp_tele');
             $otp = substr($text, 7, 6);
             if ($otp == $cache_otp) {
-                $update = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+                $role = DB::table('model_has_roles')->where('model_id', $id)->where('role_id', '>', 2)->count();
+                // dd($role);
+                if ($role == 1) {
+                    $update_telegram_id_user = InfoUser::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+                } else {
+                    $update_telegram_id_admin = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+                }
             } else {
                 return 'mã otp k trùng';
             }
         }
-        dd(Arr::last($activity));
+        // dd(Arr::last($activity));
     }
 }
