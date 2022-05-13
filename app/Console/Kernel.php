@@ -17,11 +17,15 @@ class Kernel extends ConsoleKernel
      */
 
     protected $commands = [
-        'App\Console\Commands\Rev_daily'
+        'App\Console\Commands\Rev_daily',
+        'App\Console\Commands\Nru_daily',
+        'App\Console\Commands\Dau_daily',
     ];
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('update:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('update:nru')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('update:dau')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**
