@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('updated:activity')->everyMinute()->timezone('Asia/Ho_Chi_Minh');
-        $schedule->command('updated:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('update:rev')->everyMinute()->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**
