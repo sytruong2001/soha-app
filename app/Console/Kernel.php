@@ -15,13 +15,13 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    // protected $commands =[
-    //     'App\Console\Commands\UpdatedActivity'
-    // ];
+    protected $commands =[
+        'App\Console\Commands\UpdatedActivity'
+    ];
 
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('updated:activity')->everyMinute()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('updated:activity')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**
