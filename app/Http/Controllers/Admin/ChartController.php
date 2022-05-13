@@ -80,7 +80,6 @@ class ChartController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-
         $users = logKC::select(DB::raw("SUM(kc_numb)*200 as kc_numb"), DB::raw("DATE_FORMAT(mua_kc_time, '%d-%m') as day_name"))
             ->whereDate('mua_kc_time', '>=', $start_date)
             ->whereDate('mua_kc_time', '<=', $end_date)
