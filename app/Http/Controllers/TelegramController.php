@@ -16,7 +16,7 @@ class TelegramController extends Controller
 {
     public function connectTelegram()
     {
-        $otp = rand(100000,999999);
+        $otp = rand(100000, 999999);
         $id = Auth::user()->id;
         $url = "https://t.me/SohaAppBot?start=";
         Redis::set('otp_tele', $otp, 'EX', 100);
@@ -24,7 +24,7 @@ class TelegramController extends Controller
         $processUpdate = (new ProcessUpdate($id))->delay(10);
 
         $this->dispatch($processUpdate);
-        return Redirect::to($url.$get_otp);
+        return Redirect::to($url . $get_otp);
     }
     public function updatedActivity()
     {
@@ -35,17 +35,15 @@ class TelegramController extends Controller
         $check = substr($text, 0, 6);
 
         dd(Arr::last($activity));
-        if( $check == "/start" ){
+        if ($check == "/start") {
             $cache_otp = Redis::get('otp_tele');
             $otp = substr($text, 7, 6);
             if ($otp == $cache_otp) {
-                $update = InfoAdmin::where('user_id','=',$id)->update(['telegram_id' => $chat_id]);
-            }
-            else{
-               return 'mã otp k trùng';
+                $update = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+            } else {
+                return 'mã otp k trùng';
             }
         }
         dd(Arr::last($activity));
-
     }
 }
