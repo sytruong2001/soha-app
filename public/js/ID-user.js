@@ -730,6 +730,7 @@ function history(id) {
                     type: "get",
                     dataType: "json",
                     success: function (data) {
+                        console.log(data);
                         var logKc = data.payment.log_kc;
                         var str = `
                         <thead>

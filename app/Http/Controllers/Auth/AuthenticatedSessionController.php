@@ -183,7 +183,7 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->intended(RouteServiceProvider::HOME);
             } else if (auth()->user()->hasRole('user')) {
                 return redirect()->intended(RouteServiceProvider::WELCOME);
-            } else {
+            } else if (auth()->user()->hasRole('lock')) {
                 return redirect()->intended(RouteServiceProvider::DIALOG);
             }
         } else {
