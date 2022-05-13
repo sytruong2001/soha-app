@@ -394,6 +394,7 @@ class ApiController extends Controller
             'phone' => ['required', 'min:10', 'unique:info_admin', 'unique:info_user'],
         ], [
             'phone.required' => 'Không được bỏ trống',
+            'phone.unique' => 'Số điện thoại đã được sử dụng',
         ]);
         if (!$validator->passes()) {
 
