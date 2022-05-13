@@ -530,7 +530,6 @@ function update() {
         phone.length == 10
     ) {
         console.log(phone);
-        debugger;
         $.ajax({
             url: "/api/user/update_info",
             type: "post",
@@ -543,13 +542,15 @@ function update() {
                 region: region,
             },
             success: function (data) {
-                alert(data.message);
-                info_login();
-                document.getElementById("id01").style.display = "none";
+                if (data.code == 401) {
+                    alert(data.success);
+                } else if (data.code == 200) {
+                    alert(data.success);
+                    info_login();
+                    document.getElementById("id01").style.display = "none";
+                }
             },
         });
-    } else {
-        debugger;
     }
 }
 // lịch sử giao dịch
@@ -919,4 +920,7 @@ function check_phone() {
     if (phone.length < 10 || phone.length > 10) {
         $("#error-phone").html("Độ dài số điện thoại phải là 10 chữ số");
     }
+}
+function onFinishWizard() {
+    swal("Hoàn tất!", "Cập nhật thành công", "success");
 }
