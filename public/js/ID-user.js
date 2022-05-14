@@ -20,12 +20,9 @@ function load_data() {
             if (data.info_user.telegram_id) {
                 html += `
                 <li>
-                    <a href="/link" target="_blank">
+                    <a href="/link" target="_blank" id="link-to-telegram">
                         <button class="btn btn-success">
-                            <i
-                                class="fa fa-telegram"
-                                style="font-size: 20px;"
-                            ></i>
+                            <i class="fa fa-telegram" style="font-size: 20px;"></i>
                         </button>
                     </a>
                 </li>
@@ -33,12 +30,9 @@ function load_data() {
             } else {
                 html += `
                 <li>
-                    <a href="/link" target="_blank">
+                    <a href="/link" target="_blank" id="link-to-telegram">
                         <button class="btn btn-primary">
-                            <i
-                                class="fa fa-telegram"
-                                style="font-size: 20px;"
-                            ></i>
+                            <i class="fa fa-telegram" style="font-size: 20px;"></i>
                         </button>
                     </a>
                 </li>
