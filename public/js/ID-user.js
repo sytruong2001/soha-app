@@ -20,12 +20,9 @@ function load_data() {
             if (data.info_user.telegram_id) {
                 html += `
                 <li>
-                    <a href="/link" target="_blank">
+                    <a href="/link" target="_blank" id="link-to-telegram">
                         <button class="btn btn-success">
-                            <i
-                                class="fa fa-telegram"
-                                style="font-size: 20px;"
-                            ></i>
+                            <i class="fa fa-telegram" style="font-size: 20px;"></i>
                         </button>
                     </a>
                 </li>
@@ -33,12 +30,9 @@ function load_data() {
             } else {
                 html += `
                 <li>
-                    <a href="/link" target="_blank">
+                    <a href="/link" target="_blank" id="link-to-telegram">
                         <button class="btn btn-primary">
-                            <i
-                                class="fa fa-telegram"
-                                style="font-size: 20px;"
-                            ></i>
+                            <i class="fa fa-telegram" style="font-size: 20px;"></i>
                         </button>
                     </a>
                 </li>
@@ -368,30 +362,39 @@ function confirm(id) {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-11">
                         <div class="form-group">
                             <label>Mật khẩu cũ</label>
                             <input id="re_password" class="form-control" type="password" name="re_password" required/>
                             <div style="color: red" id="error-password"></div>
                         </div>
                     </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px;" id="re_password"></i>
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-11">
                         <div class="form-group">
                             <label>Mật khẩu mới</label>
                             <input id="password" class="form-control" type="password" name="password" required/>
                             <div style="color: red" id="error-new-password"></div>
                         </div>
                     </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px" id="password"></i>
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-11">
                         <div class="form-group">
                             <label>Nhập lại mật khẩu</label>
                             <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" required/>
                             <div style="color: red" id="error-confirm"></div>
                         </div>
+                    </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px" id="password_confirmation"></i>
                     </div>
                 </div>
                 <div class="row">
@@ -404,6 +407,18 @@ function confirm(id) {
             `;
             $("#datatable_history").append(html);
             document.getElementById("id01").style.display = "block";
+            $("i").on("click", function () {
+                var eye = $(this).attr("class");
+                var id = $(this).attr("id");
+                console.log(id);
+                if (eye == "fa fa-eye-slash") {
+                    eye = $(this).attr("class", "fa fa-eye");
+                    $("#" + id).attr("type", "password");
+                } else {
+                    eye = $(this).attr("class", "fa fa-eye-slash");
+                    $("#" + id).attr("type", "text");
+                }
+            });
             $("button#updatePass").on("click", function () {
                 var email = $("#email").val();
                 var repassword = $("#re_password").val();

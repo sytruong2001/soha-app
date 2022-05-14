@@ -399,11 +399,14 @@ function nap() {
                             <input type="text" class="form-control" required id="stk">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label>Mật khẩu</label>
                             <input type="password" class="form-control" required id="pw">
                         </div>
+                    </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px;" id="re_password"></i>
                     </div>
                 </div>
                 <div id=""error>
@@ -416,6 +419,16 @@ function nap() {
                 `;
         $(".modal-footer").append(btn);
         document.getElementById("id01").style.display = "block";
+        $("i").on("click", function () {
+            var eye = $(this).attr("class");
+            if (eye == "fa fa-eye-slash") {
+                eye = $(this).attr("class", "fa fa-eye");
+                $("#pw").attr("type", "password");
+            } else {
+                eye = $(this).attr("class", "fa fa-eye-slash");
+                $("#pw").attr("type", "text");
+            }
+        });
     } else {
         $(".content").empty();
         $("#exampleModalLongTitle").empty();
