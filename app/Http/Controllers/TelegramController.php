@@ -47,6 +47,7 @@ class TelegramController extends Controller
                 } else {
                     $update_telegram_id_admin = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
                 }
+                return response()->json(['status' => 1]);
             } else {
                 return 'mã otp k trùng';
             }

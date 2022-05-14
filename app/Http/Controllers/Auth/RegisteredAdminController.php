@@ -52,6 +52,6 @@ class RegisteredAdminController extends Controller
             'user_id' => $user->id,
         ]);
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return back()->with('message', 'Thêm thành công');
     }
 }
