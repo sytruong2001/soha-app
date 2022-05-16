@@ -17,7 +17,7 @@ class StatisticService
             ->whereDate('date', '>=', $start)
             ->whereDate('date', '<=', $end)
             ->pluck('new_user', 'day_name');
-        return $users;
+        return $this->get_label_data($users);
     }
     public function get_info_dau($start, $end)
     {
@@ -25,7 +25,7 @@ class StatisticService
             ->whereDate('date', '>=', $start)
             ->whereDate('date', '<=', $end)
             ->pluck('user_log', 'day_log');
-        return $users;
+        return $this->get_label_data($users);
     }
     public function get_info_rev($start, $end)
     {
@@ -33,6 +33,18 @@ class StatisticService
             ->whereDate('date', '>=', $start)
             ->whereDate('date', '<=', $end)
             ->pluck('kc_numb', 'day_name');
-        return $users;
+        return $this->get_label_data($users);
+    }
+    public function get_label_data($users)
+    {
+        $labels = $users->keys();
+
+        $data = $users->values();
+        $result = [
+            'users' => $users,
+            'labels' => $labels,
+            'data' => $data,
+        ];
+        return $result;
     }
 }

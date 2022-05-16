@@ -22,10 +22,8 @@ class ChartController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = $this->service->get_info_nru($start_date, $end_date);
-        $labels = $users->keys();
-        $data = $users->values();
-        return view('admin.chart.view_new_register_user', compact('labels', 'data', 'users'));
+        $result = $this->service->get_info_nru($start_date, $end_date);
+        return view('admin.chart.view_new_register_user', compact('result'));
     }
 
     public function showDAU()
@@ -33,22 +31,15 @@ class ChartController extends Controller
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
 
-        $users = $this->service->get_info_dau($start_date, $end_date);
-
-        $labels = $users->keys();
-
-        $data = $users->values();
-
-        return view('admin.chart.view_daily_active_user', compact('labels', 'data', 'users'));
+        $result = $this->service->get_info_dau($start_date, $end_date);
+        return view('admin.chart.view_daily_active_user', compact('result'));
     }
 
     public function showREV(Request $request)
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = $this->service->get_info_rev($start_date, $end_date);
-        $labels = $users->keys();
-        $data = $users->values();
-        return view('admin.chart.view_revenue', compact('labels', 'data', 'users'));
+        $result = $this->service->get_info_rev($start_date, $end_date);
+        return view('admin.chart.view_revenue', compact('result'));
     }
 }

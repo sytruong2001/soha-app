@@ -48,16 +48,15 @@
                 },
             });
         });
-        var labels = {{ Js::from($labels) }};
-        var new_user = {{ Js::from($data) }};
-        var users = {{ Js::from($users) }};
+        var chart = {{ Js::from($result) }};
+        var users = chart.users;
         const data = {
-            labels: labels,
+            labels: chart.labels,
             datasets: [{
                 label: 'Doanh thu',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: new_user,
+                data: chart.data,
                 tension: 0.2
             }]
         };
@@ -90,9 +89,9 @@
                     end_date: end_date,
                 },
                 success: function(res) {
-                    load_detail_data(res.users);
-                    myChart.data.labels = res.labels;
-                    myChart.data.datasets[0].data = res.data;
+                    load_detail_data(res.result.users);
+                    myChart.data.labels = res.result.labels;
+                    myChart.data.datasets[0].data = res.result.data;
                     myChart.update();
                 },
             });
@@ -131,6 +130,5 @@
         $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
             $(this).val('');
         });
-
     </script>
 @endpush

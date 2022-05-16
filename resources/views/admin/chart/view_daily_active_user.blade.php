@@ -48,16 +48,15 @@
                 },
             });
         });
-        var labels = {{ Js::from($labels) }};
-        var daily_user = {{ Js::from($data) }};
-        var users = {{ Js::from($users) }};
+        var chart = {{ Js::from($result) }};
+        var users = chart.users;
         const data = {
-            labels: labels,
+            labels: chart.labels,
             datasets: [{
                 label: 'Người dùng đăng nhập hàng ngày',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: daily_user,
+                data: chart.data,
                 tension: 0.2
             }]
         };
@@ -76,27 +75,6 @@
         load_detail_data(users);
 
         var check = false;
-
-        // var updateChart = function() {
-        //     if (check === false) {
-        //         const base_api = location.origin + '/api';
-        //         var url = base_api + location.pathname;
-        //         $.ajax({
-        //             url: url + '/update',
-        //             type: 'GET',
-        //             dataType: 'json',
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //             success: function(data) {
-        //                 load_detail_data(data.users);
-        //                 myChart.data.labels = data.labels;
-        //                 myChart.data.datasets[0].data = data.data;
-        //                 myChart.update();
-        //             },
-        //         });
-        //     }
-        // }
         var search = function(start_date, end_date) {
             // console.log(check);
             const base_api = location.origin + '/api';
@@ -110,9 +88,9 @@
                     end_date: end_date,
                 },
                 success: function(res) {
-                    load_detail_data(res.users);
-                    myChart.data.labels = res.labels;
-                    myChart.data.datasets[0].data = res.data;
+                    load_detail_data(res.result.users);
+                    myChart.data.labels = res.result.labels;
+                    myChart.data.datasets[0].data = res.result.data;
                     myChart.update();
                 },
             });
