@@ -129,13 +129,13 @@
                         @if ($accounts_admin->telegram_id == null)
                             <div class="text-center">
                                 Tài khoản của bạn chưa liên kết telegram, liên kết ngay:
-                                <a target="_blank" href="{{ url('/link') }}"><button class="btn btn-simple"><i
+                                <a target="_blank" onclick="setTimeout(loadData, 10000);" href="{{ url('/link') }}"><button class="btn btn-simple"><i
                                             class="fa fa-telegram" style="font-size: 20px;"></i></button></a>
                             </div>
                         @else
                             <div class="text-center">
                                 Tài khoản của bạn đã liên kết telegram, liên kết lại:
-                                <a target="_blank" href="{{ url('/link') }}"><button class="btn btn-simple"><i
+                                <a target="_blank" onclick="setTimeout(loadData, 10000);" href="{{ url('/link') }}"><button class="btn btn-simple"><i
                                             class="fa fa-telegram" style="font-size: 20px;"></i></button></a>
                             </div>
                         @endif
@@ -182,6 +182,7 @@
                 }
             });
         });
+        
 
         $(function() {
             $('#change_pass').on('submit', function(e) {
@@ -206,25 +207,46 @@
                         } else {
                             $('#change_pass')[0].reset();
                             onFinishWizard();
-                            // window.setTimeout(function(){
-                            //     $("#alerts").fadeTo(500, 0).slideUp(500, function(){
-                            //         $(this).remove();
-                            //     });
-                            // }, 3000);
+                            
                         }
                     }
                 });
             });
         });
 
-        // function alertSuccess(message){
-        //     $('#alerts').append(
-        //         '<div class="alert alert-success">' +
-        //             '<button type="button" aria-hidden="true" class="close">×</button>' +
-        //             '<span> Đổi thành công</span>' +
-        //         '</div>'
-        //     );
-        // }
+        const base_api = location.origin;
+
+        function loadData() {
+            $.ajax({
+            type: "GET",
+            url: base_api + '/updated-activity',
+            dataType: 'json',
+            success: function(rs) {
+                if (rs.status == 1) {
+                    alertSuccess();
+                    window.setTimeout(function(){
+                        $("#alerts").fadeTo(500, 0).slideUp(500, function(){
+                            $(this).remove();
+                        });
+                    }, 3000);
+                }
+            },
+            error: function() {
+
+                console.log(url)
+            }
+        });
+        }
+
+        function alertSuccess(message){
+            $('#alerts').append(
+                '<div class="alert alert-success">' +
+                    '<button type="button" aria-hidden="true" class="close">×</button>' +
+                    '<span> Liên kết thành công</span>' +
+                '</div>'
+            );
+        }
+
         function onFinishWizard() {
             swal("Hoàn tất!", "Cập nhật thành công", "success");
         }

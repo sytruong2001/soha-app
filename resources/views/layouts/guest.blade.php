@@ -26,6 +26,7 @@
     <!-- CSS Files -->
     <!-- <link href="css/bootstrap.min.css" rel="stylesheet" /> -->
     <link href="css/material-kit.css?v=1.2.1" rel="stylesheet" />
+    
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -40,5 +41,5 @@
 <script src="js/jquery.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script src="js/material.min.js"></script>
-
+<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
 </html>
