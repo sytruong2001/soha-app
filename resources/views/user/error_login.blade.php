@@ -602,6 +602,7 @@
                     },
                     success: function(res) {
                         if (res.code == 200) {
+                            console.log(res.mes);
                             $('#exampleModalLongTitle').html("Thông báo");
                             var html = `
                                 <div class="row">
@@ -618,7 +619,7 @@
                                     </div>
                                 </div>
                             `;
-                            $('.content').html(html)
+                            $('.content').html(html);
                         }
                     }
                 });
