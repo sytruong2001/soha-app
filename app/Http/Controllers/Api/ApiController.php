@@ -27,14 +27,6 @@ class ApiController extends Controller
         $this->statictis = $statictis;
         $this->req = $req;
     }
-    // public function updateREV()
-    // {
-    //     $start_date = Carbon::today()->subDays(6);
-    //     $end_date = Carbon::now()->toDateTimeString();
-    //     $result = $this->statictis->get_info_rev($start_date, $end_date);
-
-    //     return response()->json(compact('result'));
-    // }
     public function showREV(Request $request)
     {
         $start_date = $request->get('start_date');
@@ -42,13 +34,6 @@ class ApiController extends Controller
         $result = $this->statictis->get_info_rev($start_date, $end_date);
         return response()->json(['result' => $result]);
     }
-    // public function updateNRU()
-    // {
-    //     $start_date = Carbon::today()->subDays(6);
-    //     $end_date = Carbon::now()->toDateTimeString();
-    //     $result = $this->statictis->get_info_nru($start_date, $end_date);
-    //     return response()->json(['result' => $result]);
-    // }
     public function showNRU(Request $request)
     {
         $start_date = $request->get('start_date');
@@ -56,17 +41,6 @@ class ApiController extends Controller
         $result = $this->statictis->get_info_nru($start_date, $end_date);
         return response()->json(['result' => $result]);
     }
-
-    // public function updateDAU()
-    // {
-    //     $start_date = Carbon::today()->subDays(6);
-    //     $end_date = Carbon::now()->toDateTimeString();
-    //     $users = $this->statictis->get_info_dau($start_date, $end_date);
-    //     $labels = $users->keys();
-    //     $data = $users->values();
-
-    //     return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
-    // }
     public function showDAU(Request $request)
     {
         $start_date = $request->get('start_date');
