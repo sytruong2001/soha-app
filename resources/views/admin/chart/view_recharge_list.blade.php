@@ -11,8 +11,6 @@
         </tbody>
     </table>
 </div>
-<<<<<<< HEAD
-=======
 
 @push('js')
     <script type="text/javascript">
@@ -64,4 +62,3 @@
         }
     </script>
 @endpush
->>>>>>> master

@@ -51,7 +51,6 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
-<<<<<<< HEAD
     Route::get('/new-register-user', [ChartController::class, 'showNRU']);
     // Route::post('/new-register-user', [ChartController::class, 'showNRU']);
     Route::get('/new-register-user/update', [ChartController::class, 'updateNRU']);
@@ -63,7 +62,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/lock-account/{id}', [AccountController::class, 'lockAccount']);
     Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
     Route::get('/account-locked', [AccountController::class, 'accountLocked']);
-=======
 
     Route::controller(ChartController::class)->group(function () {
         Route::get('/new-register-user', 'showNRU');
@@ -83,7 +81,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::post('/change-password', 'changePassword');
     });
 
->>>>>>> master
     Route::post('/account/register_admin', [RegisteredAdminController::class, 'store']);
 
     Route::controller(TelegramController::class)->group(function () {
