@@ -17,6 +17,7 @@ class InfoAdmin extends Migration
             $table->increments('id');
             $table->string('phone', 15)->nullable($value = true)->unique();
             $table->integer('user_id')->unsigned()->unique();
+            $table->bigInteger('telegram_id')->nullable($value = true);
         });
     }
 

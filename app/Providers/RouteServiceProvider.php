@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public const HOME = '/admin';
     public const WELCOME = '/user/dashboard';
+    public const DIALOG = '/lock';
 
 
     /**
@@ -59,6 +61,22 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
+        RateLimiter::for('limit', function (Request $request) {
+            if ($request->email) {
+                return Limit::perMinute(3)->by($request->email)->response(function () {
+                    throw ValidationException::withMessages([
+                        'email' => trans('auth.limit'),
+                    ]);
+                });
+            } else if ($request->phone) {
+                return Limit::perMinute(3)->by($request->phone)->response(function () {
+                    throw ValidationException::withMessages([
+                        'phone' => trans('auth.limit'),
+                    ]);
+                });
+            }
+        });
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });

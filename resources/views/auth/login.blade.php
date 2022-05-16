@@ -39,7 +39,7 @@
             <div class="mt-4">
                 <x-label for="password" :value="__('Password')" />
 
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
+                <x-input id="password" data-toggle="password" class="mt-1 w-near-full" type="password" name="password" required
                     autocomplete="current-password" />
             </div>
 

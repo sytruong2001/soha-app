@@ -53,6 +53,7 @@ class RegisteredUserController extends Controller
         $info_user = InfoUser::create([
             'user_number' => 'SHA' . Carbon::now()->format('su'),
             'user_id' => $user->id,
+            'status' => 0,
         ]);
         $time =  Carbon::now('Asia/Ho_Chi_Minh');
         $loginLog = DB::table("login_log")->insert([

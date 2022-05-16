@@ -9,7 +9,7 @@ $(document).ready(function () {
 load_data();
 function load_data() {
     $.ajax({
-        url: "/user/get-info-payment",
+        url: "/api/user/get-info-payment",
         type: "get",
         dataType: "json",
         success: function (res) {
@@ -261,16 +261,18 @@ function mua_kc() {
     $("button").on("click", function () {
         var value = $(this).val();
         $.ajax({
-            url: "/user/get-info-payment",
+            url: "/api/user/get-info-payment",
             type: "get",
             dataType: "json",
             success: function (res) {
                 var data = res.payment;
                 if (value / 5 > data.info_user.coin) {
                     $(".content").empty();
-                    $("#exampleModalLongTitle").empty();
                     $(".modal-footer").empty();
-                    $("#exampleModalLongTitle").append("ĐÃ XẢY RA LỖI");
+                    $("#exampleModalLongTitle").html("ĐÃ XẢY RA LỖI");
+                    document.getElementById(
+                        "exampleModalLongTitle"
+                    ).style.color = "red";
                     var html = `
                         <form>
                             <div class="row">
@@ -292,6 +294,9 @@ function mua_kc() {
                     $("#exampleModalLongTitle").append(
                         "XÁC NHẬN MUA KIM CƯƠNG"
                     );
+                    document.getElementById(
+                        "exampleModalLongTitle"
+                    ).style.color = "green";
                     var html = `
                     <form>
                         <div class="row">
@@ -331,7 +336,7 @@ function mua_kc() {
                     `;
                     $(".content").append(html);
                     var btn = `
-                    <input type="submit" class="btn btn-primary" value="Xác nhận" onClick="save1(${value})">
+                    <input type="submit" class="btn btn-success" value="Xác nhận" onClick="save1(${value})">
                     `;
                     $(".modal-footer").append(btn);
                     document.getElementById("id01").style.display = "block";
@@ -352,28 +357,30 @@ function sum_price() {
 function nap() {
     var sc = document.getElementById("sum-coin");
     var spr = document.getElementById("sum-price-vnd");
-    if (sc.value != undefined) {
+    let num = new Intl.NumberFormat("vi", {
+        style: "currency",
+        currency: "VND",
+    }).format(spr.value);
+    if (sc.value != 0 && sc.value != "" && sc.value != undefined) {
         $(".content").empty();
-        $("#exampleModalLongTitle").empty();
         $(".modal-footer").empty();
-        $("#exampleModalLongTitle").append("XÁC NHẬN NẠP COIN");
+        $("#exampleModalLongTitle").html("XÁC NHẬN NẠP COIN");
+        document.getElementById("exampleModalLongTitle").style.color = "green";
         var html = `
             <form>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Số coin muốn mua</label>
                             <input type="text" class="form-control" disabled
                             value="${sc.value}">
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label>Tổng tiền phải trả</label>
                             <input type="text" class="form-control" disabled
-                            value="${spr.value}">
+                            value="${num}">
                         </div>
                     </div>
                 </div>
@@ -392,11 +399,14 @@ function nap() {
                             <input type="text" class="form-control" required id="stk">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label>Mật khẩu</label>
                             <input type="password" class="form-control" required id="pw">
                         </div>
+                    </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px;" id="re_password"></i>
                     </div>
                 </div>
                 <div id=""error>
@@ -405,15 +415,26 @@ function nap() {
             `;
         $(".content").append(html);
         var btn = `
-                <input type="submit" class="btn btn-primary" value="Xác nhận" onClick="save()">
+                <input type="submit" class="btn btn-success" value="Xác nhận" onClick="save()">
                 `;
         $(".modal-footer").append(btn);
         document.getElementById("id01").style.display = "block";
+        $("i").on("click", function () {
+            var eye = $(this).attr("class");
+            if (eye == "fa fa-eye-slash") {
+                eye = $(this).attr("class", "fa fa-eye");
+                $("#pw").attr("type", "password");
+            } else {
+                eye = $(this).attr("class", "fa fa-eye-slash");
+                $("#pw").attr("type", "text");
+            }
+        });
     } else {
         $(".content").empty();
         $("#exampleModalLongTitle").empty();
         $(".modal-footer").empty();
         $("#exampleModalLongTitle").append("ĐÃ XẢY RA LỖI");
+        document.getElementById("exampleModalLongTitle").style.color = "red";
         var html = `
             <form>
                 <div class="row">
@@ -438,7 +459,7 @@ function save() {
     var pw = $("#pw").val();
     if (name_bank != "" && stk != "" && pw != "") {
         $.ajax({
-            url: "/user/update-payment",
+            url: "/api/user/update-payment",
             type: "post",
             dataType: "json",
             data: { coin: sc.value },
@@ -461,7 +482,7 @@ function save() {
 }
 function save1(KC) {
     $.ajax({
-        url: "/user/update-kc",
+        url: "/api/user/update-kc",
         type: "post",
         dataType: "json",
         data: { kc: KC },

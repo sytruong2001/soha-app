@@ -38,13 +38,6 @@
                                                             <th>Thời gian</th>
                                                         </tr>
                                                     </thead>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th>Mã giao dịch</th>
-                                                            <th>Số lượng</th>
-                                                            <th>Thời gian</th>
-                                                        </tr>
-                                                    </tfoot>
                                                     <tbody id="body-history">
 
                                                     </tbody>

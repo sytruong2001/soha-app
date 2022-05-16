@@ -63,7 +63,7 @@
         };
 
         const config = {
-            type: 'line',
+            type: 'bar',
             data: data,
             options: {}
         };
@@ -77,29 +77,29 @@
 
         var check = false;
 
-        var updateChart = function() {
-            if (check === false) {
-                const base_api = location.origin
-                var url = base_api + location.pathname;
-                $.ajax({
-                    url: url + '/update',
-                    type: 'GET',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(data) {
-                        load_detail_data(data.users);
-                        myChart.data.labels = data.labels;
-                        myChart.data.datasets[0].data = data.data;
-                        myChart.update();
-                    },
-                });
-            }
-        }
+        // var updateChart = function() {
+        //     if (check === false) {
+        //         const base_api = location.origin + '/api';
+        //         var url = base_api + location.pathname;
+        //         $.ajax({
+        //             url: url + '/update',
+        //             type: 'GET',
+        //             dataType: 'json',
+        //             headers: {
+        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //             },
+        //             success: function(data) {
+        //                 load_detail_data(data.users);
+        //                 myChart.data.labels = data.labels;
+        //                 myChart.data.datasets[0].data = data.data;
+        //                 myChart.update();
+        //             },
+        //         });
+        //     }
+        // }
         var search = function(start_date, end_date) {
-            console.log(check);
-            const base_api = location.origin;
+            // console.log(check);
+            const base_api = location.origin + '/api';
             var url = base_api + location.pathname;
             $.ajax({
                 url: url,
@@ -143,7 +143,7 @@
 
         $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
             $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-            console.log(111);
+            // console.log(111);
             check = true
             search(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
         });
@@ -151,8 +151,8 @@
         $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
             $(this).val('');
         });
-        setInterval(() => {
-            updateChart();
-        }, 60000);
+        // setInterval(() => {
+        //     updateChart();
+        // }, 60000);
     </script>
 @endpush

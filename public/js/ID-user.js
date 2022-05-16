@@ -9,16 +9,38 @@ $(document).ready(function () {
 load_data();
 function load_data() {
     $.ajax({
-        url: "/user/get-info",
+        url: "/api/user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
-            var html = `
-            <li><b>ID:</b> ${data.info_user.user_number}</li><br>
+            var html = ``;
+            html += `<li><b>ID:</b> ${data.info_user.user_number}</li><br>
             <li><b>Email đăng nhập:</b> ${data.email}</li><br>
-            <li><b>Số <span style="color:Orange">Coin</span> hiện tại của bạn:</b> ${data.info_user.coin} coin</li><br>
-            <li class="nav-user">
-                <button id="info-login" onClick="info_login(${data.id})">
+            <li><b>Số <span style="color:Orange">Coin</span> hiện tại của bạn:</b> ${data.info_user.coin} coin</li><br>`;
+            if (data.info_user.telegram_id) {
+                html += `
+                <li>
+                    <a href="/link" target="_blank" id="link-to-telegram">
+                        <button class="btn btn-success">
+                            <i class="fa fa-telegram" style="font-size: 20px;"></i>
+                        </button>
+                    </a>
+                </li>
+                `;
+            } else {
+                html += `
+                <li>
+                    <a href="/link" target="_blank" id="link-to-telegram">
+                        <button class="btn btn-primary">
+                            <i class="fa fa-telegram" style="font-size: 20px;"></i>
+                        </button>
+                    </a>
+                </li>
+                `;
+            }
+
+            html += `<li class="nav-user">
+                <button id="info-login" onClick="info_login()">
                     <a>
                         <i class="icon material-icons">info</i> <span>Thông tin đăng nhập</span>
                     </a>
@@ -37,7 +59,13 @@ function load_data() {
                         <i class="icon material-icons">history</i> Lịch sử giao dịch
                     </a>
                 </button>
-
+            </li>
+            <li class="nav-user">
+                <button id="authentication" onClick="authentication()">
+                    <a>
+                        <i class="icon material-icons">fingerprint</i> Cài đặt tài khoản
+                    </a>
+                </button>
             </li>
             `;
 
@@ -53,7 +81,7 @@ function load_data() {
             </h4>
             </div>
             <div class="col-md-6 btn-update" style="text-align: right">
-            <button onClick="update_info(${data.id})">Cập nhật</button>
+            <button onClick="form_update_info(${data.id})">Cập nhật</button>
             </div>
             </div>
             <div class="row collections">
@@ -166,21 +194,20 @@ function load_data() {
         },
     });
 }
-$("button").on("click", function () {
-    console.log("button click");
-});
+
 // Lấy thông tin đăng nhập
-function info_login(id) {
+function info_login() {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("history");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
-    result.classList.add("active");
+    result3.classList.remove("active");
     $("#title-option").empty();
     $.ajax({
-        url: "user/get-info",
+        url: "/api/user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
@@ -195,7 +222,7 @@ function info_login(id) {
             </h4>
             </div>
             <div class="col-md-6 btn-update" style="text-align: right">
-            <button onClick="update_info(${data.id})">Cập nhật</button>
+            <button onClick="form_update_info(${data.id})">Cập nhật</button>
             </div>
             </div>
 
@@ -313,195 +340,253 @@ function confirm(id) {
     var result = document.getElementById("pw-confirm");
     var result1 = document.getElementById("info-login");
     var result2 = document.getElementById("history");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
-    $("#title-option").empty();
+    result3.classList.remove("active");
     $.ajax({
         url: "/user/reset-password",
         type: "get",
         dataType: "json",
         success: function (data) {
+            $("#datatable_history").empty();
+            $("#title-submit").html("CẬP NHẬT MẬT KHẨU");
             var html = `
-            <div class="col-md-12 col-md-offset-1">
-                <div class="row collections">
-                    <div class="col-md-6" style="text-align: left">
-                    <h4 class="title">
-                        <a href="">
-                            <i class="icon material-icons">account_circle</i> Cập nhật mật khẩu
-                        </a>
-                    </h4>
-                    </div>
-
-                </div>
-
-                <div class="row collections">
+                <div class="row">
                     <div class="col-md-12">
-                            <div class="row collections">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-7">
-                                    Email:
-                                    <input id="email" class="pw-confirm"
-                                    type="email"
-                                    name="email"
-                                    readonly
-                                    value="${data}"/>
-                                    Mật khẩu cũ:
-                                    <input id="re_password" class="pw-confirm"
-                                    type="password"
-                                    name="re_password"
-                                    required/>
-                                    <div style="color: red" id="error-password"></div>
-                                    Mật khẩu mới:
-                                    <input id="password" class="pw-confirm"
-                                    type="password"
-                                    name="password"
-                                    required/>
-                                    Nhập lại mật khẩu mới:
-                                    <input id="password_confirmation" class="pw-confirm"
-                                    type="password"
-                                    name="password_confirmation"
-                                    required/>
-                                    <div style="color: red" id="error-confirm"></div>
-                                </div>
-                                <div class="col-md-6"></div>
-                            </div>
-                            <div class="row collections">
-                                <div class="col-md-7 btn-update" style="text-align: right">
-                                    <button id="updatePass">Cập nhật</button>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input id="email" class="form-control" type="email" name="email" readonly value="${data}"/>
+                        </div>
                     </div>
                 </div>
-
-            </div>
+                <div class="row">
+                    <div class="col-md-11">
+                        <div class="form-group">
+                            <label>Mật khẩu cũ</label>
+                            <input id="re_password" class="form-control" type="password" name="re_password" required/>
+                            <div style="color: red" id="error-password"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px;" id="re_password"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11">
+                        <div class="form-group">
+                            <label>Mật khẩu mới</label>
+                            <input id="password" class="form-control" type="password" name="password" required/>
+                            <div style="color: red" id="error-new-password"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px" id="password"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11">
+                        <div class="form-group">
+                            <label>Nhập lại mật khẩu</label>
+                            <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" required/>
+                            <div style="color: red" id="error-confirm"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                            <i class="fa fa-eye" aria-hidden="true" style="margin-top:60px" id="password_confirmation"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button id="updatePass" class="btn btn-success" style="margin:auto; display:block">Cập nhật</button>
+                        </div>
+                    </div>
+                </div>
             `;
-            $("#title-option").append(html);
+            $("#datatable_history").append(html);
+            document.getElementById("id01").style.display = "block";
+            $("i").on("click", function () {
+                var eye = $(this).attr("class");
+                var id = $(this).attr("id");
+                console.log(id);
+                if (eye == "fa fa-eye-slash") {
+                    eye = $(this).attr("class", "fa fa-eye");
+                    $("#" + id).attr("type", "password");
+                } else {
+                    eye = $(this).attr("class", "fa fa-eye-slash");
+                    $("#" + id).attr("type", "text");
+                }
+            });
             $("button#updatePass").on("click", function () {
                 var email = $("#email").val();
                 var repassword = $("#re_password").val();
                 var password = $("#password").val();
                 var password_confirmation = $("#password_confirmation").val();
-                $.ajax({
-                    url: "/user/reset-password",
-                    type: "post",
-                    dataType: "json",
-                    data: {
-                        email: email,
-                        repassword: repassword,
-                        password: password,
-                        password_confirmation: password_confirmation,
-                    },
-                    success: function (data) {
-                        if (data.code == 400) {
-                            $("#error-password").empty();
-                            $("#error-confirm").append(data.error);
-                        } else if (data.code == 401) {
-                            $("#error-confirm").empty();
-                            $("#error-password").append(data.error);
-                        } else if (data.code == 200) {
-                            $("#error-confirm").empty();
-                            $("#error-password").empty();
-                            $("#password_confirmation").val("");
-                            $("#re_password").val("");
-                            $("#password").val("");
-                            alert(data.message);
-                        }
-                    },
-                });
+                $("#error-confirm").empty();
+                $("#error-password").empty();
+                $("#error-new-password").empty();
+                if (repassword.length == "") {
+                    $("#error-password").html("Chưa nhập mật khẩu cũ");
+                } else {
+                    if (password.length < 8) {
+                        $("#error-new-password").html(
+                            "Độ dài mật khẩu phải từ 8 kí tự trở lên"
+                        );
+                    } else {
+                        $.ajax({
+                            url: "/api/user/reset-password",
+                            type: "post",
+                            dataType: "json",
+                            data: {
+                                email: email,
+                                repassword: repassword,
+                                password: password,
+                                password_confirmation: password_confirmation,
+                            },
+                            success: function (data) {
+                                if (data.code == 400) {
+                                    $("#error-confirm").html(data.error);
+                                } else if (data.code == 401) {
+                                    $("#error-password").html(data.error);
+                                } else if (data.code == 200) {
+                                    $("#password_confirmation").val("");
+                                    $("#re_password").val("");
+                                    $("#password").val("");
+                                    alert(data.message);
+                                    document.getElementById(
+                                        "id01"
+                                    ).style.display = "none";
+                                }
+                            },
+                        });
+                    }
+                }
             });
         },
     });
 }
 //  show form đổi thông tin cá nhân
-function update_info(id) {
+function form_update_info(id) {
     var result = document.getElementById("info-login");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("history");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
-    $("#title-option").empty();
+    result3.classList.remove("active");
     $.ajax({
-        url: "user/get-info",
+        url: "/api/user/get-info",
         type: "get",
         dataType: "json",
         success: function (data) {
+            $("#datatable_history").empty();
+            $("#title-submit").html("CẬP NHẬT THÔNG TIN CÁ NHÂN");
             var html = `
-            <div class="col-md-12 col-md-offset-1">
-            <h4 class="title">
-                <a href="">
-                    <i class="icon material-icons">drive_file_rename_outline</i> Cập nhật thông tin cá nhân
-                </a>
-            </h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Họ và tên <span style="color:red">*</span></label>
+                            <input id="name-user" class="form-control" type="text" name="name" required value="${data.name}"/>
+                            <i id="error-name-user" style="color:red"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ngày sinh</label>
+                            <input id="date-of-birth-user" class="form-control" type="date" name="date_of_birth" value="${data.info_user.date_of_birth}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Số điện thoại <span style="color:red">*</span></label>
+                            <input id="phone-user" class="form-control" type="number" name="phone" required value="${data.info_user.phone}"  />
+                            <i id="error-phone-user" style="color:red"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Chứng minh thư nhân dân/CCCD <span style="color:red">*</span></label>
+                            <input id="identify-numb-user" class="form-control" type="number" required name="identify_numb" value="${data.info_user.identify_numb}" />
+                            <i id="error-identify-numb-user" style="color:red"></i>
 
-            <form id="frm_update_info">
-                    <div class="row collections">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-7">
-                            <b>Họ và tên:<span style="color:red">*</span></b>
-                            <input id="name" class="pw-confirm"
-                                            type="text"
-                                            name="name"
-                                            required
-                                            value="${data.name}"/>
-                            <b>Ngày sinh:</b>
-                            <input id="date_of_birth" class="pw-confirm"
-                                            type="date"
-                                            name="date_of_birth"
-                                            value="${data.info_user.date_of_birth}" />
-                            <b>Chứng minh thư nhân dân/CCCD:</b>
-                            <input id="identify_numb" class="pw-confirm"
-                                            type="number"
-                                            name="identify_numb"
-                                            value="${data.info_user.identify_numb}" />
-                            <b>Số điện thoại:<span style="color:red">*</span></b>
-                            <input id="phone" class="pw-confirm"
-                                            type="number"
-                                            name="phone"
-                                            required
-                                            value="${data.info_user.phone}"  />
-                            <b>Quốc tịch:</b>
-                            <input id="region" class="pw-confirm"
-                                            type="text"
-                                            name="region"
-                                            value="${data.info_user.region}" />
-                        </div>
-                        <div class="col-md-6"></div>
-                    </div>
-                    <div class="row collections">
-                        <div class="col-md-7 btn-update" style="text-align: right">
-                            <button onClick="update()">Cập nhật</button>
                         </div>
                     </div>
-                </form>
-        </div>
-        `;
-            $("#title-option").append(html);
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Quốc tịch</label>
+                            <input id="region-user" class="form-control" type="text" name="region" value="${data.info_user.region}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button onClick="update()" class="btn btn-success" style="margin:auto; display:block">Cập nhật</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $("#datatable_history").append(html);
+            document.getElementById("id01").style.display = "block";
         },
     });
 }
 // lấy dữ liệu cá nhân sau khi đổi và lưu trữ
 function update() {
-    var name = $("#frm_update_info #name").val();
-    var phone = $("#frm_update_info #phone").val();
-    console.log(phone);
-    debugger;
-    if (name !== "" && phone !== "") {
+    var name = $("#name-user").val();
+    var phone = $("#phone-user").val();
+    var date_of_birth = $("#date-of-birth-user").val();
+    var identify_numb = $("#identify-numb-user").val();
+    var region = $("#region-user").val();
+    $("#error-name-user").empty();
+    $("#error-phone-user").empty();
+    $("#error-identify-numb-user").empty();
+    if (name == "") {
+        $("#error-name-user").html("Chưa nhập tên người dùng");
+    } else if (phone == "") {
+        $("#error-phone-user").html("Chưa nhập số điện thoại");
+    } else if (phone.length < 10) {
+        $("#error-phone-user").html("Số điện thoại phải là 10 số");
+    } else if (identify_numb == "") {
+        $("#error-identify-numb-user").html(
+            "Chưa nhập số chứng minh thư nhân dân/CCCD"
+        );
+    }
+    if (
+        name !== "" &&
+        phone !== "" &&
+        identify_numb !== "" &&
+        phone.length == 10
+    ) {
         console.log(phone);
-        debugger;
         $.ajax({
-            url: "/user/update_info",
+            url: "/api/user/update_info",
             type: "post",
             dataType: "json",
-            data: $("#frm_update_info").serialize(),
+            data: {
+                name: name,
+                phone: phone,
+                date_of_birth: date_of_birth,
+                identify_numb: identify_numb,
+                region: region,
+            },
             success: function (data) {
-                alert(data.success);
-                load_data();
+                if (data.code == 401) {
+                    alert(data.success);
+                } else if (data.code == 200) {
+                    alert(data.success);
+                    info_login();
+                    document.getElementById("id01").style.display = "none";
+                }
             },
         });
-    } else {
-        debugger;
     }
 }
 // lịch sử giao dịch
@@ -509,12 +594,14 @@ function history(id) {
     var result = document.getElementById("history");
     var result1 = document.getElementById("pw-confirm");
     var result2 = document.getElementById("info-login");
+    var result3 = document.getElementById("authentication");
     result.classList.add("active");
     result1.classList.remove("active");
     result2.classList.remove("active");
+    result3.classList.remove("active");
     $("#title-option").empty();
     $.ajax({
-        url: "/user/get-info-payment",
+        url: "/api/user/get-info-payment",
         type: "get",
         dataType: "json",
         success: function (res) {
@@ -634,14 +721,29 @@ function history(id) {
             </div>`;
             $("#title-option").append(html);
             $("a#read-more-hisCoin").on("click", function () {
+                $("#datatable_history").empty();
                 $("#title-submit").html("LỊCH SỬ NẠP COIN");
                 $.ajax({
-                    url: "/user/get-info-payment",
+                    url: "/api/user/get-info-payment",
                     type: "get",
                     dataType: "json",
                     success: function (data) {
                         var logCoin = data.payment.log_coin;
+                        var str = `
+                        <thead>
+                            <tr>
+                                <th>Mã giao dịch</th>
+                                <th>Số lượng</th>
+                                <th>Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-history">
+
+                        </tbody>
+                        `;
+                        $("#datatable_history").append(str);
                         $("#body-history").empty();
+
                         logCoin.forEach((coin) => {
                             var html = `
                             <tr>
@@ -657,13 +759,28 @@ function history(id) {
                 document.getElementById("id01").style.display = "block";
             });
             $("a#read-more-hisKC").on("click", function () {
+                $("#datatable_history").empty();
                 $("#title-submit").html("LỊCH SỬ MUA KIM CƯƠNG");
                 $.ajax({
-                    url: "/user/get-info-payment",
+                    url: "/api/user/get-info-payment",
                     type: "get",
                     dataType: "json",
                     success: function (data) {
+                        console.log(data);
                         var logKc = data.payment.log_kc;
+                        var str = `
+                        <thead>
+                            <tr>
+                                <th>Mã giao dịch</th>
+                                <th>Số lượng</th>
+                                <th>Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-history">
+
+                        </tbody>
+                        `;
+                        $("#datatable_history").append(str);
                         $("#body-history").empty();
                         logKc.forEach((kc) => {
                             var html = `
@@ -681,4 +798,166 @@ function history(id) {
             });
         },
     });
+}
+// xác thực 2 bước bằng telegram
+function authentication() {
+    var result = document.getElementById("authentication");
+    var result3 = document.getElementById("pw-confirm");
+    var result1 = document.getElementById("info-login");
+    var result2 = document.getElementById("history");
+    result.classList.add("active");
+    result1.classList.remove("active");
+    result2.classList.remove("active");
+    result3.classList.remove("active");
+    $.ajax({
+        url: "/api/user/get-phone",
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            $("#datatable_history").empty();
+            // form điền thông tin số điện thoại và lựa chọn xác thực 2 bước bằng telegram
+            $("#title-submit").html("Xác thực đăng nhập 2 bước bằng Telegram");
+            var html = ``;
+            html += `<div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <x-auth-validation-errors class="mb-4" :errors="$errors" />
+                            <label>Số điện thoại đăng ký Telegram</label>
+                            <input id="phone" class="form-control" type="number" name="phone" required value="" oninput="check_phone()"/>
+                            <div style="color: red" id="error-phone"></div>
+                        </div>
+                    </div>
+                </div>`;
+            if (data.status == 1) {
+                html += `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            Tài khoản của bạn hiện đang "tắt" chức năng xác thực 2 bước:
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            } else {
+                html += `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            Tài khoản của bạn hiện giờ đang "bật" chức năng xác thực 2 bước:
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="togglebutton">
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            html += `<div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button id="updateStatus" onclick="submit_phone()" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
+                            </div>
+                        </div>
+                    </div>`;
+            $("#datatable_history").append(html);
+            document.getElementById("id01").style.display = "block";
+        },
+    });
+}
+function submit_phone() {
+    // sau khi xác nhận thì sẽ xử lý thông tin tại đây
+    var phone = $("#phone").val();
+    $("#error-phone").empty();
+    if (phone.length == 0) {
+        $("#error-phone").html("Số điện thoại không được để trống");
+    } else {
+        var checked = $('input[type="checkbox"]:checked').val();
+        if (checked == "on") {
+            checked = 0;
+        } else if (checked == undefined) {
+            checked = 1;
+        }
+        // gửi số điện thoại lên controller để so sánh với số điện thoại trong db
+        $.ajax({
+            url: "/api/user/get-phone",
+            type: "get",
+            dataType: "json",
+            data: { phone: phone, status: checked },
+            success: function (data) {
+                // nếu số điện thoại đúng thì hiển thị form nhập mã otp
+                if (data.code == 200) {
+                    $("#datatable_history").empty();
+                    $("#title-submit").html("Nhập mã xác thực OTP");
+                    var html = `
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                <label>Nhập mã OTP</label>
+                                    <input id="ma-otp" class="form-control" type="number" name="ma-otp" required/>
+                                    <div style="color: red" id="error-otp"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <button id="sendOTP" onclick="send_otp(${data.status})" class="btn btn-success" style="margin:auto; display:block">Xác nhận</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    $("#datatable_history").append(html);
+                } else if (data.code == 401) {
+                    $("#error-phone").html(data.error);
+                }
+            },
+        });
+    }
+}
+function send_otp(status) {
+    console.log(status);
+    var otp = $("#ma-otp").val();
+    $.ajax({
+        url: "/api/user/send-authen",
+        type: "get",
+        dataType: "json",
+        data: {
+            otp: otp,
+            status: status,
+        },
+        success: function (res) {
+            if (res.code == 200) {
+                alert(res.message);
+                info_login();
+                document.getElementById("id01").style.display = "none";
+            } else if (res.code == 401) {
+                $("#error-otp").html(res.error);
+            }
+        },
+    });
+}
+// kiểm tra độ dài của số điện thoại nhập vào
+function check_phone() {
+    var phone = $("#phone").val();
+    $("#error-phone").empty();
+    if (phone.length < 10 || phone.length > 10) {
+        $("#error-phone").html("Độ dài số điện thoại phải là 10 chữ số");
+    }
+}
+function onFinishWizard() {
+    swal("Hoàn tất!", "Cập nhật thành công", "success");
 }

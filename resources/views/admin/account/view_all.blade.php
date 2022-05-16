@@ -5,7 +5,12 @@
 
 
 @section('content')
-
+@if(session()->has('message'))
+    <div class="alert alert-success" id="alerts">
+        <button type="button" aria-hidden="true" class="close">×</button>
+        {{ session()->get('message') }}
+    </div>
+@endif
 <div class="col-md-12">
 
     <div class="card">
@@ -33,3 +38,12 @@
 </div> <!-- end col-md-12 -->
 
 @endsection
+@push('js')
+<script>
+    window.setTimeout(function(){
+        $("#alerts").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove();
+        });
+    }, 3000);
+</script>
+@endpush

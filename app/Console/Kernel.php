@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\ProcessUpdate;
+
 
 class Kernel extends ConsoleKernel
 {
@@ -13,9 +15,17 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+
+    protected $commands = [
+        'App\Console\Commands\Rev_daily',
+        'App\Console\Commands\Nru_daily',
+        'App\Console\Commands\Dau_daily',
+    ];
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('update:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('update:nru')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('update:dau')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**
@@ -25,7 +35,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

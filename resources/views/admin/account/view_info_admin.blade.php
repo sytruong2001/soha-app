@@ -5,147 +5,250 @@
 
 
 @section('content')
-    <div class="col-md-12">
+    <div id="alerts"></div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title">Thông tin cá nhân</h4>
+                        </div>
+                        <div class="content content-full-width">
+                            <ul role="tablist" class="nav nav-tabs">
+                                <li role="presentation" class="active">
+                                    <a href="#icon-info" data-toggle="tab"><i class="fa fa-info"></i> Info</a>
+                                </li>
+                                <li>
+                                    <a href="#icon-account" data-toggle="tab"><i class="fa fa-user"></i> Account</a>
+                                </li>
+                            </ul>
 
-        <div class="card">
-            <div class="header">
-                <legend>Thông tin cá nhân</legend>
-            </div>
-            <div class="content">
-                <div class="fresh-datatables">
-                    <table id="datatable_user" class="table table-striped table-no-bordered table-hover" cellspacing="0"
-                        width="100%" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Tên</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th class="disabled-sorting text-right" style="text-align: center;">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Tên</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th class="text-right" style="text-align: center;">Thao tác</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach ($accounts_admin as $admin)
-                                <tr>
-                                    <td>
-                                        <div style='width: 200px; height: 100px; overflow: auto;'>
-                                            {{ $admin->name }}
+                            <div class="tab-content">
+                                <div id="icon-info" class="tab-pane active">
+                                    <div class="card">
+                                        <div class="content">
+                                            <form method="POST" action="{{ url('api/admin/change-info') }}"
+                                                id="AdminInfoForm">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Họ và Tên</label>
+                                                            <input type="text" class="form-control" name="name"
+                                                                value="{{ $accounts_admin->name }}">
+                                                            <span class="text-danger error-text name_error"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Số điện thoại</label>
+                                                            <input type="text" class="form-control" name="phone"
+                                                                value="{{ $accounts_admin->phone }}">
+                                                            <span class="text-danger error-text phone_error"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary" data-dismiss="modal">Sửa
+                                                        thông tin</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div style='width: 200px; height: 100px; overflow: auto;'>
-                                            {{ $admin->email }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div style='width: 200px; height: 100px; overflow: auto;'>
-                                            {{ $admin->phone }}
-                                        </div>
-                                    </td>
-                                    <td class="text-right" style="text-align: center;">
-                                        <button type="button" class="btn btn-info btn-warning btn-icon edit"
-                                            data-toggle="modal" data-target="#exampleModalCenter"
-                                            value="{{ $admin->user_id }}"><i class="fa fa-file-text-o"></i></button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                </div>
+                                <div id="icon-account" class="tab-pane">
+                                    <div class="card">
+                                        <div class="content">
+                                            <form action="{{ url('api/admin/change-password') }}" method="POST"
+                                                id="change_pass">
+                                                @csrf
+                                                <input type="text" name="id" hidden value="{{ $accounts_admin->id }}">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Mật khẩu cũ</label>
+                                                            <input type="password" class="form-control" id="old_pass"
+                                                                name="old_pass">
+                                                            <span class="text-danger error-text old_pass_error"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Chỉnh sửa thông tin</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="content">
-                                    <form>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label>Email</label>
-                                                    <input type="text" class="form-control" id="email_info" value="">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Mật khẩu mới</label>
+                                                            <input type="password" class="form-control" id="new_pass"
+                                                                name="new_pass">
+                                                            <span class="text-danger error-text new_pass_error"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Họ và Tên</label>
-                                                    <input type="text" class="form-control" id="name_info" value="">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Nhập lại mật khẩu mới</label>
+                                                            <input type="password" class="form-control" id="re_new_pass"
+                                                                name="re_new_pass">
+                                                            <span class="text-danger error-text re_new_pass_error"></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Số điện thoại</label>
-                                                    <input type="text" class="form-control" id="phone_info" value="">
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
                                                 </div>
-                                            </div>
+                                            </form>
                                         </div>
-                                    </form>
+                                    </div>
+
                                 </div>
                             </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
-                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div> <!-- end card -->
+                <div class="col-md-4">
+                    <div class="card card-user">
+                        <div class="image">
+                            <img src="{{ asset('img/full-screen-image-3.jpeg') }}" alt="..." />
+                        </div>
+                        <div class="content">
+                            <div class="author">
+                                <a href="#">
+                                    <img class="avatar border-gray" src="{{ asset('img/default-avatar.png') }}"
+                                        alt="..." />
 
+                                    <h4 class="title">{{ $accounts_admin->name }}<br />
+                                        <small>{{ $accounts_admin->email }}</small>
+                                    </h4>
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                        @if ($accounts_admin->telegram_id == null)
+                            <div class="text-center">
+                                Tài khoản của bạn chưa liên kết telegram, liên kết ngay:
+                                <a target="_blank" onclick="setTimeout(loadData, 10000);" href="{{ url('/link') }}"><button class="btn btn-simple"><i
+                                            class="fa fa-telegram" style="font-size: 20px;"></i></button></a>
+                            </div>
+                        @else
+                            <div class="text-center">
+                                Tài khoản của bạn đã liên kết telegram, liên kết lại:
+                                <a target="_blank" onclick="setTimeout(loadData, 10000);" href="{{ url('/link') }}"><button class="btn btn-simple"><i
+                                            class="fa fa-telegram" style="font-size: 20px;"></i></button></a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div> <!-- end col-md-12 -->
 @endsection
 
-
 @push('js')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#datatable_user').DataTable({
-                "pagingType": "full_numbers",
-                "lengthMenu": [
-                    [5, 10, 25, 50, -1],
-                    [5, 10, 25, 50, "Tất cả"]
-                ],
-                responsive: true,
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Tìm kiếm người dùng",
-                }
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
+        $('#AdminInfoForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: new FormData(this),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(data) {
+                    if (data.status == 0) {
+                        $.each(data.error, function(prefix, val) {
+                            $('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $('.admin_name').each(function() {
+                            $(this).html($('#AdminInfoForm').find($('input[name="name"]'))
+                                .val());
+                        });
+                        onFinishWizard();
+                    }
+                }
             });
         });
-    </script>
-    <script>
-        $(document).on('click', '.edit', function() {
-            var url = "/admin/account";
-            var user_id = $(this).val();
+        
 
-            $.get(url + '/' + user_id, function(data) {
-                console.log(data);
-                $('#email_info').val(data.data.email);
-                $('#name_info').val(data.data.name);
-                if (data.data.phone == null) {
-                    $('#phone_info').val("Chưa có thông tin ngày sinh");
-                } else {
-                    $('#phone_info').val(data.data.phone);
-                }
-            })
+        $(function() {
+            $('#change_pass').on('submit', function(e) {
+                e.preventDefault();
+                // console.log(1);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    processData: false,
+                    dataType: 'json',
+                    data: new FormData(this),
+                    contentType: false,
+                    beforeSend: function(error) {
+                        $(document).find('span.error-text').text('');
+                    },
+                    success: function(data) {
+                        // console.log(data)
+                        if (data.status == 0) {
+                            $.each(data.error, function(prefix, val) {
+                                $('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+                            $('#change_pass')[0].reset();
+                            onFinishWizard();
+                            
+                        }
+                    }
+                });
+            });
         });
+
+        const base_api = location.origin;
+
+        function loadData() {
+            $.ajax({
+            type: "GET",
+            url: base_api + '/updated-activity',
+            dataType: 'json',
+            success: function(rs) {
+                if (rs.status == 1) {
+                    alertSuccess();
+                    window.setTimeout(function(){
+                        $("#alerts").fadeTo(500, 0).slideUp(500, function(){
+                            $(this).remove();
+                        });
+                    }, 3000);
+                }
+            },
+            error: function() {
+
+                console.log(url)
+            }
+        });
+        }
+
+        function alertSuccess(message){
+            $('#alerts').append(
+                '<div class="alert alert-success">' +
+                    '<button type="button" aria-hidden="true" class="close">×</button>' +
+                    '<span> Liên kết thành công</span>' +
+                '</div>'
+            );
+        }
+
+        function onFinishWizard() {
+            swal("Hoàn tất!", "Cập nhật thành công", "success");
+        }
     </script>
 @endpush
