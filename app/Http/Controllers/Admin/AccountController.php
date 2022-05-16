@@ -11,22 +11,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Requested;
+use App\Services\LockedService;
+use App\Services\ModelHasRoleService;
+use App\Services\ReqService;
+use App\Services\UserService;
 
 class AccountController extends Controller
 {
+    private $user;
+    private $locked;
+    private $role;
+    private $req;
+    public function __construct(UserService $user, LockedService $locked, ModelHasRoleService $role, ReqService $req)
+    {
+        $this->user = $user;
+        $this->locked = $locked;
+        $this->role = $role;
+        $this->req = $req;
+    }
     public function index()
     {
-        $accounts_user = User::query()
-            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->join('info_user', 'users.id', '=', 'info_user.user_id')
-            ->where('role_id', '=', 3)
-            ->get();
-
-        $accounts_admin = User::query()
-            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->join('info_admin', 'users.id', '=', 'info_admin.user_id')
-            ->where('role_id', '=', 2)
-            ->get();
+        $accounts_user = $this->user->get_info_user();
+        $accounts_admin = $this->user->get_info_admin();
 
         return view('admin.account.view_all', [
             'accounts_user' => $accounts_user,
@@ -36,10 +42,7 @@ class AccountController extends Controller
 
     public function show($id)
     {
-        $user = User::query()
-            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->join('info_user', 'users.id', '=', 'info_user.user_id')
-            ->find($id);
+        $user = $this->user->get_info_user($id);
         return response()->json([
             'data' => $user
         ]);
@@ -57,71 +60,32 @@ class AccountController extends Controller
     }
     public function lockAccount(Request $request)
     {
-        $id_admin = Auth::user()->id;
         $id = $request->get('id');
-        $time = Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         $check = DB::table('locked')->where('locked_id', $id)->count();
         if ($check == 1) {
-            $update = DB::table('locked')
-                ->where('locked_id', $id)
-                ->update([
-                    'status' => 0,
-                    'updated_at' => $time,
-                ]);
-            $delete_req = DB::table("requested")
-                ->where('user_id', $id)
-                ->delete();
+            $update_locked = $this->locked->createOrUpdate($request);
+            $this->req->delete($id);
         } else {
-            $msg = $request->get('msg');
-            $lock = DB::table("model_has_roles")
-                ->where('model_id', $id)
-                ->update([
-                    'role_id' => 4,
-                ]);
-            $insert = DB::table('locked')
-                ->insert([
-                    'locked_id' => $id,
-                    'message' => $msg,
-                    'locked_by' => $id_admin,
-                    'created_at' => $time,
-                    'updated_at' => $time,
-                ]);
+            $update_role = $this->role->update_role($id, 4);
+            $create_locked = $this->locked->createOrUpdate($request);
         }
-
-
         return response()->json([
             'code' => 200,
         ]);
     }
     public function unlockAccount($id)
     {
-        $unlock = DB::table("model_has_roles")
-            ->where('model_id', $id)
-            ->update([
-                'role_id' => 3,
-            ]);
-        $delete_locked = DB::table("locked")
-            ->where('locked_id', $id)
-            ->delete();
-        $delete_req = DB::table("requested")
-            ->where('user_id', $id)
-            ->delete();
+        $unlock = $this->role->update_role($id, 3);
+        $this->locked->delete($id);
+        $this->req->delete($id);
         return response()->json([
             'success' => 200
         ]);
     }
     public function accountLocked()
     {
-        $accounts_locked = Lock::query()
-            ->with('user', 'locker')
-            ->where('locked.status', 0)
-            ->orderByDesc('locked.updated_at')
-            ->get();
-        $accounts_requested = Requested::query()
-            ->with('user')
-            ->orderByDesc('updated_at')
-            ->get();
-        // dd($accounts_requested);
+        $accounts_locked = $this->locked->get_info_locked();
+        $accounts_requested = $this->req->get_info_req();
         return view('admin.account.view_account_locked', [
             'accounts_locked' => $accounts_locked,
             'accounts_requested' => $accounts_requested,
@@ -129,10 +93,7 @@ class AccountController extends Controller
     }
     public function infoAdmin($id)
     {
-        $accounts_admin = User::query()
-            ->join('info_admin', 'users.id', '=', 'info_admin.user_id')
-            ->where('user_id', $id)
-            ->first();
+        $accounts_admin = $this->user->get_info_admin($id);
         return view('admin.account.view_info_admin', [
             'accounts_admin' => $accounts_admin,
         ]);

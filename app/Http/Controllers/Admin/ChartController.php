@@ -9,22 +9,21 @@ use Carbon\Carbon;
 use App\Models\RevDaily;
 use App\Models\DauDaily;
 use App\Models\NruDaily;
+use App\Services\StatisticService;
 
 class ChartController extends Controller
 {
+    private $service;
+    public function __construct(StatisticService $service)
+    {
+        $this->service = $service;
+    }
     public function showNRU(Request $request)
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-
-        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('new_user', 'day_name');
-
+        $users = $this->service->get_info_nru($start_date, $end_date);
         $labels = $users->keys();
-
         $data = $users->values();
         return view('admin.chart.view_new_register_user', compact('labels', 'data', 'users'));
     }
@@ -34,11 +33,7 @@ class ChartController extends Controller
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
 
-        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(login_time)"))
-            ->pluck('user_log', 'day_log');
+        $users = $this->service->get_info_dau($start_date, $end_date);
 
         $labels = $users->keys();
 
@@ -51,16 +46,9 @@ class ChartController extends Controller
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('kc_numb', 'day_name');
-
+        $users = $this->service->get_info_rev($start_date, $end_date);
         $labels = $users->keys();
-
         $data = $users->values();
-
         return view('admin.chart.view_revenue', compact('labels', 'data', 'users'));
     }
 }

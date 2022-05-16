@@ -17,19 +17,21 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Models\RevDaily;
 use App\Models\DauDaily;
 use App\Models\NruDaily;
+use App\Services\StatisticService;
 use Illuminate\Support\Facades\Redis;
 
 class ApiController extends Controller
 {
+    private $statictis;
+    public function __construct(StatisticService $statictis)
+    {
+        $this->statictis = $statictis;
+    }
     public function updateREV()
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('kc_numb', 'day_name');
+        $users = $this->statictis->get_info_rev($start_date, $end_date);
 
         $labels = $users->keys();
 
@@ -37,29 +39,43 @@ class ApiController extends Controller
 
         return response()->json(compact('labels', 'data', 'users'));
     }
-    public function updateNRU()
+    public function showREV(Request $request)
     {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
-        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('new_user', 'day_name');
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $users = $this->statictis->get_info_rev($start_date, $end_date);
+
         $labels = $users->keys();
         $data = $users->values();
 
         return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
     }
+    public function updateNRU()
+    {
+        $start_date = Carbon::today()->subDays(6);
+        $end_date = Carbon::now()->toDateTimeString();
+        $users = $this->statictis->get_info_nru($start_date, $end_date);
+        $labels = $users->keys();
+        $data = $users->values();
+
+        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
+    }
+    public function showNRU(Request $request)
+    {
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $users = $this->statictis->get_info_nru($start_date, $end_date);
+
+        $labels = $users->keys();
+        $data = $users->values();
+        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
+    }
+
     public function updateDAU()
     {
         $start_date = Carbon::today()->subDays(6);
         $end_date = Carbon::now()->toDateTimeString();
-        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(login_time)"))
-            ->pluck('user_log', 'day_log');
+        $users = $this->statictis->get_info_dau($start_date, $end_date);
         $labels = $users->keys();
         $data = $users->values();
 
@@ -69,26 +85,7 @@ class ApiController extends Controller
     {
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
-        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(login_time)"))
-            ->pluck('user_log', 'day_log');
-
-        $labels = $users->keys();
-        $data = $users->values();
-
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
-    }
-    public function showREV(Request $request)
-    {
-        $start_date = $request->get('start_date');
-        $end_date = $request->get('end_date');
-        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('kc_numb', 'day_name');
+        $users = $this->statictis->get_info_dau($start_date, $end_date);
 
         $labels = $users->keys();
         $data = $users->values();
@@ -96,21 +93,7 @@ class ApiController extends Controller
         return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
     }
 
-    public function showNRU(Request $request)
-    {
-        $start_date = $request->get('start_date');
-        $end_date = $request->get('end_date');
-        //    dd($end_date);
-        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('new_user', 'day_name');
 
-        $labels = $users->keys();
-        $data = $users->values();
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
-    }
 
     // lấy thông tin người dùng
     public function getInfoUser(Request $request)
