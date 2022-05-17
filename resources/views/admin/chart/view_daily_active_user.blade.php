@@ -48,16 +48,15 @@
                 },
             });
         });
-        var labels = {{ Js::from($labels) }};
-        var daily_user = {{ Js::from($data) }};
-        var users = {{ Js::from($users) }};
+        var charts = {{ Js::from($entries) }};
+        var users = {{ Js::from($charts) }};
         const data = {
-            labels: labels,
+            labels: charts.labels,
             datasets: [{
                 label: 'Người dùng đăng nhập hàng ngày',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: daily_user,
+                data: charts.data,
                 tension: 0.2
             }]
         };
@@ -110,9 +109,9 @@
                     end_date: end_date,
                 },
                 success: function(res) {
-                    load_detail_data(res.users);
-                    myChart.data.labels = res.labels;
-                    myChart.data.datasets[0].data = res.data;
+                    load_detail_data(res.charts);
+                    myChart.data.labels = res.entries.labels;
+                    myChart.data.datasets[0].data = res.entries.data;
                     myChart.update();
                 },
             });

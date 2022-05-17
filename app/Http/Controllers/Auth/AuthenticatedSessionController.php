@@ -38,23 +38,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function check(Request $request)
     {
-
         // Kiểm tra thông tin đăng nhập (email và mật khẩu)
+        $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $user  = User::where('email', '=', request('email'))->first();
         \Hash::check(request('password'), $user->password);
         if (\Hash::check(request('password'), $user->password)) {
             $id = $user->id;
             $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
-            $time =  Carbon::now('Asia/Ho_Chi_Minh');
-            $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
-            $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $check = DB::table('login_log')->where('user_id', $id)->whereDate('login_time', $day)->first();
             // Tạo lịch sử đăng nhập nếu là user
             if ($check == null && $role) {
                 // dd($role);
                 $loginLog = DB::table("login_log")->insert([
                     'user_id' => $id,
-                    'login_time' => $time,
+                    'login_time' => $day,
                 ]);
             }
 

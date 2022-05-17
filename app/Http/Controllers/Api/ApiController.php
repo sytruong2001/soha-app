@@ -18,98 +18,35 @@ use App\Models\RevDaily;
 use App\Models\DauDaily;
 use App\Models\NruDaily;
 use Illuminate\Support\Facades\Redis;
+use App\Services\ChartService;
+
 
 class ApiController extends Controller
 {
-    public function updateREV()
+    public function updateDAU(Request $request)
     {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
-        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('kc_numb', 'day_name');
+        $date = (new ChartService())->getDateRequest($request);
+        $charts = (new ChartService())->showDAU($date); 
+        $entries = (new ChartService())->getChartReport($charts);
 
-        $labels = $users->keys();
-
-        $data = $users->values();
-
-        return response()->json(compact('labels', 'data', 'users'));
+        return response()->json(['charts' => $charts, 'entries' => $entries]);
     }
-    public function updateNRU()
+    public function updateREV(Request $request)
     {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
-        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('new_user', 'day_name');
-        $labels = $users->keys();
-        $data = $users->values();
+        $date = (new ChartService())->getDateRequest($request);
+        $charts = (new ChartService())->showREV($date); 
+        $entries = (new ChartService())->getChartReport($charts);
 
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
-    }
-    public function updateDAU()
-    {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
-        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(login_time)"))
-            ->pluck('user_log', 'day_log');
-        $labels = $users->keys();
-        $data = $users->values();
-
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
-    }
-    public function showDAU(Request $request)
-    {
-        $start_date = $request->get('start_date');
-        $end_date = $request->get('end_date');
-        $users = DauDaily::select(DB::raw("total_login as user_log"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_log"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(login_time)"))
-            ->pluck('user_log', 'day_log');
-
-        $labels = $users->keys();
-        $data = $users->values();
-
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
-    }
-    public function showREV(Request $request)
-    {
-        $start_date = $request->get('start_date');
-        $end_date = $request->get('end_date');
-        $users = RevDaily::select(DB::raw("(total_kc)*200 as kc_numb"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('kc_numb', 'day_name');
-
-        $labels = $users->keys();
-        $data = $users->values();
-
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
+        return response()->json(['charts' => $charts, 'entries' => $entries]);
     }
 
-    public function showNRU(Request $request)
+    public function updateNRU(Request $request)
     {
-        $start_date = $request->get('start_date');
-        $end_date = $request->get('end_date');
-        //    dd($end_date);
-        $users = NruDaily::select(DB::raw("total_register as new_user"), DB::raw("DATE_FORMAT(date, '%d-%m') as day_name"))
-            ->whereDate('date', '>=', $start_date)
-            ->whereDate('date', '<=', $end_date)
-            // ->groupBy(DB::raw("Date(date)"))
-            ->pluck('new_user', 'day_name');
+        $date = (new ChartService())->getDateRequest($request);
+        $charts = (new ChartService())->showNRU($date);
+        $entries = (new ChartService())->getChartReport($charts);
 
-        $labels = $users->keys();
-        $data = $users->values();
-        return response()->json(['users' => $users, 'labels' => $labels, 'data' => $data]);
+        return response()->json(['charts' => $charts, 'entries' => $entries]);
     }
 
     // lấy thông tin người dùng
@@ -497,6 +434,36 @@ class ApiController extends Controller
             $select = InfoUser::where('user_id', '=', $id)->select('status')->first();
             echo json_encode($select);
         }
+    }
+    public function reSend(Request $request)
+    {
+        $user_id = $request->id;
+        $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $user_id)->first();
+        if ($role) {
+            $info = DB::table('info_user')->where('user_id', '=', $user_id)->first();
+        } else {
+            $info = DB::table('info_admin')->where('user_id', '=', $user_id)->first();
+        }
+        $otp = rand(100000, 999999);
+
+        Redis::set('otp', $otp, 'EX', 300);
+        $message = "Mã OTP của bạn là:\n"
+            . "$otp"
+            . " thời gian sử dụng là 5 phút\n";
+        if ($info->telegram_id) {
+            Telegram::sendMessage([
+                'chat_id' => $info->telegram_id,
+                'parse_mode' => 'HTML',
+                'text' => $message
+            ]);
+        } else {
+            Telegram::sendMessage([
+                'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
+                'parse_mode' => 'HTML',
+                'text' => $message
+            ]);
+        }
+        return response()->json(['status' => 1]);
     }
     public function sendAuthen(Request $request)
     {

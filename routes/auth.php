@@ -23,7 +23,7 @@ Route::middleware('guest')->group(function () {
 
     Route::post('login', [AuthenticatedSessionController::class, 'check'])->middleware('throttle:limit');
 
-    Route::post('login-otp', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login-otp', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:limit');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

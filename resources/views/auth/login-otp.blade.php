@@ -31,13 +31,6 @@
                 </div>
 
                 <div class="flex items-center justify-end mt-4">
-                    <!-- @if (Route::has('password.request'))
-<a class="underline text-sm text-gray-600 hover:text-gray-900"
-                        href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-@endif -->
-
                     <x-button class="ml-3 otp" type="submit">
                         {{ __('Login') }}
                     </x-button>
@@ -57,21 +50,19 @@
 
                     <x-input id="otp" class="block mt-1 w-full" type="number" name="otp" />
                 </div>
-                <x-input type="number" name="id" value="{{ $info->user_id }}" hidden />
+                <x-input type="number" id="re-otp" name="id" value="{{ $info->user_id }}" hidden />
                 <div class="flex items-center justify-end mt-4">
-                    <!-- @if (Route::has('password.request'))
-<a class="underline text-sm text-gray-600 hover:text-gray-900"
-                        href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-@endif -->
-
                     <x-button class="ml-3" type="submit">
                         {{ __('Login') }}
                     </x-button>
                 </div>
+            </form>
+            <div class="flex items-center justify-end mt-4">
+                <button onclick="reSendOtp()" class="underline text-sm text-gray-600 hover:text-gray-900" >
+                    {{ __('Gửi lại mã') }}
+                </button>
+            </div>
         @endif
-        </form>
 
     </x-auth-card>
 
@@ -108,6 +99,28 @@
                     $('.otp').show();
                     $('.send-otp').hide();
                 }
+            },
+            error: function() {
+                console.log('error');
+            }
+        });
+    }
+
+    function reSendOtp() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        // alert($('#phone').val());
+        $.ajax({
+            url: base_api + '/re-send-otp',
+            method: 'POST',
+            data: {
+                'id': $('#re-otp').val(),
+            },
+            success: function(data) {
+                location.reload();  
             },
             error: function() {
                 console.log('error');

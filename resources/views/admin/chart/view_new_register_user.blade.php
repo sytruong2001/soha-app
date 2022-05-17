@@ -48,16 +48,15 @@
                 },
             });
         });
-        var labels = {{ Js::from($labels) }};
-        var new_user = {{ Js::from($data) }};
-        var users = {{ Js::from($users) }};
+        var entries = {{ Js::from($entries) }};
+        var users = {{ Js::from($charts) }};
         const data = {
-            labels: labels,
+            labels: entries.labels,
             datasets: [{
                 label: 'Người dùng đăng ký mới',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: new_user,
+                data: entries.data,
                 tension: 0.2
             }]
         };
@@ -110,9 +109,9 @@
                     end_date: end_date,
                 },
                 success: function(res) {
-                    load_detail_data(res.users);
-                    myChart.data.labels = res.labels;
-                    myChart.data.datasets[0].data = res.data;
+                    load_detail_data(res.charts);
+                    myChart.data.labels = res.entries.labels;
+                    myChart.data.datasets[0].data = res.entries.data;
                     myChart.update();
                 },
             });

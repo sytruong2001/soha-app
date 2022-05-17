@@ -88,12 +88,9 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('api')->group(function () {
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         Route::controller(ApiController::class)->group(function () {
-            Route::get('/revenue/update', 'updateREV');
-            Route::get('/new-register-user/update', 'updateNRU');
-            Route::get('/daily-active-user/update', 'updateDAU');
-            Route::get('/daily-active-user', 'showDAU');
-            Route::get('/revenue', 'showREV');
-            Route::get('/new-register-user', 'showNRU');
+            Route::get('/daily-active-user', 'updateDAU');
+            Route::get('/revenue', 'updateREV');
+            Route::get('/new-register-user', 'updateNRU');
             Route::post('/change-password', 'changePassword');
             Route::post('/change-info', 'changeInfo');
         });
@@ -114,8 +111,10 @@ Route::prefix('api')->group(function () {
         Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
     });
 
-    Route::middleware('guest')->group(function () {
+    Route::middleware('guest', 'throttle:limit')->group(function () {
         Route::post('/login', [ApiController::class, 'phone']);
+        Route::post('/re-send-otp', [ApiController::class, 'reSend']);
+
     });
 });
 

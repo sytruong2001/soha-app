@@ -27,21 +27,20 @@ class GoogleController extends Controller
     public function callback()
     {
         try {
-            $time =  Carbon::now('Asia/Ho_Chi_Minh');
-            $time_expire =  Carbon::now('Asia/Ho_Chi_Minh')->addMinutes(5);
+            $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $google_user = Socialite::driver('google')->user();
             $user = User::where('email', $google_user->email)->first();
             if ($user) {
                 $id = $user->id;
-                $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-                $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $user->id)->first();
+                $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
                 $check = DB::table('login_log')->where('user_id', $user->id)->whereDate('login_time', $day)->first();
                 if ($check === null && $role) {
                     $loginLog = DB::table("login_log")->insert([
                         'user_id' => $user->id,
-                        'login_time' => $time,
+                        'login_time' => $day,
                     ]);
                 }
+                
                 if ($role) {
                     $info = DB::table('info_user')->where('user_id', '=', $id)->first();
                     // dd($info);
@@ -102,8 +101,8 @@ class GoogleController extends Controller
                     $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
                 }
                 if ($info) {
-
                     // Kiểm tra tồn tại thông tin về số điện thoại
+
                     if ($info->phone != null) {
                         $otp = rand(100000, 999999);
                         Redis::set('otp', $otp, 'EX', 300);
@@ -159,7 +158,7 @@ class GoogleController extends Controller
                 ]);
                 $loginLog = DB::table("login_log")->insert([
                     'user_id' => $new_user->id,
-                    'login_time' => $time,
+                    'login_time' => $day,
                 ]);
                 Auth::login($new_user);
 
