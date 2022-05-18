@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\ChartController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\ApiUserController;
+use App\Http\Controllers\Api\ApiPaymentController;
 use App\Http\Controllers\TelegramController;
 
 
@@ -100,17 +102,17 @@ Route::prefix('api')->group(function () {
     });
     Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
 
-        Route::get('/get-info', [ApiController::class, 'getInfoUser'])->name('user.getInfoUser');
-        Route::post('/update_info', [ApiController::class, 'updateInfoUser'])->name('user.updateInfoUser');
-        Route::get('/get-info-payment', [ApiController::class, 'getInfoPayment'])->name('user.getInfoPayment');
-        Route::post('/update-payment', [ApiController::class, 'UpdatePayment'])->name('user.updatePayment');
-        Route::post('/update-kc', [ApiController::class, 'UpdateKC'])->name('user.updateKC');
-        Route::post('/reset-password', [ApiController::class, 'changePasswordUser'])->name('user.updatePass');
-        Route::get('/get-phone', [ApiController::class, 'getPhoneUser'])->name('user.getPhone')->middleware('throttle:limit');
-        Route::get('/send-authen', [ApiController::class, 'sendAuthen'])->name('user.sendAuthen');
+        Route::get('/get-info', [ApiUserController::class, 'getInfoUser'])->name('user.getInfoUser');
+        Route::post('/update_info/{id}', [ApiUserController::class, 'updateInfoUser'])->name('user.updateInfoUser');
+        Route::get('/get-info-payment', [ApiPaymentController::class, 'getInfoPayment'])->name('user.getInfoPayment');
+        Route::post('/update-payment', [ApiPaymentController::class, 'UpdatePayment'])->name('user.updatePayment');
+        Route::post('/update-kc', [ApiPaymentController::class, 'UpdateKC'])->name('user.updateKC');
+        Route::post('/reset-password', [ApiUserController::class, 'changePasswordUser'])->name('user.updatePass');
+        Route::get('/get-phone', [ApiUserController::class, 'getPhoneUser'])->name('user.getPhone')->middleware('throttle:limit');
+        Route::get('/send-authen', [ApiUserController::class, 'sendAuthen'])->name('user.sendAuthen');
     });
     Route::middleware(['auth', 'role:lock'])->prefix('lock')->group(function () {
-        Route::post('/repost', [ApiController::class, 'CSKH'])->name('lock.CSKH');
+        Route::post('/repost', [ApiUserController::class, 'CSKH'])->name('lock.CSKH');
         Route::get('/unlock-account/{id}', [AccountController::class, 'unlockAccount']);
     });
 

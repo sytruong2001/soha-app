@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 
@@ -178,7 +179,6 @@ class AuthenticatedSessionController extends Controller
         if ($otp == $cache) {
             $login = User::where('id', '=', $user_id)->first();
             Auth::login($login);
-
             if (auth()->user()->hasRole('admin')) {
                 return redirect()->intended(RouteServiceProvider::HOME);
             } else if (auth()->user()->hasRole('user')) {

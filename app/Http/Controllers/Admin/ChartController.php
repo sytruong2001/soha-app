@@ -18,27 +18,26 @@ class ChartController extends Controller
     {
         $this->service = $service;
     }
-    public function showNRU(Request $request)
+    public function showNRU()
     {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
+        $start_date = $this->service->get_start_date();
+        $end_date = $this->service->get_end_date();
         $result = $this->service->get_info_nru($start_date, $end_date);
         return view('admin.chart.view_new_register_user', compact('result'));
     }
 
     public function showDAU()
     {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
-
+        $start_date = $this->service->get_start_date();
+        $end_date = $this->service->get_end_date();
         $result = $this->service->get_info_dau($start_date, $end_date);
         return view('admin.chart.view_daily_active_user', compact('result'));
     }
 
-    public function showREV(Request $request)
+    public function showREV()
     {
-        $start_date = Carbon::today()->subDays(6);
-        $end_date = Carbon::now()->toDateTimeString();
+        $start_date = $this->service->get_start_date();
+        $end_date = $this->service->get_end_date();
         $result = $this->service->get_info_rev($start_date, $end_date);
         return view('admin.chart.view_revenue', compact('result'));
     }

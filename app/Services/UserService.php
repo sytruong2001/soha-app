@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class UserService
 {
@@ -40,10 +41,5 @@ class UserService
         }
 
         return $get_admin;
-    }
-
-    public function update_user($request)
-    {
-        # code...
     }
 }

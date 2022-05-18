@@ -528,7 +528,7 @@ function form_update_info(id) {
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <button onClick="update()" class="btn btn-success" style="margin:auto; display:block">Cập nhật</button>
+                            <button onClick="update(${data.info_user.id})" class="btn btn-success" style="margin:auto; display:block">Cập nhật</button>
                         </div>
                     </div>
                 </div>
@@ -539,7 +539,7 @@ function form_update_info(id) {
     });
 }
 // lấy dữ liệu cá nhân sau khi đổi và lưu trữ
-function update() {
+function update(id) {
     var name = $("#name-user").val();
     var phone = $("#phone-user").val();
     var date_of_birth = $("#date-of-birth-user").val();
@@ -565,9 +565,9 @@ function update() {
         identify_numb !== "" &&
         phone.length == 10
     ) {
-        console.log(phone);
+        // console.log(phone);
         $.ajax({
-            url: "/api/user/update_info",
+            url: "/api/user/update_info/" + id,
             type: "post",
             dataType: "json",
             data: {
@@ -766,7 +766,6 @@ function history(id) {
                     type: "get",
                     dataType: "json",
                     success: function (data) {
-                        console.log(data);
                         var logKc = data.payment.log_kc;
                         var str = `
                         <thead>

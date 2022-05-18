@@ -11,6 +11,11 @@ class InfoUser extends Model
     protected $fillable = [
         'user_number',
         'user_id',
+        'identify_numb',
+        'phone',
+        'telegram_id',
+        'region',
+        'birth_of_date',
         'coin',
         'status'
     ];

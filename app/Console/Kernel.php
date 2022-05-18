@@ -20,12 +20,14 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\Rev_daily',
         'App\Console\Commands\Nru_daily',
         'App\Console\Commands\Dau_daily',
+        'App\Console\Commands\DbBackup',
     ];
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('update:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
         $schedule->command('update:nru')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
         $schedule->command('update:dau')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('backup:db')->dailyAt("03:00")->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**
