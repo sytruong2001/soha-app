@@ -40,7 +40,7 @@ class TelegramController extends Controller
             $cache_otp = Redis::get('otp_tele');
             $otp = substr($text, 7, 6);
             if ($otp == $cache_otp) {
-                $role = DB::table('model_has_roles')->where('model_id', $id)->where('role_id', '>', 2)->count();
+                $role = $this->auth->hasRole($id);
                 // dd($role);
                 if ($role == 1) {
                     $update_telegram_id_user = InfoUser::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);

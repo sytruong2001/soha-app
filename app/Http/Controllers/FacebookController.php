@@ -13,14 +13,12 @@ use Carbon\Carbon;
 use Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Session;
 use App\Models\InfoAdmin;
 use Laravel\Socialite\Facades\Socialite;
-use Telegram\Bot\Laravel\Facades\Telegram;
 
 class FacebookController extends Controller
 {
+
     public function login_facebook()
     {
         return Socialite::driver('facebook')->redirect();
@@ -34,8 +32,9 @@ class FacebookController extends Controller
         if ($account) {
             //login in vao trang quan tri
             // $account_name = User::where('id', $account->user)->first();
+            $id = $account->user;
             $day = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-            $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $account->user)->first();
+            $role = $this->auth->hasRole($id);
             $check = DB::table('login_log')->where('user_id', $account->user)->whereDate('login_time', $day)->first();
             if ($check == null && $role) {
                 $loginLog = DB::table("login_log")->insert([
@@ -53,17 +52,7 @@ class FacebookController extends Controller
                     if ($info->status == 0) {
                         // Kiểm tra tồn tại thông tin về số điện thoại
                         if ($info->phone != null) {
-                            $otp = rand(100000, 999999);
-                            Redis::set('otp', $otp, 'EX', 300);
-                            $message = "Mã OTP của bạn là:\n"
-                                . "$otp"
-                                . " thời gian sử dụng là 5 phút\n";
-                            Telegram::sendMessage([
-                                'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                                'parse_mode' => 'HTML',
-                                'text' => $message
-                            ]);
-                            // }
+                            $this->auth->getOTP($info);
                             return view('auth.login-otp', [
                                 'info' => $info,
                                 'info_phone'  => $info->phone,
@@ -102,24 +91,7 @@ class FacebookController extends Controller
             if ($info) {
                 // Kiểm tra tồn tại thông tin về số điện thoại
                 if ($info->phone != null) {
-                    $otp = rand(100000, 999999);
-                    Redis::set('otp', $otp, 'EX', 300);
-                    $message = "Mã OTP của bạn là:\n"
-                        . "$otp"
-                        . " thời gian sử dụng là 5 phút\n";
-                    if ($info->telegram_id) {
-                        Telegram::sendMessage([
-                            'chat_id' => $info->telegram_id,
-                            'parse_mode' => 'HTML',
-                            'text' => $message
-                        ]);
-                    } else {
-                        Telegram::sendMessage([
-                            'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                            'parse_mode' => 'HTML',
-                            'text' => $message
-                        ]);
-                    }
+                    $this->auth->getOTP($info);
                     return view('auth.login-otp', [
                         'info' => $info,
                         'info_phone'  => $info->phone,

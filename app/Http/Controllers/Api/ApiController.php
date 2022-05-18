@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\InfoAdmin;
 use App\Models\InfoUser;
 use Telegram\Bot\Laravel\Facades\Telegram;
-use App\Models\RevDaily;
-use App\Models\DauDaily;
-use App\Models\NruDaily;
 use Illuminate\Support\Facades\Redis;
 use App\Services\ChartService;
 
@@ -25,26 +22,26 @@ class ApiController extends Controller
 {
     public function updateDAU(Request $request)
     {
-        $date = (new ChartService())->getDateRequest($request);
-        $charts = (new ChartService())->showDAU($date); 
-        $entries = (new ChartService())->getChartReport($charts);
+        $date = $this->chart->getDateRequest($request);
+        $charts = $this->chart->showDAU($date); 
+        $entries = $this->chart->getChartReport($charts);
 
         return response()->json(['charts' => $charts, 'entries' => $entries]);
     }
     public function updateREV(Request $request)
     {
-        $date = (new ChartService())->getDateRequest($request);
-        $charts = (new ChartService())->showREV($date); 
-        $entries = (new ChartService())->getChartReport($charts);
+        $date = $this->chart->getDateRequest($request);
+        $charts = $this->chart->showREV($date); 
+        $entries = $this->chart->getChartReport($charts);
 
         return response()->json(['charts' => $charts, 'entries' => $entries]);
     }
 
     public function updateNRU(Request $request)
     {
-        $date = (new ChartService())->getDateRequest($request);
-        $charts = (new ChartService())->showNRU($date);
-        $entries = (new ChartService())->getChartReport($charts);
+        $date = $this->chart->getDateRequest($request);
+        $charts = $this->chart->showNRU($date);
+        $entries = $this->chart->getChartReport($charts);
 
         return response()->json(['charts' => $charts, 'entries' => $entries]);
     }
@@ -334,7 +331,7 @@ class ApiController extends Controller
         $id = $rq->id;
         // dd($id);
         // Kiểm tra phân quyền và thông tin nhập vào
-        $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
+        $role = $this->auth->hasRole($id);
         $validator = \Validator::make($rq->all(), [
             'phone' => ['required', 'min:10', 'unique:info_admin', 'unique:info_user'],
         ], [
@@ -437,12 +434,12 @@ class ApiController extends Controller
     }
     public function reSend(Request $request)
     {
-        $user_id = $request->id;
-        $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $user_id)->first();
+        $id = $request->id;
+        $role = $this->auth->hasRole($id);
         if ($role) {
-            $info = DB::table('info_user')->where('user_id', '=', $user_id)->first();
+            $info = DB::table('info_user')->where('user_id', '=', $id)->first();
         } else {
-            $info = DB::table('info_admin')->where('user_id', '=', $user_id)->first();
+            $info = DB::table('info_admin')->where('user_id', '=', $id)->first();
         }
         $otp = rand(100000, 999999);
 
@@ -465,6 +462,7 @@ class ApiController extends Controller
         }
         return response()->json(['status' => 1]);
     }
+    
     public function sendAuthen(Request $request)
     {
         $id = Auth::user()->id;

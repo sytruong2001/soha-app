@@ -13,13 +13,13 @@ use App\Models\InfoAdmin;
 use App\Models\InfoUser;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
-use Telegram\Bot\Laravel\Facades\Telegram;
-use App\Models\Otp;
 use Illuminate\Support\Facades\Redis;
 
 
 class AuthenticatedSessionController extends Controller
 {
+
+    
     /**
      * Display the login view.
      *
@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
         \Hash::check(request('password'), $user->password);
         if (\Hash::check(request('password'), $user->password)) {
             $id = $user->id;
-            $role = DB::table('model_has_roles')->where('role_id', '>', '2')->where('model_id', '=', $id)->first();
+            $role = $this->auth->hasRole($id);
             $check = DB::table('login_log')->where('user_id', $id)->whereDate('login_time', $day)->first();
             // Tạo lịch sử đăng nhập nếu là user
             if ($check == null && $role) {
@@ -58,31 +58,12 @@ class AuthenticatedSessionController extends Controller
             // Lấy thông tin người đăng nhập dành cho user
             if ($role) {
                 $info = DB::table('info_user')->where('user_id', '=', $id)->first();
-                // nếu mà có thông tin user trong bảng info_user thì thực hiện gửi otp
                 if ($info) {
-                    // kiểm tra status có bằng 0 hay không, nếu bằng thì cho gửi otp, nếu không thì đăng nhập luôn
                     if ($info->status == 0) {
-                        // Kiểm tra tồn tại thông tin về số điện thoại
                         if ($info->phone != null) {
-                            $otp = rand(100000, 999999);
 
-                            Redis::set('otp', $otp, 'EX', 300);
-                            $message = "Mã OTP của bạn là:\n"
-                                . "$otp"
-                                . " thời gian sử dụng là 5 phút\n";
-                            if ($info->telegram_id) {
-                                Telegram::sendMessage([
-                                    'chat_id' => $info->telegram_id,
-                                    'parse_mode' => 'HTML',
-                                    'text' => $message
-                                ]);
-                            } else {
-                                Telegram::sendMessage([
-                                    'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                                    'parse_mode' => 'HTML',
-                                    'text' => $message
-                                ]);
-                            }
+                            $this->auth->getOTP($info);
+
                             return view('auth.login-otp', [
                                 'info' => $info,
                                 'info_phone'  => $info->phone,
@@ -121,25 +102,7 @@ class AuthenticatedSessionController extends Controller
             if ($info) {
                 // Kiểm tra tồn tại thông tin về số điện thoại
                 if ($info->phone != null) {
-                    $otp = rand(100000, 999999);
-                    Redis::set('otp', $otp, 'EX', 300);
-
-                    $message = "Mã OTP của bạn là:\n"
-                        . "$otp"
-                        . " thời gian sử dụng là 5 phút\n";
-                    if ($info->telegram_id) {
-                        Telegram::sendMessage([
-                            'chat_id' => $info->telegram_id,
-                            'parse_mode' => 'HTML',
-                            'text' => $message
-                        ]);
-                    } else {
-                        Telegram::sendMessage([
-                            'chat_id' => env('TELEGRAM_CHANNEL_ID', ''),
-                            'parse_mode' => 'HTML',
-                            'text' => $message
-                        ]);
-                    }
+                    $this->auth->getOTP($info);
                     return view('auth.login-otp', [
                         'info' => $info,
                         'info_phone'  => $info->phone,

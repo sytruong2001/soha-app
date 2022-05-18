@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
         $schedule->command('update:nru')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
         $schedule->command('update:dau')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
+        $schedule->command('backup:clean')->daily()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('01:30');
     }
 
     /**

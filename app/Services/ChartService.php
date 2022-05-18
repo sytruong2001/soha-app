@@ -11,6 +11,7 @@ use App\Models\NruDaily;
 
 class ChartService
 {
+    
     public static function getChartReport($charts)
     {
         $labels = $charts->keys();
