@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\logCoin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Models\logKC;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
