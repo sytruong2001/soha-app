@@ -17,6 +17,7 @@ class RevDaily extends Migration
             $table->increments('id');
             $table->bigInteger('total_kc');
             $table->date('date');
+            $table->engine = "InnoDB";
         });
     }
 

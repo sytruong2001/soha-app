@@ -17,6 +17,7 @@ class DauDaily extends Migration
             $table->increments('id');
             $table->bigInteger('total_login');
             $table->date('date');
+            $table->engine = "InnoDB";
         });
     }
 

@@ -17,6 +17,7 @@ class InfoKc extends Migration
             $table->id();
             $table->integer('user_id')->unsigned();
             $table->integer('kc_numb');
+            $table->engine = "InnoDB";
         });
     }
 

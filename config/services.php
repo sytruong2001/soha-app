@@ -40,4 +40,8 @@ return [
         'client_secret' => env('FACEBOOK_APP_SECRET'), //client app service face của bạn
         'redirect' => env('FACEBOOK_REDIRECT'), //callback trả về
     ],
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_CHAT_ID')
+    ]
 ];

@@ -18,6 +18,7 @@ class MuaKcLog extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('kc_numb');
             $table->timestamp('mua_kc_time');
+            $table->engine = "InnoDB";
         });
     }
 

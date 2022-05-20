@@ -17,6 +17,7 @@ class NruDaily extends Migration
             $table->increments('id');
             $table->bigInteger('total_register');
             $table->date('date');
+            $table->engine = "InnoDB";
         });
     }
 

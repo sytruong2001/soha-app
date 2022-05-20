@@ -27,31 +27,31 @@ class TelegramController extends Controller
         $this->dispatch($processUpdate);
         return Redirect::to($url . $get_otp);
     }
-    public function updatedActivity()
-    {
-        $id = Auth::user()->id;
-        $activity = Telegram::getUpdates();
-        $chat_id = Arr::last($activity)->message->chat->id;
-        $text = Arr::last($activity)->message->text;
-        $check = substr($text, 0, 6);
+    // public function updatedActivity()
+    // {
+    //     $id = Auth::user()->id;
+    //     $activity = Telegram::getUpdates();
+    //     $chat_id = Arr::last($activity)->message->chat->id;
+    //     $text = Arr::last($activity)->message->text;
+    //     $check = substr($text, 0, 6);
 
-        // dd(Arr::last($activity));
-        if ($check == "/start") {
-            $cache_otp = Redis::get('otp_tele');
-            $otp = substr($text, 7, 6);
-            if ($otp == $cache_otp) {
-                $role = $this->auth->hasRole($id);
-                // dd($role);
-                if ($role == 1) {
-                    $update_telegram_id_user = InfoUser::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
-                } else {
-                    $update_telegram_id_admin = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
-                }
-                return response()->json(['status' => 1]);
-            } else {
-                return 'mã otp k trùng';
-            }
-        }
-        // dd(Arr::last($activity));
-    }
+    //     // dd(Arr::last($activity));
+    //     if ($check == "/start") {
+    //         $cache_otp = Redis::get('otp_tele');
+    //         $otp = substr($text, 7, 6);
+    //         if ($otp == $cache_otp) {
+    //             $role = $this->auth->hasRole($id);
+    //             // dd($role);
+    //             if ($role == 1) {
+    //                 $update_telegram_id_user = InfoUser::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+    //             } else {
+    //                 $update_telegram_id_admin = InfoAdmin::where('user_id', '=', $id)->update(['telegram_id' => $chat_id]);
+    //             }
+    //             return response()->json(['status' => 1]);
+    //         } else {
+    //             return 'mã otp k trùng';
+    //         }
+    //     }
+    //     // dd(Arr::last($activity));
+    // }
 }

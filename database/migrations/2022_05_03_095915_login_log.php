@@ -17,6 +17,7 @@ class LoginLog extends Migration
             $table->id();
             $table->integer('user_id')->unsigned();
             $table->timestamp('login_time');
+            // $table->engine = "InnoDB";
         });
     }
 

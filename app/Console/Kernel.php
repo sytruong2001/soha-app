@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Jobs\ProcessUpdate;
+
 
 
 class Kernel extends ConsoleKernel
@@ -26,8 +26,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:rev')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
         $schedule->command('update:nru')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
         $schedule->command('update:dau')->everyTenMinutes()->timezone('Asia/Ho_Chi_Minh');
-        $schedule->command('backup:clean')->daily()->at('01:00');
-        $schedule->command('backup:run')->daily()->at('01:30');
+        // $schedule->command('backup:clean')->daily()->at('18:00');
+        $schedule->command('backup:run')->daily()->at('18:03')->timezone('Asia/Ho_Chi_Minh');
     }
 
     /**

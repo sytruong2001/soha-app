@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Auth;
-use Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use App\Providers\RouteServiceProvider;
 use App\Models\InfoUser;
